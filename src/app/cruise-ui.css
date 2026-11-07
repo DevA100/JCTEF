@@ -1,0 +1,1317 @@
+/* Cruise UI theme (Lagos · Danfo) · Naija Brutalism v1.12 · https://cruiseui.dev/docs/theming
+ * Generated from the Cruise UI source; edit by re-running the install.
+ *
+ * Setup:
+ *   1. In your main CSS file (e.g. app/globals.css), after @import "tailwindcss":
+ *        @import "./cruise-ui.css";
+ *   2. Put class="cruise" on <body>. Everything inside uses the Cruise UI
+ *      tokens; the rest of your app (and your shadcn/ui theme) is untouched.
+ *   3. Dark mode: add class="nepa-mode" to <html> (or any element).
+ *   Corners: add data-corners="soft" or "round" to <body>, or override --radius.
+ *   Focus: text fields lift into their shadow; data-focus="ring" or "border" on <body> switches it.
+ *   4. Fonts: Baloo 2 + Bricolage Grotesque. With next/font, use the
+ *      variables --font-baloo and --font-bricolage; or add the Google Fonts <link>.
+ */
+
+@layer theme, base, components, utilities;
+
+@layer base {
+  .cruise {
+    /* theme: lagos-danfo (B1) */
+    --primary: #FFC400; --on-primary: #111111; --ink: #111111; --paper: #FFF6E0; --surface: #FFFFFF;
+    --ink-muted: #5C574A; /* secondary text only */
+    /* Light wash of the theme colour (illustration backgrounds, image panels,
+       alternate card fills). Re-declared wherever --surface changes, like
+       --shadow, because CSS resolves it where it is declared. */
+    --tint: color-mix(in srgb, var(--primary) 18%, var(--surface));
+    --danger: #E63B2E; --success: #008751; --info: #2B59C3; --deep: #1F2A5C; --muted: #E8DCC2;
+    /* This city's LIGHT paper and muted, for .light-mode and .on-primary
+       (which lock the light values in, in both modes). */
+    --light-paper: #FFF6E0; --light-muted: #E8DCC2;
+    --light-ink: #111111; --light-ink-muted: #5C574A; /* light ink + secondary text, for .light-mode (Abuja's are navy) */
+
+    /* "Text on it" column of B1 for the white-text roles. They keep their
+       value in NEPA mode, like the accents they sit on. */
+    --on-danger: #FFFFFF; --on-success: #FFFFFF; --on-info: #FFFFFF; --on-deep: #FFFFFF;
+
+    /* Modal backdrop (A5) */
+    --backdrop: rgba(17, 17, 17, 0.6);
+
+    --font-display: var(--font-baloo, 'Baloo 2'), 'Baloo 2', system-ui, sans-serif;
+    --font-body: var(--font-bricolage, 'Bricolage Grotesque'), 'Bricolage Grotesque', system-ui, sans-serif;
+
+    /* Type scale (A2) — mobile values first, desktop below */
+    --text-hero: 2.75rem;    --text-hero--line-height: 0.95;
+    --text-h1: 2.25rem;      --text-h1--line-height: 1.0;
+    --text-h2: 2rem;         --text-h2--line-height: 1.1;
+    --text-h3: 1.375rem;     --text-h3--line-height: 1.2;
+    --text-body: 1.0625rem;  --text-body--line-height: 1.6;
+    --text-small: 0.875rem;  --text-small--line-height: 1.5;
+    --text-label: 0.8125rem; --text-label--line-height: 1.2;
+
+    /* Shape, border, shadow (A3) */
+    --border-w: 3px; --radius: 0px; --shadow-x: 4px; --shadow-y: 4px;
+    --shadow-color: var(--ink);
+    --shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--shadow-color);
+    --shadow-lg: calc(var(--shadow-x) * 2) calc(var(--shadow-y) * 2) 0 0 var(--shadow-color);
+  }
+
+  /* Corners switch: Square (0px) is the default; data-corners on <html>,
+     <body> or any .cruise area picks Soft or Round. Overriding --radius
+     works too. */
+  .cruise[data-corners="square"], [data-corners="square"] .cruise { --radius: 0px; }
+  .cruise[data-corners="soft"], [data-corners="soft"] .cruise { --radius: 6px; }
+  .cruise[data-corners="round"], [data-corners="round"] .cruise { --radius: 12px; }
+
+  @media (min-width: 48rem) {
+    .cruise {
+      --text-hero: 4.5rem;
+      --text-h1: 3rem;
+    }
+  }
+
+  /* One site container (the Studio's width) for every page: content sits
+     in .site-container; backgrounds, borders, the hero band, the danfo
+     stripe and the ticker stay full-bleed. --measure keeps running text
+     readable inside it. */
+  .cruise {
+    --container: 1600px;
+    --gutter: 16px;
+    --measure: 65ch;
+  }
+  @media (min-width: 48rem) {
+    .cruise { --gutter: 32px; }
+  }
+
+  .cruise { background: var(--paper); color: var(--ink); font-family: var(--font-body); }
+
+  /* Reduced motion: everything appears instantly, site-wide. */
+  @media (prefers-reduced-motion: reduce) {
+    :where(.cruise) :is(*, *::before, *::after) {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  :where(.cruise) :is(h1, h2, h3, .display) { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; }
+
+  /* City themes (Part B). Palette roles first; then the light neutrals,
+     only where dark mode isn't on (here or on an ancestor), so a themed
+     area inside NEPA mode still goes dark. */
+  /* A city that sets its own light tint (Port Harcourt) doesn't pass it to
+     a different city nested inside it: unset means the usual 18% mix. */
+  [data-theme] { --light-tint: initial; }
+
+  /* NEPA mode (dark, A7) */
+  /* Note: --shadow must be re-declared wherever --shadow-color changes,
+     because CSS resolves nested variables where they are declared. */
+  .nepa-mode, .nepa-mode .cruise {
+    color-scheme: dark; /* native pickers (select lists, colour input) match */
+    --paper: #14140F; --surface: #1F1F1A; --ink: #FFF6E0; --muted: #2A2A22;
+    --ink-muted: #B5AE99;
+    --tint: color-mix(in srgb, var(--primary) 18%, var(--surface));
+    --shadow-color: var(--primary);
+    --shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--shadow-color);
+    --shadow-lg: calc(var(--shadow-x) * 2) calc(var(--shadow-y) * 2) 0 0 var(--shadow-color);
+  }
+  /* A city set below the .nepa-mode element (e.g. dark mode on <html>, the
+     city on a section): its shadows take its own --primary, not the one
+     resolved on <html>. :where() keeps .light-mode (below) able to win. */
+  :where(.nepa-mode) [data-theme] {
+    --tint: color-mix(in srgb, var(--primary) 18%, var(--surface));
+    --shadow-color: var(--primary);
+    --shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--shadow-color);
+    --shadow-lg: calc(var(--shadow-x) * 2) calc(var(--shadow-y) * 2) 0 0 var(--shadow-color);
+  }
+
+  /* Scoped theme (e.g. the Studio preview). Set --border-w, --shadow-x,
+     --shadow-y or --radius on the element itself; this re-derives the
+     composite shadows from them, which otherwise stay resolved at .cruise. */
+  .nb-scope {
+    --shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--shadow-color);
+    --shadow-lg: calc(var(--shadow-x) * 2) calc(var(--shadow-y) * 2) 0 0 var(--shadow-color);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  /* Locks the light theme inside an element even when the page is in
+     NEPA mode (the inverse of .nepa-mode). */
+  .light-mode {
+    color-scheme: light;
+    --paper: var(--light-paper); --surface: #FFFFFF; --ink: var(--light-ink); --muted: var(--light-muted);
+    --ink-muted: var(--light-ink-muted);
+    --tint: var(--light-tint, color-mix(in srgb, var(--primary) 18%, var(--surface)));
+    --shadow-color: var(--ink);
+    --shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--shadow-color);
+    --shadow-lg: calc(var(--shadow-x) * 2) calc(var(--shadow-y) * 2) 0 0 var(--shadow-color);
+  }
+}
+
+@layer components {
+  /* Core treatment (A4) */
+  .brutal {
+    background: var(--surface);
+    border: var(--border-w) solid var(--ink);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+  }
+  .brutal:hover  { transform: translate(-2px, -2px); box-shadow: calc(var(--shadow-x) + 2px) calc(var(--shadow-y) + 2px) 0 0 var(--shadow-color); }
+  .brutal:active { transform: translate(var(--shadow-x), var(--shadow-y)); box-shadow: 0 0 0 0 var(--shadow-color); }
+  .brutal:focus-visible { outline: 3px solid var(--info); outline-offset: 3px; }
+
+  /* Static surfaces (A5 Card: "static cards keep the shadow but don't move") */
+  .brutal.brutal-static:hover,
+  .brutal.brutal-static:active { transform: none; box-shadow: var(--shadow); }
+
+  /* The one page container (see --container / --gutter). */
+  .site-container { box-sizing: border-box; width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+
+  /* Plain HTML/CSS (spec Part C starter): the React components use Tailwind
+     utilities instead. Primary button: class="brutal btn on-primary". */
+  .btn { display: inline-block; font: 800 1rem/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.03em; padding: 12px 24px; text-decoration: none; cursor: pointer; }
+  .btn-invert { background: var(--on-primary); color: var(--primary); }
+  .btn-secondary { background: var(--surface); color: var(--ink); }
+  .badge { display: inline-block; border: 2px solid var(--ink); border-radius: var(--radius); background: var(--surface); color: var(--ink); padding: 2px 10px; font: 700 0.8125rem/1.2 var(--font-body); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* REQUIRED: any element with a --primary background gets this class.
+     Inside it, everything uses the LIGHT theme values, in both modes:
+     text, borders and shadows stay dark; white boxes stay white.
+     (Re-declare the light values per theme.) */
+  /* [class~=…] catches the arbitrary utility as a whole class, so hover:
+     variants aren't affected. */
+  .on-primary, .brutal.on-primary, .bg-primary, [class~="bg-[var(--primary)]"] {
+    color-scheme: light;
+    background: var(--primary);
+    color: var(--on-primary);
+    --ink: var(--on-primary);
+    --ink-muted: var(--on-primary); /* on any primary colour, secondary text stays fully dark */
+    --surface: #FFFFFF; --paper: var(--light-paper); --muted: var(--light-muted);
+    --tint: var(--light-tint, color-mix(in srgb, var(--primary) 18%, var(--surface)));
+    --shadow-color: var(--on-primary);
+    --shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--shadow-color);
+    --shadow-lg: calc(var(--shadow-x) * 2) calc(var(--shadow-y) * 2) 0 0 var(--shadow-color);
+  }
+
+  /* REQUIRED: dark sections (footers, dark bands) get this class instead of
+     a hand-set dark background. Inside it, the dark theme values are locked
+     in, in both modes: cream text, primary shadows, dark boxes. */
+  .on-deep {
+    color-scheme: dark;
+    background: var(--deep);
+    color: var(--ink);
+    --ink: #FFF6E0; --ink-muted: #B5AE99;
+    --surface: #1F1F1A; --paper: #14140F; --muted: #2A2A22;
+    --tint: color-mix(in srgb, var(--primary) 18%, var(--surface));
+    --shadow-color: var(--primary);
+    --shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--shadow-color);
+    --shadow-lg: calc(var(--shadow-x) * 2) calc(var(--shadow-y) * 2) 0 0 var(--shadow-color);
+  }
+
+  /* Signature band. Danfo stripe (B1, the default): two 8px ink bands, 8px
+     apart, across a primary field. Pair with .on-primary so the bands stay
+     dark. .signature-band follows the city; .danfo-stripe is always Lagos. */
+  .danfo-stripe, .signature-band {
+    height: 24px;
+    background: var(--primary);
+    border-block: 8px solid var(--ink);
+  }
+
+  /* Ticker / marquee (A8): one per page, on a --primary band with
+     .on-primary. Put the text inside .ticker-track twice so it loops. */
+  .ticker { overflow: hidden; white-space: nowrap; border-block: var(--border-w) solid var(--ink); }
+  .ticker-track { display: inline-block; padding-block: 12px; animation: ticker 20s linear infinite; }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Toast entrance (A5, A8): from bottom-right, transform only */
+  .toast-enter { animation: nb-toast-in 150ms ease-out; }
+  @keyframes nb-toast-in {
+    from { transform: translate(16px, 16px); }
+    to   { transform: translate(0, 0); }
+  }
+
+  /* Mobile nav drawer: slides in from the left (A8: transform only).
+     base-ui sets data-starting-style / data-ending-style on enter and exit. */
+  .nav-drawer { transition: transform 150ms ease-out; }
+  .nav-drawer[data-starting-style],
+  .nav-drawer[data-ending-style] { transform: translateX(-100%); }
+
+  /* Studio preview layout switch: a quick rise into place (A8: transform only). */
+  .layout-enter { animation: nb-layout-in 150ms ease-out; }
+  @keyframes nb-layout-in {
+    from { transform: translateY(12px); }
+    to   { transform: translateY(0); }
+  }
+
+  /* ---- Site motion (A8): transform (+ box/text shadow), ease-out, ≤500ms.
+     Every animation starts from a visible state, so nothing is hidden if it
+     doesn't run. Reduced motion turns all of it off (rule at the end). */
+
+  /* Page entry (app/template.tsx): sections rise 12px, staggered 40ms. */
+  .page-enter main > * { animation: nb-rise 200ms ease-out backwards; }
+  .page-enter main > :nth-child(2) { animation-delay: 40ms; }
+  .page-enter main > :nth-child(3) { animation-delay: 80ms; }
+  .page-enter main > :nth-child(4) { animation-delay: 120ms; }
+  .page-enter main > :nth-child(5) { animation-delay: 160ms; }
+  .page-enter main > :nth-child(6) { animation-delay: 200ms; }
+  .page-enter main > :nth-child(7) { animation-delay: 240ms; }
+  .page-enter main > :nth-child(n + 8) { animation-delay: 280ms; }
+  @keyframes nb-rise {
+    from { transform: translateY(12px); }
+    to   { transform: translateY(0); }
+  }
+
+  /* Route sweep: a thin danfo stripe passes across the top, like a bus. */
+  .route-sweep {
+    position: fixed; inset: 0 0 auto 0; height: 8px; z-index: 60;
+    overflow: hidden; pointer-events: none;
+  }
+  .route-sweep-bar {
+    height: 100%;
+    background: var(--primary);
+    border-block: 2px solid var(--ink);
+    animation: nb-sweep 400ms ease-out both;
+  }
+  @keyframes nb-sweep {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
+
+  /* Hero headline: each line stamps down (JS groups words into lines; until
+     then they simply show). */
+  .stamp-word { display: inline-block; } /* same box before and during */
+  .stamp-run .stamp-word {
+    animation: nb-stamp-text 120ms ease-out backwards;
+    animation-delay: calc(min(var(--line, 0), 3) * 120ms);
+  }
+  @keyframes nb-stamp-text {
+    from { transform: scale(1.06); text-shadow: 0.06em 0.06em 0 color-mix(in srgb, var(--ink) 35%, transparent); }
+    to   { transform: scale(1); text-shadow: 0 0 0 transparent; }
+  }
+
+  /* Bus drives in from the left once (DanfoBus driveIn). */
+  .bus-drive-in { transform-box: fill-box; animation: nb-drive 500ms ease-out both; }
+  /* Hero ship: bobs up and down gently, forever (the waves and sun stay put). */
+  .ship-bob { animation: nb-bob 3s ease-in-out infinite alternate; }
+  @keyframes nb-bob { from { transform: translateY(0); } to { transform: translateY(-6px); } }
+  @keyframes nb-drive {
+    from { transform: translateX(-140%); }
+    to   { transform: translateX(0); }
+  }
+
+  /* Cards drop into their shadow when scrolled into view (DropIn adds
+     data-drop="run" once; before that they're just in place). */
+  [data-drop="run"] .drop-item {
+    animation: nb-drop 200ms ease-out backwards;
+    animation-delay: calc(var(--drop-i, 0) * 60ms);
+  }
+  @keyframes nb-drop {
+    from {
+      transform: translate(-4px, -4px);
+      box-shadow: calc(var(--shadow-x) + 4px) calc(var(--shadow-y) + 4px) 0 0 var(--shadow-color);
+    }
+    to { transform: translate(0, 0); box-shadow: var(--shadow); }
+  }
+
+  /* Studio preview: style changes apply instantly (Preview sets this for a frame). */
+  .nb-scope[data-instant] * { transition: none !important; }
+
+  /* Studio panels stamp in on load, staggered 60ms. */
+  .stamp-in { animation: nb-stamp-card 160ms ease-out backwards; animation-delay: calc(var(--stamp-i, 0) * 60ms); }
+  @keyframes nb-stamp-card {
+    from { transform: scale(1.03); box-shadow: var(--shadow-lg); }
+    to   { transform: scale(1); box-shadow: var(--shadow); }
+  }
+
+  /* ---- v1.9 components (A5): tokens only. They work in dark mode and inside
+     .on-primary / .on-deep. Focus: 3px ink outline, 2px offset. Tap targets
+     44px. Disabled: --muted fill, --ink-muted text, no shadow, not-allowed.
+     Checked states paint --primary and draw their marks in --on-primary, so
+     the marks stay dark on --primary in both modes. ---- */
+
+  /* Checkbox + radio: native inputs, restyled. The <label class="check"> is
+     the 44px target; clicking the text toggles the input. */
+  .check { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; color: var(--ink); font-family: var(--font-body); cursor: pointer; }
+  .checkbox, .radio {
+    appearance: none; flex-shrink: 0; display: grid; place-content: center;
+    width: 24px; height: 24px; margin: 0;
+    background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .checkbox { border-radius: min(var(--radius), 4px); } /* small control: capped so Round stays a box */
+  .radio { border-radius: 50%; } /* radios are the one round control (besides avatars) */
+  .checkbox:checked, .radio:checked { background: var(--primary); }
+  .checkbox:checked::before { content: ""; width: 12px; height: 7px; margin-top: -3px; border: solid var(--on-primary); border-width: 0 0 3px 3px; transform: rotate(-45deg); }
+  .checkbox:indeterminate { background: var(--surface); }
+  .checkbox:indeterminate::before { content: ""; width: 12px; height: 3px; margin: 0; border: 0; background: var(--ink); transform: none; }
+  .radio:checked::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--on-primary); }
+  .checkbox:focus-visible, .radio:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .checkbox:disabled, .radio:disabled { background: var(--muted); cursor: not-allowed; }
+  .checkbox:disabled::before { border-color: var(--ink-muted); }
+  .checkbox:disabled:indeterminate::before, .radio:disabled::before { background: var(--ink-muted); }
+  .check:has(:disabled) { color: var(--ink-muted); cursor: not-allowed; }
+  .radio-group { display: grid; gap: 4px; min-width: 0; margin: 0; padding: 0; border: 0; }
+  .radio-group legend { margin-bottom: 8px; padding: 0; font: 700 0.8125rem/1.2 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* Switch: <button role="switch" aria-checked>. On = track --primary and the
+     knob slides right, so the state never relies on colour alone. */
+  .switch { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0; background: none; border: 0; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+  .switch-track { position: relative; flex-shrink: 0; width: 52px; height: 30px; background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .switch-knob { position: absolute; top: 50%; left: 2px; width: 22px; height: 22px; background: var(--ink); border-radius: min(var(--radius), 6px); transform: translateY(-50%); transition: transform 150ms ease-out; }
+  .switch[aria-checked="true"] .switch-track { background: var(--primary); }
+  .switch[aria-checked="true"] .switch-knob { background: var(--on-primary); transform: translate(calc(26px - 2 * var(--border-w)), -50%); }
+  .switch-state { min-width: 2.5em; font: 700 0.8125rem/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+  .switch:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .switch:disabled { color: var(--ink-muted); cursor: not-allowed; }
+  .switch:disabled .switch-track { background: var(--muted); }
+  .switch:disabled .switch-knob { background: var(--ink-muted); }
+
+  /* Tooltip: hard-edged, no blur, no fade. Shown by script on hover AND
+     focus (after ~300ms); linked to its trigger with aria-describedby. */
+  .tooltip-wrap { position: relative; display: inline-flex; }
+  .tooltip {
+    position: absolute; bottom: calc(100% + 10px); left: 50%; z-index: 50;
+    width: max-content; max-width: min(240px, calc(100vw - 32px));
+    padding: 6px 10px; background: var(--ink); color: var(--paper);
+    border: 2px solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow);
+    font: 600 13px/1.4 var(--font-body); text-align: left; text-transform: none; letter-spacing: normal;
+    transform: translateX(-50%); pointer-events: none;
+  }
+  .tooltip[hidden] { display: none; }
+
+  /* Button group: one row of shared-border buttons, ONE shadow on the group.
+     Selected = aria-pressed="true" + .on-primary. Up to 5 options; scrolls
+     sideways on small screens instead of overflowing the page. */
+  .btn-group { display: inline-flex; max-width: 100%; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .btn-group > button {
+    position: relative; flex-shrink: 0; min-height: 44px; padding: 10px 18px;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: 0;
+    font: 800 0.9375rem/1 var(--font-display); letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap;
+    cursor: pointer;
+  }
+  .btn-group > button + button { margin-left: calc(var(--border-w) * -1); }
+  .btn-group > button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .btn-group > button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+  .btn-group > button.on-primary { background: var(--primary); color: var(--on-primary); }
+  .btn-group > button:focus-visible { z-index: 1; outline: 3px solid var(--ink); outline-offset: 2px; }
+  .btn-group > button:disabled { background: var(--muted); color: var(--ink-muted); cursor: not-allowed; }
+  @media (max-width: 639px) { .btn-group { overflow-x: auto; } }
+
+  /* OTP input: 4 or 6 boxes. The focused box gets .on-primary (script). */
+  .otp { display: flex; gap: 8px; }
+  .otp-box {
+    flex: 0 1 48px; min-width: 0; height: 56px; padding: 0;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius);
+    font: 800 28px/1 var(--font-display); text-align: center;
+  }
+  .otp-box.on-primary { background: var(--primary); color: var(--on-primary); caret-color: var(--on-primary); }
+  .otp-box:disabled { background: var(--muted); color: var(--ink-muted); cursor: not-allowed; }
+  .otp[data-invalid] .otp-box { border-color: var(--danger); }
+  .otp-error { display: flex; align-items: center; gap: 8px; margin: 8px 0 0; color: var(--danger); font: 700 0.875rem/1.4 var(--font-body); }
+  .otp-error[hidden] { display: none; }
+  .otp-error svg { flex-shrink: 0; width: 20px; height: 20px; }
+  .otp-resend { min-height: 44px; padding: 0; background: none; border: 0; color: var(--ink); font: 700 0.875rem/1 var(--font-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .otp-resend:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .otp-resend:disabled { color: var(--ink-muted); text-decoration: none; cursor: not-allowed; }
+
+  /* Drawer (sheet): left (navigation) or right (cart, filters, details). A
+     right drawer with data-sheet becomes a bottom sheet below 640px. The
+     script toggles .is-open; [data-starting-style]/[data-ending-style] are
+     for React dialog libraries that animate entry and exit. */
+  .drawer-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(17, 17, 17, 0.6); }
+  .drawer-backdrop[hidden] { display: none; }
+  .drawer {
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 61;
+    display: flex; flex-direction: column; width: min(85vw, 360px);
+    background: var(--surface); color: var(--ink);
+    border-right: var(--border-w) solid var(--ink); box-shadow: var(--shadow-lg);
+    /* Rounded on the inner edge only; the outer edge meets the screen. */
+    border-radius: 0 var(--radius) var(--radius) 0; overflow: hidden;
+    transform: translateX(-100%); visibility: hidden;
+    transition: transform 150ms ease-out, visibility 0s linear 150ms;
+  }
+  .drawer[data-side="right"] { left: auto; right: 0; border-right: 0; border-left: var(--border-w) solid var(--ink); border-radius: var(--radius) 0 0 var(--radius); transform: translateX(100%); }
+  .drawer.is-open { transform: none; visibility: visible; transition: transform 150ms ease-out; }
+  .drawer.is-open[data-starting-style], .drawer.is-open[data-ending-style] { transform: translateX(-100%); }
+  .drawer.is-open[data-side="right"][data-starting-style], .drawer.is-open[data-side="right"][data-ending-style] { transform: translateX(100%); }
+  @media (max-width: 639px) {
+    .drawer[data-side="right"][data-sheet] { top: auto; left: 0; width: 100%; max-height: 85vh; border-left: 0; border-top: var(--border-w) solid var(--ink); border-radius: var(--radius) var(--radius) 0 0; transform: translateY(100%); }
+    .drawer[data-side="right"][data-sheet].is-open { transform: none; }
+    .drawer[data-side="right"][data-sheet].is-open[data-starting-style], .drawer[data-side="right"][data-sheet].is-open[data-ending-style] { transform: translateY(100%); }
+  }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 12px 12px 20px; border-bottom: var(--border-w) solid var(--ink); }
+  .drawer-head h2 { margin: 0; font: 800 1.375rem/1.2 var(--font-display); }
+  .drawer-close { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0; color: var(--ink); cursor: pointer; }
+  .drawer-close:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .drawer-body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px; }
+  .drawer-foot { position: sticky; bottom: 0; display: grid; gap: 12px; padding: 16px 20px; background: var(--surface); border-top: var(--border-w) solid var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .switch-knob, .drawer { transition: none; }
+  }
+
+  /* ---- v1.9 components, batch 2 (A5): progress, breadcrumb, pagination,
+     steps, tabs, native select, dropdown menu / custom select. Same rules as
+     above: tokens only, dark mode and .on-primary / .on-deep safe, 3px ink
+     focus outline, 44px tap targets, corners via var(--radius). ---- */
+
+  /* Text for screen readers only (step states, extra context). */
+  .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+  /* Progress (linear). <div class="progress" role="progressbar" ...>. The
+     track heights are the inside of the border: 16px, sm 10px, lg 24px. */
+  .progress { display: grid; gap: 6px; min-width: 0; }
+  .progress-label { display: flex; justify-content: space-between; gap: 12px; color: var(--ink); font: 700 0.9375rem/1.2 var(--font-display); }
+  .progress-track { box-sizing: content-box; height: 16px; overflow: hidden; background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .progress-sm .progress-track { height: 10px; }
+  .progress-lg .progress-track { height: 24px; }
+  .progress-fill { box-sizing: border-box; height: 100%; background: var(--primary); border-right: var(--border-w) solid var(--ink); }
+  .progress-fill[data-flush] { border-right: 0; } /* at 0% and 100% */
+  .progress[data-tone="success"] .progress-fill { background: var(--success); }
+  .progress[data-tone="danger"] .progress-fill { background: var(--danger); }
+  /* Indeterminate: a moving hazard stripe (the one allowed gradient). */
+  .progress[data-indeterminate] .progress-fill {
+    width: 100%; border-right: 0;
+    background: repeating-linear-gradient(-45deg, var(--primary) 0 10px, var(--ink) 10px 20px);
+    animation: nb-hazard 700ms linear infinite;
+  }
+  @keyframes nb-hazard { to { background-position: 28.28px 0; } }
+
+  /* Progress (circular): an SVG ring, one of the few allowed circles. Three
+     circles: ink outline, --muted track, --primary value (square ends). */
+  .progress-ring { position: relative; display: inline-grid; place-items: center; flex-shrink: 0; }
+  .progress-ring svg { display: block; transform: rotate(-90deg); } /* start at 12 o'clock */
+  .progress-ring circle { fill: none; stroke-linecap: butt; }
+  .progress-ring-outline { stroke: var(--ink); }
+  .progress-ring-track { stroke: var(--muted); }
+  .progress-ring-value { stroke: var(--primary); }
+  .progress-ring[data-tone="success"] .progress-ring-value { stroke: var(--success); }
+  .progress-ring[data-tone="danger"] .progress-ring-value { stroke: var(--danger); }
+  .progress-ring-text { position: absolute; color: var(--ink); font: 800 1.125rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .progress-ring-sm .progress-ring-text { font-size: 0.6875rem; }
+  .progress-ring-lg .progress-ring-text { font-size: 1.75rem; }
+  .progress-ring[data-indeterminate] svg { animation: nb-spin 900ms linear infinite; }
+  .progress-ring-loading { display: none; color: var(--ink); font: 700 0.9375rem/1.2 var(--font-body); }
+  @keyframes nb-spin { to { transform: rotate(270deg); } }
+
+  /* Breadcrumb: <nav aria-label="Breadcrumb"><ol>. Below 640px the middle
+     items collapse into a "…" button that lists them in a menu. */
+  .breadcrumb ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; margin: 0; padding: 0; list-style: none; font: 500 0.9375rem/1.4 var(--font-body); }
+  .breadcrumb li { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+  .breadcrumb-sep { display: inline-flex; color: var(--ink-muted); }
+  .breadcrumb-sep svg { width: 16px; height: 16px; }
+  .breadcrumb a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 5px; }
+  .breadcrumb a:focus-visible, .breadcrumb-more:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .breadcrumb [aria-current="page"] { color: var(--ink); font-weight: 700; }
+  .breadcrumb-more { display: inline-grid; place-items: center; min-width: 44px; height: 44px; padding: 0 8px; background: var(--surface); color: var(--ink); border: 2px solid var(--ink); border-radius: var(--radius); font: 800 1rem/1 var(--font-display); cursor: pointer; }
+  .breadcrumb li.breadcrumb-more-item { display: none; }
+  @media (max-width: 639px) {
+    .breadcrumb li[data-middle] { display: none; }
+    .breadcrumb li.breadcrumb-more-item { display: inline-flex; }
+  }
+
+  /* Pagination: <nav aria-label="Pagination">. Square .brutal buttons; the
+     current page is --primary + .on-primary + aria-current="page". Below
+     480px the numbers give way to "Page 3 of 12" and the Previous / Next
+     text hides (it stays as the aria-label). */
+  .pagination ul { display: flex; flex-wrap: nowrap; align-items: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .page-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-width: 44px; height: 44px; padding: 0 12px;
+    color: var(--ink); font: 800 1rem/1 var(--font-display); font-variant-numeric: tabular-nums; text-decoration: none; cursor: pointer;
+  }
+  .page-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .page-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .brutal.page-btn:disabled, .brutal.page-btn[aria-disabled="true"] { background: var(--muted); color: var(--ink-muted); box-shadow: none; transform: none; cursor: not-allowed; }
+  .page-gap { display: inline-grid; place-items: center; min-width: 24px; color: var(--ink-muted); font: 800 1rem/1 var(--font-display); }
+  .page-compact { display: none; padding: 0 4px; color: var(--ink); font: 700 1rem/1.2 var(--font-body); white-space: nowrap; }
+  @media (max-width: 479px) {
+    .pagination li[data-page] { display: none; }
+    .page-compact { display: block; }
+    .page-step-text { display: none; }
+  }
+
+  /* Steps: numbered boxes joined by an ink line. Horizontal from 640px with
+     labels under the boxes; vertical below that with labels beside them.
+     data-state: done (ink check on --surface) / current (.on-primary) / upcoming. */
+  .steps { display: flex; margin: 0; padding: 0; list-style: none; }
+  .step { position: relative; flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; text-align: center; }
+  .step-box {
+    position: relative; z-index: 1; display: grid; place-items: center; flex-shrink: 0;
+    width: 44px; height: 44px; padding: 0;
+    background: var(--surface); color: var(--ink-muted);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius);
+    font: 800 1.125rem/1 var(--font-display); font-variant-numeric: tabular-nums; text-decoration: none;
+  }
+  .step-box svg { width: 22px; height: 22px; }
+  .step[data-state="done"] .step-box { color: var(--ink); }
+  .step[data-state="current"] .step-box { background: var(--primary); color: var(--on-primary); box-shadow: var(--shadow); }
+  a.step-box, button.step-box { cursor: pointer; }
+  a.step-box:hover, button.step-box:hover { box-shadow: var(--shadow); }
+  .step-box:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .step-text { display: grid; gap: 2px; padding: 0 8px; }
+  .step-label { color: var(--ink); font: 700 0.9375rem/1.3 var(--font-body); }
+  .step[data-state="upcoming"] .step-label { color: var(--ink-muted); }
+  .step-hint { color: var(--ink-muted); font: 400 0.8125rem/1.4 var(--font-body); }
+  /* The line to the next step, from box edge to box edge. */
+  .step:not(:last-child)::after {
+    content: ""; position: absolute; top: calc(22px - var(--border-w) / 2);
+    left: calc(50% + 22px); right: calc(-50% + 22px); height: var(--border-w); background: var(--ink);
+  }
+  @media (max-width: 639px) {
+    .steps { flex-direction: column; }
+    .step { flex-direction: row; align-items: flex-start; gap: 12px; padding-bottom: 24px; text-align: left; }
+    .step:last-child { padding-bottom: 0; }
+    .step-text { padding: 10px 0 0; }
+    .step:not(:last-child)::after { top: 44px; bottom: 0; left: calc(22px - var(--border-w) / 2); right: auto; width: var(--border-w); height: auto; }
+  }
+
+  /* Tabs: role="tablist" / "tab" / "tabpanel". The row scrolls sideways on
+     small screens; it never wraps. Variants: .tabs-underline (default),
+     .tabs-boxed (folder), .tabs-pill (chips). */
+  .tab-list { display: flex; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; }
+  .tab {
+    position: relative; flex-shrink: 0; min-height: 44px; padding: 10px 18px;
+    background: none; color: var(--ink-muted); border: 0;
+    font: 800 1rem/1.2 var(--font-display); white-space: nowrap; cursor: pointer;
+  }
+  .tab[aria-selected="true"] { color: var(--ink); }
+  .tab:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; } /* inside: the row clips */
+  .tab:disabled, .tab[aria-disabled="true"] { color: var(--ink-muted); cursor: not-allowed; }
+  .tab-panel { padding-top: 20px; color: var(--ink); }
+  .tab-panel:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  /* Underline: a 4px --primary bar sitting on the row's ink rule. */
+  .tabs-underline .tab-list { border-bottom: var(--border-w) solid var(--ink); }
+  .tabs-underline .tab[aria-selected="true"]::after { content: ""; position: absolute; right: 0; bottom: 0; left: 0; height: 4px; background: var(--primary); }
+  /* Boxed: folder tabs on the panel's top border; the active tab takes the
+     panel's background and covers the border under it, so they join. */
+  .tabs-boxed .tab-list { position: relative; z-index: 1; gap: 4px; margin-bottom: calc(var(--border-w) * -1); }
+  .tabs-boxed .tab {
+    background: var(--muted); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .tabs-boxed .tab[aria-selected="true"] { background: var(--surface); border-bottom-color: var(--surface); }
+  .tabs-boxed .tab-panel { padding: 20px; background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: 0 var(--radius) var(--radius) var(--radius); }
+  /* Pill: chips with ink borders; the active one is .on-primary with a shadow.
+     Padding leaves room for the shadow inside the scrolling row. */
+  .tabs-pill .tab-list { gap: 8px; padding: 2px var(--shadow-x) var(--shadow-y) 2px; }
+  .tabs-pill .tab { background: var(--surface); color: var(--ink); border: 2px solid var(--ink); border-radius: var(--radius); }
+  .tabs-pill .tab[aria-selected="true"] { background: var(--primary); color: var(--on-primary); box-shadow: var(--shadow); }
+  .tabs-pill .tab:focus-visible { outline-offset: 2px; }
+
+  /* Native select: like the inputs, with an ink chevron (a CSS mask painted
+     in currentColor). Always paired with a <label>. Best choice for forms,
+     especially on phones (they open their own picker). */
+  .field { display: grid; align-content: start; gap: 8px; min-width: 0; }
+  .field-label { color: var(--ink); font: 700 0.8125rem/1.2 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+  .field-help { margin: 0; color: var(--ink-muted); font: 400 0.875rem/1.4 var(--font-body); }
+  .field-error { margin: 0; color: var(--danger); font: 700 0.875rem/1.4 var(--font-body); }
+  .select-wrap { position: relative; display: block; color: var(--ink); }
+  .select-wrap::after {
+    content: ""; position: absolute; top: 50%; right: 14px; width: 20px; height: 20px; transform: translateY(-50%); pointer-events: none;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='square'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='square'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .select {
+    width: 100%; min-height: 44px; margin: 0; padding: 12px 44px 12px 14px; appearance: none;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius);
+    font: 400 1.0625rem/1.4 var(--font-body); cursor: pointer;
+    transition: box-shadow 100ms ease-out, transform 100ms ease-out;
+  }
+  .select[aria-invalid="true"] { border-color: var(--danger); }
+  .select:disabled { background: var(--muted); color: var(--ink-muted); cursor: not-allowed; }
+  .select-wrap:has(.select:disabled) { color: var(--ink-muted); }
+  .select option { background: var(--surface); color: var(--ink); }
+
+  /* Dropdown menu + custom select. The trigger is a .brutal button with a
+     chevron; the menu opens under it (flips up when there's no room). Items
+     are 44px; the highlighted item is --primary with --on-primary text. */
+  .menu-chevron { width: 20px; height: 20px; transition: transform 120ms ease-out; }
+  [aria-expanded="true"] > .menu-chevron { transform: rotate(180deg); }
+  .menu {
+    min-width: max(var(--anchor-width, 0px), 12rem); max-height: min(320px, var(--available-height, 320px));
+    overflow-y: auto; overscroll-behavior: contain; margin: 0; padding: 0;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow);
+    outline: none; list-style: none;
+  }
+  .menu-item {
+    display: flex; align-items: center; gap: 12px; width: 100%; min-height: 44px; padding: 0 14px;
+    background: none; color: var(--ink); border: 0;
+    font: 500 1rem/1.2 var(--font-body); text-align: left; text-decoration: none; cursor: pointer; user-select: none; outline: none;
+  }
+  .menu-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .menu-hint { margin-left: auto; padding-left: 16px; color: var(--ink-muted); font-size: 0.875rem; }
+  .menu-item:hover, .menu-item:focus, .menu-item[data-highlighted] {
+    background: var(--primary); color: var(--on-primary); --ink: var(--on-primary); --ink-muted: var(--on-primary);
+  }
+  .menu-item[data-danger] { color: var(--danger); } /* destructive; highlighted it turns --on-primary like the rest */
+  .menu-item[data-danger]:hover, .menu-item[data-danger]:focus, .menu-item[data-danger][data-highlighted] { color: var(--on-primary); }
+  .menu-item:disabled, .menu-item[data-disabled] { background: none; color: var(--ink-muted); cursor: not-allowed; }
+  .menu-sep { height: 0; margin: 0; border: 0; border-top: 2px solid var(--ink); }
+  .menu-group-label { padding: 10px 14px 4px; color: var(--ink-muted); font: 700 0.8125rem/1.2 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+  /* Custom select: a check mark on the chosen option. */
+  .menu-check { width: 20px; height: 20px; flex-shrink: 0; visibility: hidden; }
+  .menu-item[aria-selected="true"] { font-weight: 700; }
+  .menu-item[aria-selected="true"] .menu-check { visibility: visible; }
+  /* Without a positioning library: wrap trigger + menu in .menu-wrap; the
+     script sets data-side="top" when there's no room below. */
+  .menu-wrap { position: relative; display: inline-block; }
+  .menu-wrap > .menu { position: absolute; top: calc(100% + 8px); left: 0; z-index: 70; min-width: max(100%, 12rem); }
+  .menu-wrap > .menu[data-side="top"] { top: auto; bottom: calc(100% + 8px); }
+  .select-trigger { display: flex; align-items: center; gap: 12px; padding-right: 14px; text-align: left; }
+  .select-trigger .menu-chevron { margin-left: auto; flex-shrink: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress[data-indeterminate] .progress-fill, .progress-ring[data-indeterminate] svg { animation: none; }
+    .progress-ring[data-indeterminate] + .progress-ring-loading { display: inline; } /* static ring: say it in words */
+    .menu-chevron, .select { transition: none; }
+  }
+
+  /* ---- Combobox (filterable select), v1.9. An input that filters a list.
+     The list reuses the dropdown look (.menu, .menu-item, .menu-check,
+     .menu-group-label). Below 640px it opens as a bottom sheet with the
+     search input pinned at the top. ---- */
+  .combobox { position: relative; }
+  .combobox-field {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    min-height: 54px; padding: 2px 2px 2px 14px;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius);
+    cursor: text; transition: box-shadow 100ms ease-out, transform 100ms ease-out;
+  }
+  .combobox-field[data-invalid] { border-color: var(--danger); }
+  .combobox-field[data-disabled] { background: var(--muted); color: var(--ink-muted); cursor: not-allowed; }
+  .combobox-search { flex-shrink: 0; width: 20px; height: 20px; color: var(--ink-muted); }
+  .combobox-input {
+    flex: 1 1 8ch; min-width: 8ch; height: 44px; margin: 0; padding: 0;
+    background: none; color: inherit; border: 0; outline: none;
+    font: 400 1.0625rem/1.4 var(--font-body); /* 17px: no iOS zoom on focus */
+  }
+  .combobox-input::placeholder { color: var(--ink-muted); opacity: 1; }
+  .combobox-input:disabled { cursor: not-allowed; }
+  .combobox-btn {
+    display: inline-grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0;
+    background: none; color: var(--ink); border: 0; border-radius: min(var(--radius), 6px); cursor: pointer;
+  }
+  .combobox-btn svg { width: 20px; height: 20px; }
+  .combobox-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+  .combobox-btn:disabled { color: var(--ink-muted); cursor: not-allowed; }
+  .combobox-btn[hidden] { display: none; }
+  /* Multi-select chips: badge style with a remove button (44px hit area). */
+  .combobox-chip {
+    display: inline-flex; align-items: center; gap: 2px; max-width: 100%; min-height: 32px; padding: 0 2px 0 10px;
+    background: var(--muted); color: var(--ink); border: 2px solid var(--ink); border-radius: var(--radius);
+    font: 700 0.8125rem/1.2 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap;
+  }
+  .combobox-chip:focus-within, .combobox-chip[data-highlighted] { background: var(--primary); color: var(--on-primary); }
+  .combobox-chip-remove {
+    position: relative; display: inline-grid; place-items: center; width: 26px; height: 26px; padding: 0;
+    background: none; color: inherit; border: 0; border-radius: min(var(--radius), 4px); cursor: pointer;
+  }
+  .combobox-chip-remove::after { content: ""; position: absolute; inset: -9px; } /* 44px tap target */
+  .combobox-chip-remove svg { width: 16px; height: 16px; }
+  .combobox-chip-remove:focus-visible { outline: 3px solid var(--ink); outline-offset: 1px; }
+  .combobox-summary { display: none; font: 700 1rem/1.2 var(--font-body); white-space: nowrap; }
+  /* The list: same look as the dropdown menu, as wide as the field. */
+  .combobox-popup { width: var(--anchor-width, 100%); }
+  .combobox-match { font-weight: 800; }
+  .combobox-status { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; color: var(--ink-muted); font: 500 1rem/1.3 var(--font-body); }
+  .combobox-status:empty { display: none; }
+  /* Small loading spinner (circles are allowed for progress). */
+  .spinner { flex-shrink: 0; width: 20px; height: 20px; border: 3px solid var(--muted); border-top-color: var(--ink); border-radius: 50%; animation: nb-spin-full 700ms linear infinite; }
+  @keyframes nb-spin-full { to { transform: rotate(360deg); } }
+
+  /* Without a positioning library (plain HTML + the script below): the list
+     sits under the field; on phones the whole thing becomes a bottom sheet. */
+  .combobox-sheet { position: relative; }
+  .combobox-sheet > .combobox-popup { position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 70; width: auto; }
+  .combobox-popup[hidden] { display: none; }
+  @media (max-width: 639px) {
+    .combobox-field { flex-wrap: nowrap; overflow: hidden; }
+    .combobox-field[data-summary] .combobox-chip { display: none; }
+    .combobox-field[data-summary] .combobox-summary { display: inline; }
+    .combobox[data-sheet] .combobox-sheet {
+      position: fixed; right: 0; bottom: 0; left: 0; z-index: 61;
+      display: flex; flex-direction: column; gap: 12px; max-height: 85vh; padding: 16px;
+      background: var(--surface); border-top: var(--border-w) solid var(--ink);
+      border-radius: var(--radius) var(--radius) 0 0; box-shadow: var(--shadow-lg);
+    }
+    .combobox[data-sheet] .combobox-sheet > .combobox-popup { position: static; flex: 1; min-height: 0; max-height: none; box-shadow: none; }
+  }
+  /* React: the sheet is the Drawer; its body holds a pinned search + the list. */
+  .combobox-drawer .drawer-body { padding: 0; }
+  .combobox-drawer-search { position: sticky; top: 0; z-index: 1; padding: 12px 16px; background: var(--surface); border-bottom: var(--border-w) solid var(--ink); }
+  .combobox-drawer-list { padding-bottom: 8px; }
+  .combobox-trigger { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 44px; padding: 0; background: none; color: inherit; border: 0; font: 400 1.0625rem/1.4 var(--font-body); text-align: left; cursor: pointer; }
+  .combobox-placeholder { color: var(--ink-muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner { animation: none; } /* "Searching…" next to it says it in words */
+    .combobox-field { transition: none; }
+  }
+
+  /* ---- v1.11 components (A5): textarea + form field, alert, accordion,
+     avatar, skeleton, slider, Naira / phone inputs, XP bar. Tokens only, dark
+     mode and .on-primary / .on-deep safe, 3px ink focus outline, 44px tap
+     targets, corners via var(--radius). ---- */
+
+  /* Form field: label (+ "Required"), control, hint, error with an icon. */
+  .field-required { margin-left: 8px; color: var(--ink-muted); font-weight: 600; letter-spacing: 0.04em; }
+  .field-error { display: flex; align-items: flex-start; gap: 6px; }
+  .field-error svg { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; }
+  .field-count { margin: 0; color: var(--ink-muted); font: 600 0.8125rem/1.2 var(--font-body); font-variant-numeric: tabular-nums; text-align: right; }
+  .field-count[data-over] { color: var(--danger); }
+
+  /* Text input + textarea: like the inputs (A5). */
+  .input, .textarea {
+    box-sizing: border-box; width: 100%; min-height: 44px; margin: 0; padding: 12px 14px;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius);
+    font: 400 1.0625rem/1.5 var(--font-body); /* 17px: no iOS zoom on focus */
+    transition: box-shadow 100ms ease-out, transform 100ms ease-out;
+  }
+  .textarea { min-height: 120px; resize: vertical; }
+  .input::placeholder, .textarea::placeholder { color: var(--ink-muted); opacity: 1; }
+  .input[aria-invalid="true"], .textarea[aria-invalid="true"] { border-color: var(--danger); }
+  .input:disabled, .textarea:disabled { background: var(--muted); color: var(--ink-muted); cursor: not-allowed; }
+
+  /* Input with a prefix block (Naira ₦, phone +234): one bordered box. */
+  .input-group {
+    display: flex; align-items: stretch; min-width: 0;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius); overflow: hidden;
+    transition: box-shadow 100ms ease-out, transform 100ms ease-out;
+  }
+  .input-group[data-invalid] { border-color: var(--danger); }
+  .input-group[data-disabled] { background: var(--muted); color: var(--ink-muted); }
+  .input-prefix {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0; padding: 0 12px;
+    background: var(--muted); color: var(--ink); border-right: var(--border-w) solid var(--ink);
+    font: 800 1.0625rem/1 var(--font-display);
+  }
+  .input-prefix svg { display: block; width: 24px; height: 16px; }
+  .input-bare {
+    flex: 1; min-width: 0; min-height: 44px; margin: 0; padding: 12px 14px;
+    background: none; color: inherit; border: 0; outline: none;
+    font: 400 1.0625rem/1.5 var(--font-body); font-variant-numeric: tabular-nums;
+  }
+  .input-bare::placeholder { color: var(--ink-muted); opacity: 1; }
+  .input-bare:disabled { cursor: not-allowed; }
+
+  /* Plain HTML success-tone button (e.g. the WhatsApp button): class="brutal btn btn-success". */
+  .btn-success { background: var(--success); color: var(--on-success); }
+
+  /* Alert / banner. role="alert" for danger, role="status" otherwise. */
+  .alert {
+    display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow);
+  }
+  .alert-icon {
+    display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px;
+    border: 2px solid var(--ink); border-radius: min(var(--radius), 6px);
+  }
+  .alert-icon svg { width: 20px; height: 20px; }
+  .alert[data-tone="info"] .alert-icon { background: var(--info); color: var(--on-info); }
+  .alert[data-tone="success"] .alert-icon { background: var(--success); color: var(--on-success); }
+  .alert[data-tone="warning"] .alert-icon { background: var(--primary); color: var(--on-primary); }
+  .alert[data-tone="danger"] .alert-icon { background: var(--danger); color: var(--on-danger); }
+  .alert-body { flex: 1; min-width: 0; display: grid; gap: 4px; padding-top: 6px; }
+  .alert-title { margin: 0; font: 800 1.0625rem/1.25 var(--font-display); }
+  .alert-text { margin: 0; font: 400 0.9375rem/1.5 var(--font-body); }
+  .alert-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; }
+  .alert-dismiss {
+    display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; margin: -6px -8px 0 0; padding: 0;
+    background: none; color: var(--ink); border: 0; border-radius: min(var(--radius), 6px); cursor: pointer;
+  }
+  .alert-dismiss svg { width: 22px; height: 22px; }
+  .alert-dismiss:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+  /* Banner: full width at the top of a page, no corners or shadow. */
+  .alert-banner { border-width: 0 0 var(--border-w); border-radius: 0; box-shadow: none; }
+
+  /* Accordion: full-width header buttons, a square +/- box, 2px ink rule
+     above the open panel. Base UI: data-panel-open; plain HTML: <details>. */
+  .accordion { background: var(--surface); color: var(--ink); border: var(--border-w) solid var(--ink); border-radius: var(--radius); overflow: hidden; }
+  .accordion-item + .accordion-item { border-top: var(--border-w) solid var(--ink); }
+  .accordion-header { margin: 0; }
+  .accordion-trigger {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    width: 100%; min-height: 56px; padding: 12px 16px;
+    background: none; color: var(--ink); border: 0; list-style: none;
+    font: 800 1.0625rem/1.3 var(--font-display); text-align: left; cursor: pointer;
+  }
+  .accordion-trigger::-webkit-details-marker { display: none; }
+  .accordion-trigger:hover { background: var(--tint); }
+  .accordion-trigger:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+  .accordion-icon { position: relative; flex-shrink: 0; width: 28px; height: 28px; background: var(--surface); border: 2px solid var(--ink); border-radius: min(var(--radius), 6px); }
+  .accordion-icon::before, .accordion-icon::after { content: ""; position: absolute; top: 50%; left: 50%; background: var(--ink); transform: translate(-50%, -50%); }
+  .accordion-icon::before { width: 12px; height: 3px; }
+  .accordion-icon::after { width: 3px; height: 12px; }
+  .accordion-trigger[data-panel-open] .accordion-icon, details[open] > .accordion-trigger .accordion-icon { background: var(--primary); }
+  .accordion-trigger[data-panel-open] .accordion-icon::after, details[open] > .accordion-trigger .accordion-icon::after { display: none; }
+  .accordion-panel { height: var(--accordion-panel-height, auto); overflow: hidden; border-top: 2px solid var(--ink); transition: height 150ms ease-out; }
+  .accordion-panel[data-starting-style], .accordion-panel[data-ending-style] { height: 0; }
+  .accordion-content { padding: 14px 16px 18px; font: 400 1rem/1.6 var(--font-body); }
+
+  /* Avatar: a circle (an allowed exception, like radios) or a square that
+     follows var(--radius). Image -> initials -> icon; the fallback shows while
+     the image loads and if it fails (never a broken-image icon). */
+  .avatar {
+    position: relative; display: inline-grid; place-items: center; flex-shrink: 0;
+    width: 40px; height: 40px; background: var(--muted); color: var(--ink);
+    border: 2px solid var(--ink); border-radius: 50%;
+    font: 800 0.9375rem/1 var(--font-display); text-transform: uppercase;
+  }
+  .avatar-sm { width: 32px; height: 32px; font-size: 0.75rem; }
+  .avatar-lg { width: 56px; height: 56px; font-size: 1.25rem; border-width: var(--border-w); }
+  .avatar-xl { width: 80px; height: 80px; font-size: 1.75rem; border-width: var(--border-w); }
+  .avatar[data-shape="square"] { border-radius: var(--radius); }
+  .avatar-image, .avatar-fallback { position: absolute; inset: 0; display: grid; place-items: center; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
+  .avatar[data-shape="square"] > :is(.avatar-image, .avatar-fallback) { border-radius: max(0px, calc(var(--radius) - 2px)); }
+  .avatar-image { object-fit: cover; }
+  .avatar-image[data-loading], .avatar-image[data-error] { visibility: hidden; }
+  .avatar-fallback svg { width: 55%; height: 55%; }
+  /* Initials background: --muted by default; tone="auto" picks one per name. */
+  .avatar[data-tone="primary"] { background: var(--primary); color: var(--on-primary); }
+  .avatar[data-tone="tint"] { background: var(--tint); }
+  .avatar[data-tone="info"] { background: var(--info); color: var(--on-info); }
+  .avatar[data-tone="success"] { background: var(--success); color: var(--on-success); }
+  .avatar-status { position: absolute; right: -2px; bottom: -2px; width: 30%; height: 30%; min-width: 10px; min-height: 10px; background: var(--ink-muted); border: 2px solid var(--surface); border-radius: 50%; box-shadow: 0 0 0 2px var(--ink); }
+  .avatar-status[data-status="online"] { background: var(--success); }
+  .avatar-status[data-status="away"] { background: var(--primary); }
+  .avatar-status[data-status="busy"] { background: var(--danger); }
+  .avatar-group { display: flex; align-items: center; padding-left: 10px; }
+  .avatar-group > .avatar { margin-left: -10px; box-shadow: 0 0 0 3px var(--surface); }
+  .avatar-more { background: var(--surface); font-variant-numeric: tabular-nums; }
+
+  /* Skeleton: --muted blocks that pulse gently; static with reduced motion. */
+  .skeleton { display: block; background: var(--muted); border-radius: var(--radius); animation: nb-skeleton 1.6s ease-in-out infinite; }
+  .skeleton-line { height: 14px; }
+  .skeleton-circle { border-radius: 50%; }
+  .skeleton-stack { display: grid; gap: 10px; }
+  @keyframes nb-skeleton { 50% { background: var(--surface); } }
+
+  /* Slider: 12px track with an ink border, --primary range, square ink thumb. */
+  .slider { display: grid; gap: 10px; min-width: 0; color: var(--ink); }
+  .slider-head { display: flex; justify-content: space-between; gap: 12px; }
+  .slider-value { font: 800 1rem/1.2 var(--font-display); font-variant-numeric: tabular-nums; }
+  .slider-control { display: flex; align-items: center; min-height: 44px; padding: 0 12px; touch-action: none; user-select: none; }
+  .slider-track { position: relative; box-sizing: content-box; width: 100%; height: 12px; background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .slider-indicator { height: 100%; background: var(--primary); border-radius: max(0px, calc(var(--radius) - var(--border-w))); } /* nested corners (A4) */
+  .slider-thumb {
+    width: 24px; height: 24px; background: var(--ink); border: 2px solid var(--surface);
+    border-radius: min(var(--radius), 6px); box-shadow: 0 0 0 2px var(--ink); cursor: grab;
+  }
+  .slider-thumb:focus-visible, .slider-thumb:has(:focus-visible) { outline: 3px solid var(--ink); outline-offset: 3px; }
+  .slider-thumb[data-disabled] { background: var(--ink-muted); cursor: not-allowed; }
+  .slider-limits { display: flex; justify-content: space-between; color: var(--ink-muted); font: 600 0.8125rem/1.2 var(--font-body); font-variant-numeric: tabular-nums; }
+  /* Plain HTML: a native range input with the same look. */
+  .slider-native { width: 100%; height: 44px; margin: 0; background: none; appearance: none; cursor: pointer; }
+  .slider-native::-webkit-slider-runnable-track { height: 12px; background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .slider-native::-moz-range-track { height: 12px; background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .slider-native::-moz-range-progress { height: 12px; background: var(--primary); }
+  .slider-native::-webkit-slider-thumb { width: 24px; height: 24px; margin-top: calc(-12px + 6px - var(--border-w)); background: var(--ink); border: 2px solid var(--surface); border-radius: min(var(--radius), 6px); box-shadow: 0 0 0 2px var(--ink); appearance: none; }
+  .slider-native::-moz-range-thumb { width: 20px; height: 20px; background: var(--ink); border: 2px solid var(--surface); border-radius: min(var(--radius), 6px); box-shadow: 0 0 0 2px var(--ink); }
+  .slider-native:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+  /* XP / health bar: segmented, a level badge on the left, value on the right. */
+  .xp-bar { display: flex; align-items: center; gap: 12px; min-width: 0; color: var(--ink); }
+  .xp-level {
+    flex-shrink: 0; padding: 6px 10px; background: var(--ink); color: var(--paper);
+    border: 2px solid var(--ink); border-radius: min(var(--radius), 6px);
+    font: 800 0.9375rem/1 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap;
+  }
+  .xp-track { position: relative; flex: 1; min-width: 80px; height: 20px; background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius); overflow: hidden; }
+  .xp-fill { position: absolute; inset: 0 auto 0 0; background: var(--primary); transition: width 300ms ease-out; }
+  .xp-bar[data-kind="health"] .xp-fill { background: var(--success); }
+  .xp-bar[data-kind="health"][data-low] .xp-fill { background: var(--danger); }
+  .xp-bar[data-kind="mana"] .xp-fill { background: var(--info); }
+  .xp-segments { position: absolute; inset: 0; display: flex; }
+  .xp-segments > span { flex: 1; }
+  .xp-segments > span + span { border-left: 2px solid var(--ink); }
+  .xp-value { flex-shrink: 0; font: 800 0.9375rem/1 var(--font-display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  @media (max-width: 479px) {
+    .xp-bar { flex-wrap: wrap; }
+    .xp-track { order: 3; flex-basis: 100%; }
+    .xp-value { margin-left: auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton { animation: none; }
+    .accordion-panel, .xp-fill, .input, .textarea, .input-group { transition: none; }
+  }
+
+  /* ---- v1.12 components (A5): popover, empty state, file upload, calendar /
+     date picker, rating, score counter, achievement toast, leaderboard,
+     countdown, dialogue box. Tokens only, dark mode and .on-primary /
+     .on-deep safe, corners via var(--radius), the :focus-visible ring on
+     controls (text fields use the A4 focus style), 44px tap targets. ---- */
+
+  /* Popover: a small panel tied to a trigger; Esc / outside click close it. */
+  .popover {
+    box-sizing: border-box; width: max-content; max-width: min(360px, calc(100vw - 32px)); padding: 16px;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow);
+    outline: none;
+  }
+  .popover-title { margin: 0 0 6px; font: 800 1.0625rem/1.25 var(--font-display); }
+  .popover-body { font: 400 0.9375rem/1.5 var(--font-body); }
+  .popover-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .popover-arrow { width: 14px; height: 14px; background: var(--surface); border: var(--border-w) solid var(--ink); border-top: 0; border-left: 0; transform: rotate(45deg); }
+  .popover-arrow[data-side="bottom"] { top: -8px; transform: rotate(-135deg); }
+  .popover-arrow[data-side="top"] { bottom: -8px; }
+  .popover-arrow[data-side="left"] { right: -8px; transform: rotate(-45deg); }
+  .popover-arrow[data-side="right"] { left: -8px; transform: rotate(135deg); }
+
+  /* Empty state: an icon chip, a heading, one line and an action. */
+  .empty { display: grid; justify-items: center; gap: 10px; padding: 24px 16px; color: var(--ink); text-align: center; }
+  .empty-icon { display: grid; place-items: center; width: 56px; height: 56px; background: var(--tint); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .empty-icon svg { width: 28px; height: 28px; }
+  .empty-title { margin: 6px 0 0; font: 800 1.25rem/1.2 var(--font-display); }
+  .empty-text { max-width: 44ch; margin: 0; color: var(--ink-muted); font: 400 0.9375rem/1.5 var(--font-body); }
+  .empty-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 20px; margin-top: 8px; }
+  .empty-page { gap: 14px; padding: 64px 16px; }
+  .empty-page .empty-icon { width: 80px; height: 80px; }
+  .empty-page .empty-icon svg { width: 40px; height: 40px; }
+  .empty-page .empty-title { font-size: 2rem; }
+  .empty-page .empty-text { font-size: 1.0625rem; }
+
+  /* File upload: a dashed drop zone (a <label> for a hidden file input). */
+  .upload-zone {
+    display: grid; justify-items: center; gap: 6px; padding: 28px 16px;
+    background: var(--surface); color: var(--ink);
+    border: 3px dashed var(--ink); border-radius: var(--radius);
+    text-align: center; cursor: pointer;
+  }
+  .upload-zone[data-dragging] { background: var(--tint); border-style: solid; }
+  .upload-zone:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .upload-zone[data-invalid] { border-color: var(--danger); }
+  .upload-zone[data-disabled] { background: var(--muted); color: var(--ink-muted); cursor: not-allowed; }
+  .upload-zone svg { width: 32px; height: 32px; }
+  .upload-title { font: 800 1.0625rem/1.3 var(--font-display); }
+  .upload-hint { color: var(--ink-muted); font: 400 0.875rem/1.4 var(--font-body); }
+  .upload-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .upload-item {
+    display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 8px;
+    background: var(--surface); border: 2px solid var(--ink); border-radius: var(--radius);
+  }
+  .upload-thumb { display: grid; place-items: center; width: 44px; height: 44px; overflow: hidden; background: var(--muted); border: 2px solid var(--ink); border-radius: min(var(--radius), 6px); }
+  .upload-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .upload-thumb svg { width: 22px; height: 22px; }
+  .upload-meta { display: grid; gap: 4px; min-width: 0; }
+  .upload-name { overflow: hidden; font: 700 0.9375rem/1.3 var(--font-body); text-overflow: ellipsis; white-space: nowrap; }
+  .upload-size { color: var(--ink-muted); font: 400 0.8125rem/1.3 var(--font-body); font-variant-numeric: tabular-nums; }
+  .upload-item[data-status="error"] .upload-size { color: var(--danger); font-weight: 700; }
+  .upload-remove { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; background: none; color: var(--ink); border: 0; border-radius: min(var(--radius), 6px); cursor: pointer; }
+  .upload-remove:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+
+  /* Calendar: ink-bordered day cells; today outlined; selected --primary;
+     a range fills its days with --tint. Classes for react-day-picker. */
+  .calendar { display: inline-block; padding: 12px; background: var(--surface); color: var(--ink); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .calendar-months { position: relative; display: flex; flex-wrap: wrap; gap: 24px; }
+  .calendar-nav { position: absolute; top: 0; right: 0; display: flex; gap: 6px; }
+  .calendar-nav-button { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; background: var(--surface); color: var(--ink); border: 2px solid var(--ink); border-radius: min(var(--radius), 6px); cursor: pointer; }
+  .calendar-nav-button svg { width: 18px; height: 18px; fill: currentColor; }
+  .calendar-nav-button:disabled { color: var(--ink-muted); cursor: not-allowed; }
+  .calendar-nav-button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .calendar-caption { display: flex; align-items: center; min-height: 40px; padding-right: 96px; font: 800 1.0625rem/1 var(--font-display); }
+  .calendar-grid { margin-top: 10px; border-collapse: separate; border-spacing: 4px; }
+  .calendar-weekday { width: 40px; padding: 0 0 4px; color: var(--ink-muted); font: 700 0.75rem/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+  .calendar-day { padding: 0; text-align: center; }
+  .calendar-day-button {
+    display: grid; place-items: center; width: 40px; height: 40px; padding: 0;
+    background: var(--surface); color: var(--ink); border: 2px solid var(--ink); border-radius: min(var(--radius), 6px);
+    font: 700 0.9375rem/1 var(--font-body); font-variant-numeric: tabular-nums; cursor: pointer;
+  }
+  .calendar-day-button:hover { background: var(--tint); }
+  .calendar-day-button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; position: relative; z-index: 1; }
+  .calendar-today .calendar-day-button { box-shadow: inset 0 0 0 2px var(--ink); }
+  .calendar-outside .calendar-day-button { border-color: transparent; color: var(--ink-muted); }
+  .calendar-disabled .calendar-day-button { background: var(--muted); color: var(--ink-muted); border-color: transparent; text-decoration: line-through; cursor: not-allowed; }
+  .calendar-range-middle .calendar-day-button { background: var(--tint); }
+  .calendar-selected .calendar-day-button, .calendar-range-start .calendar-day-button, .calendar-range-end .calendar-day-button {
+    background: var(--primary); color: var(--on-primary); border-color: var(--on-primary);
+  }
+  .calendar-range-middle.calendar-selected .calendar-day-button { background: var(--tint); color: var(--ink); border-color: var(--ink); }
+  .calendar-hidden { visibility: hidden; }
+  .date-picker { display: flex; gap: 8px; }
+  .date-picker .input { flex: 1; min-width: 0; }
+  .date-picker-button { display: grid; place-items: center; flex-shrink: 0; width: 54px; padding: 0; background: var(--surface); color: var(--ink); border: var(--border-w) solid var(--ink); border-radius: var(--radius); cursor: pointer; }
+  .date-picker-button svg { width: 22px; height: 22px; }
+  .date-picker-button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .popover:has(> .calendar) { padding: 0; }
+  .popover > .calendar { border: 0; }
+
+  /* Rating: Lucide stars, fill --primary, stroke --ink (A5 Rating). */
+  .rating { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--ink); }
+  .rating-stars { position: relative; display: inline-flex; gap: 2px; }
+  .rating-star { position: relative; display: inline-grid; width: 20px; height: 20px; }
+  .rating-star svg { position: absolute; inset: 0; width: 100%; height: 100%; stroke: var(--ink); }
+  .rating-star-empty svg { fill: var(--surface); }
+  .rating-star-full { overflow: hidden; }
+  .rating-star-full svg { fill: var(--primary); }
+  .rating-value { font: 700 0.9375rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .rating-count { color: var(--ink-muted); font: 400 0.875rem/1 var(--font-body); }
+  /* Interactive: native radios (arrow keys), one 44px label per star. */
+  .rating-input { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0; padding: 0; border: 0; min-width: 0; }
+  .rating-input legend { width: 100%; margin-bottom: 4px; padding: 0; }
+  .rating-input .rating-stars { gap: 0; }
+  .rating-option { display: grid; place-items: center; width: 44px; height: 44px; border-radius: min(var(--radius), 6px); cursor: pointer; }
+  .rating-option .rating-star { width: 30px; height: 30px; }
+  .rating-option:has(input:focus-visible) { outline: 3px solid var(--ink); outline-offset: -3px; }
+
+  /* Score counter: a number in Baloo 2 800 next to a coin / star chip. */
+  .score { position: relative; display: inline-flex; align-items: center; gap: 10px; color: var(--ink); }
+  .score-chip { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; background: var(--primary); color: var(--on-primary); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .score-chip svg { width: 22px; height: 22px; }
+  .score-value { font: 800 2rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .score-delta { position: absolute; top: -6px; right: -8px; padding: 2px 6px; background: var(--success); color: var(--on-success); border: 2px solid var(--ink); border-radius: min(var(--radius), 6px); font: 800 0.8125rem/1 var(--font-display); pointer-events: none; animation: nb-delta 900ms ease-out forwards; }
+  @keyframes nb-delta { from { opacity: 1; transform: translateY(0); } 70% { opacity: 1; } to { opacity: 0; transform: translateY(-18px); } }
+
+  /* Achievement toast: the game variant of the toast. */
+  .achievement {
+    display: flex; align-items: flex-start; gap: 14px; width: 100%; max-width: 22rem; padding: 14px 16px;
+    background: var(--surface); color: var(--ink);
+    border: var(--border-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow);
+    animation: nb-pop 200ms ease-out;
+  }
+  .achievement-icon { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; background: var(--primary); color: var(--on-primary); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+  .achievement-icon svg { width: 24px; height: 24px; }
+  .achievement-body { flex: 1; min-width: 0; display: grid; gap: 3px; }
+  .achievement-eyebrow { color: var(--ink-muted); font: 700 0.75rem/1.2 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; }
+  .achievement-title { margin: 0; font: 800 1.0625rem/1.25 var(--font-display); }
+  .achievement-text { margin: 0; font: 400 0.875rem/1.45 var(--font-body); }
+  .achievement-xp { justify-self: start; margin-top: 4px; padding: 2px 8px; background: var(--ink); color: var(--paper); border-radius: min(var(--radius), 6px); font: 800 0.8125rem/1.3 var(--font-display); }
+  @keyframes nb-pop { from { opacity: 0; transform: translateY(12px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+  /* Leaderboard: ranked rows; 1-3 get --primary / --muted / --tint chips.
+     Stacked cards below 480px. */
+  .leaderboard { margin: 0; padding: 0; list-style: none; background: var(--surface); color: var(--ink); border: var(--border-w) solid var(--ink); border-radius: var(--radius); overflow: hidden; }
+  .leaderboard-row { display: grid; grid-template-columns: 44px auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; }
+  .leaderboard-row + .leaderboard-row { border-top: 2px solid var(--ink); }
+  .leaderboard-row[aria-current] { background: var(--tint); }
+  .leaderboard-rank { display: grid; place-items: center; width: 36px; height: 36px; border: 2px solid transparent; border-radius: min(var(--radius), 6px); font: 800 1rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .leaderboard-rank[data-place="1"] { background: var(--primary); color: var(--on-primary); border-color: var(--ink); }
+  .leaderboard-rank[data-place="2"] { background: var(--muted); border-color: var(--ink); }
+  .leaderboard-rank[data-place="3"] { background: var(--tint); border-color: var(--ink); }
+  .leaderboard-name { overflow: hidden; font: 700 1rem/1.3 var(--font-body); text-overflow: ellipsis; white-space: nowrap; }
+  .leaderboard-you { margin-left: 6px; color: var(--ink-muted); font-weight: 600; }
+  .leaderboard-change { display: inline-flex; align-items: center; gap: 2px; font: 700 0.8125rem/1 var(--font-body); font-variant-numeric: tabular-nums; }
+  .leaderboard-change svg { width: 16px; height: 16px; }
+  .leaderboard-change[data-dir="up"] { color: var(--success); }
+  .leaderboard-change[data-dir="down"] { color: var(--danger); }
+  .leaderboard-score { font: 800 1.0625rem/1 var(--font-display); font-variant-numeric: tabular-nums; text-align: right; }
+  @media (max-width: 479px) {
+    .leaderboard { background: none; border: 0; overflow: visible; display: grid; gap: 10px; }
+    .leaderboard-row { grid-template-columns: 44px auto minmax(0, 1fr); background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius); }
+    .leaderboard-row + .leaderboard-row { border-top: var(--border-w) solid var(--ink); }
+    .leaderboard-change, .leaderboard-score { grid-column: 3; }
+    .leaderboard-score { text-align: left; }
+  }
+
+  /* Countdown: boxes for days / hours / minutes / seconds, or one compact
+     line ("02:14:09"). Tabular numbers, so nothing shifts each second. */
+  .countdown { display: inline-flex; flex-wrap: wrap; gap: 10px; color: var(--ink); }
+  .countdown-unit { display: grid; justify-items: center; gap: 6px; min-width: 64px; padding: 10px 8px; background: var(--surface); border: var(--border-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .countdown-number { font: 800 2rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .countdown-label { color: var(--ink-muted); font: 700 0.75rem/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+  .countdown-compact { font: 800 1.25rem/1 var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  .countdown[data-urgent] .countdown-unit { border-color: var(--danger); }
+  .countdown[data-urgent] .countdown-number, .countdown-compact[data-urgent] { color: var(--danger); }
+
+  /* Dialogue box: game-style speech box with a speaker name tab. */
+  .dialogue { position: relative; display: flex; align-items: flex-start; gap: 16px; padding: 22px 16px 14px; margin-top: 16px; background: var(--surface); color: var(--ink); border: var(--border-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow-lg); }
+  .dialogue-fixed { position: fixed; right: 16px; bottom: 16px; left: 16px; z-index: 50; max-width: 720px; margin: 0 auto; }
+  .dialogue-portrait { flex-shrink: 0; }
+  .dialogue-name { position: absolute; top: -16px; left: 14px; padding: 4px 12px; background: var(--primary); color: var(--on-primary); border: var(--border-w) solid var(--ink); border-radius: min(var(--radius), 6px); font: 800 0.9375rem/1.2 var(--font-display); }
+  .dialogue-main { flex: 1; min-width: 0; display: grid; gap: 12px; }
+  .dialogue-text { min-height: 3em; margin: 0; font: 500 1.0625rem/1.5 var(--font-body); cursor: pointer; }
+  .dialogue-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+  .dialogue-step { color: var(--ink-muted); font: 700 0.8125rem/1 var(--font-body); font-variant-numeric: tabular-nums; }
+  .dialogue-buttons { display: flex; gap: 10px; margin-left: auto; }
+  @media (max-width: 479px) { .dialogue-portrait { display: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .score-delta, .achievement { animation: none; }
+  }
+
+  /* ---- Toast positions and scroll-to-top (A5, v1.12) ---- */
+
+  /* Toast stack: six spots, 16px in (plus the phone's safe area). Top stacks
+     grow down (newest on top), bottom stacks grow up (newest at the bottom).
+     Toasts come in from the nearest edge. Below 640px: full width. */
+  .toast { max-width: 22rem; }
+  .toast-viewport { position: fixed; z-index: 50; display: flex; flex-direction: column; gap: 12px; width: min(22rem, calc(100vw - 32px)); pointer-events: none; --toast-from-x: 0px; --toast-from-y: 16px; }
+  .toast-viewport > * { pointer-events: auto; }
+  .toast-viewport :is(.toast, .achievement) { max-width: none; }
+  .toast-viewport[data-position^="top"] { top: calc(16px + env(safe-area-inset-top, 0px)); flex-direction: column-reverse; --toast-from-y: -16px; }
+  .toast-viewport[data-position^="bottom"] { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .toast-viewport[data-position$="left"] { left: calc(16px + env(safe-area-inset-left, 0px)); --toast-from-x: -16px; }
+  .toast-viewport[data-position$="right"] { right: calc(16px + env(safe-area-inset-right, 0px)); --toast-from-x: 16px; }
+  .toast-viewport[data-position$="center"] { left: 0; right: 0; margin-inline: auto; }
+  .toast-viewport[data-position] > * { animation: nb-toast-from 150ms ease-out; }
+  .toast-viewport[data-position] > [data-leaving] { animation: nb-toast-to 150ms ease-in forwards; }
+  .toast-slot > * { animation: none; } /* the slot (CruiseToaster) does the motion */
+  @keyframes nb-toast-from { from { transform: translate(var(--toast-from-x), var(--toast-from-y)); } }
+  @keyframes nb-toast-to { to { opacity: 0; transform: translate(var(--toast-from-x), var(--toast-from-y)); } }
+  @keyframes nb-fade-in { from { opacity: 0; } }
+  @keyframes nb-fade-out { to { opacity: 0; } }
+  @media (max-width: 639px) {
+    .toast-viewport[data-position] { left: calc(16px + env(safe-area-inset-left, 0px)); right: calc(16px + env(safe-area-inset-right, 0px)); width: auto; --toast-from-x: 0px; }
+  }
+
+  /* Scroll-to-top: a 48px square .brutal button in a bottom corner. Hidden
+     until scrolled; lifted above a toast stack in the same corner (the
+     viewport sets --cruise-toasts-<position> on <html>). */
+  .scroll-top {
+    position: fixed; bottom: calc(var(--scroll-top-offset, 16px) + env(safe-area-inset-bottom, 0px)); z-index: 40;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 48px; height: 48px; padding: 0 12px;
+    color: var(--ink); font: 800 0.9375rem/1 var(--font-display); text-transform: uppercase; cursor: pointer;
+    --lift: 0px; translate: 0 calc(8px - var(--lift)); opacity: 0; visibility: hidden;
+    transition: transform 100ms ease-out, box-shadow 100ms ease-out, translate 150ms ease-out, opacity 150ms ease-out, visibility 0s linear 150ms;
+  }
+  .scroll-top svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .scroll-top:not(:has(span)) { padding: 0; }
+  .scroll-top[data-visible] { translate: 0 calc(0px - var(--lift)); opacity: 1; visibility: visible; transition-delay: 0s; }
+  .scroll-top[data-position="bottom-right"] { right: calc(var(--scroll-top-offset, 16px) + env(safe-area-inset-right, 0px)); --lift: var(--cruise-toasts-bottom-right, 0px); }
+  .scroll-top[data-position="bottom-left"] { left: calc(var(--scroll-top-offset, 16px) + env(safe-area-inset-left, 0px)); --lift: var(--cruise-toasts-bottom-left, 0px); }
+  @media (max-width: 639px) {
+    .scroll-top[data-position] { --lift: max(var(--cruise-toasts-bottom-left, 0px), var(--cruise-toasts-bottom-center, 0px), var(--cruise-toasts-bottom-right, 0px)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast-viewport[data-position] > * { animation: nb-fade-in 150ms ease-out; }
+    .toast-viewport[data-position] > [data-leaving] { animation: nb-fade-out 150ms ease-in forwards; }
+    .scroll-top, .scroll-top[data-visible] { translate: 0 calc(0px - var(--lift)); transition: opacity 150ms ease-out, visibility 0s linear 150ms; }
+    .scroll-top[data-visible] { transition-delay: 0s; }
+  }
+
+  /* ---- Text-field focus (A4). Text fields always show focus (:focus, not
+     only :focus-visible): typing goes there. Three styles, picked with
+     data-focus on <html>, <body> or any wrapper:
+       (none) / "lift": the field lifts 2px into its hard shadow, no outline;
+       "ring":   a 3px ink outline, 2px away;
+       "border": the border turns --primary with a 2px ink line inside it.
+     Buttons, links, checkboxes, radios, switches and tabs keep their own
+     :focus-visible ring in every mode. .field-focus opts any other text
+     field in. ---- */
+  :is(.input, .textarea, .select, .otp-box, .field-focus):focus,
+  :is(.input-group, .combobox-field):focus-within {
+    outline: none;
+    box-shadow: var(--shadow);
+    transform: translate(-2px, -2px);
+  }
+  /* .field-focus fields get the same quick (100ms) movement as the others. */
+  .field-focus { transition: box-shadow 100ms ease-out, transform 100ms ease-out; }
+  /* The native select's chevron sits on its wrapper, so the wrapper lifts. */
+  .select:focus { transform: none; }
+  .select-wrap:focus-within { transform: translate(-2px, -2px); transition: transform 100ms ease-out; }
+  /* Errors keep their --danger border, and the lift shadow turns --danger. */
+  :is(.input, .textarea, .select, .otp-box, .field-focus)[aria-invalid="true"]:focus,
+  :is(.input-group, .combobox-field)[data-invalid]:focus-within {
+    box-shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--danger);
+  }
+  /* On --primary, red is too faint (under 3:1): the shadow stays dark. */
+  :where(.on-primary) :is(.input, .textarea, .select, .otp-box, .field-focus)[aria-invalid="true"]:focus,
+  :where(.on-primary) :is(.input-group, .combobox-field)[data-invalid]:focus-within {
+    box-shadow: var(--shadow);
+  }
+
+  /* data-focus="ring": the outline, no lift. */
+  [data-focus="ring"] :is(.input, .textarea, .select, .otp-box, .field-focus):focus,
+  [data-focus="ring"] :is(.input-group, .combobox-field):focus-within {
+    transform: none; box-shadow: none;
+    outline: 3px solid var(--ink); outline-offset: 2px;
+  }
+
+  /* data-focus="border": a 3px --primary border, no shadow. --primary alone
+     is under 3:1 on white, so a 2px ink line inside keeps it visible
+     everywhere (white, paper, dark mode and on --primary). */
+  [data-focus="border"] :is(.input, .textarea, .select, .otp-box, .field-focus):focus,
+  [data-focus="border"] :is(.input-group, .combobox-field):focus-within {
+    transform: none; outline: none;
+    border-color: var(--primary); border-width: 3px;
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  [data-focus="border"] :is(.input, .textarea, .select, .otp-box, .field-focus)[aria-invalid="true"]:focus,
+  [data-focus="border"] :is(.input-group, .combobox-field)[data-invalid]:focus-within {
+    border-color: var(--danger);
+  }
+  :is([data-focus="ring"], [data-focus="border"]) .select-wrap:focus-within { transform: none; }
+
+  /* Reduced motion: the shadow only, no movement. */
+  @media (prefers-reduced-motion: reduce) {
+    :is(.input, .textarea, .select, .otp-box, .field-focus):focus,
+    :is(.input-group, .combobox-field):focus-within,
+    .select-wrap:focus-within { transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .brutal { transition: none; }
+    .toast-enter { animation: none; }
+    .ticker-track { animation: none; }
+    .ship-bob { animation: none; }
+    .nav-drawer { transition: none; }
+    .layout-enter { animation: none; }
+  }
+}
+
+/* Tailwind v4 mapping: bg-primary, text-ink, shadow-brutal, rounded-brutal, text-label, ... */
+@theme inline {
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-info: var(--info);
+  --color-deep: var(--deep);
+  --color-muted: var(--muted);
+  --color-tint: var(--tint);
+  --color-on-danger: var(--on-danger);
+  --color-on-success: var(--on-success);
+  --color-on-info: var(--on-info);
+  --color-on-deep: var(--on-deep);
+  --color-backdrop: var(--backdrop);
+
+  --font-display: var(--font-baloo, 'Baloo 2'), 'Baloo 2', system-ui, sans-serif;
+  --font-body: var(--font-bricolage, 'Bricolage Grotesque'), 'Bricolage Grotesque', system-ui, sans-serif;
+
+  --text-hero: var(--text-hero);
+  --text-hero--line-height: var(--text-hero--line-height);
+  --text-hero--letter-spacing: -0.01em;
+  --text-h1: var(--text-h1);
+  --text-h1--line-height: var(--text-h1--line-height);
+  --text-h1--letter-spacing: -0.01em;
+  --text-h2: var(--text-h2);
+  --text-h2--line-height: var(--text-h2--line-height);
+  --text-h2--letter-spacing: -0.01em;
+  --text-h3: var(--text-h3);
+  --text-h3--line-height: var(--text-h3--line-height);
+  --text-h3--letter-spacing: -0.01em;
+  --text-body: var(--text-body);
+  --text-body--line-height: var(--text-body--line-height);
+  --text-small: var(--text-small);
+  --text-small--line-height: var(--text-small--line-height);
+  --text-label: var(--text-label);
+  --text-label--line-height: var(--text-label--line-height);
+  --text-label--letter-spacing: 0.06em;
+  --text-label--font-weight: 700;
+
+  --shadow-brutal: var(--shadow);
+  --shadow-brutal-lg: var(--shadow-lg);
+  --radius-brutal: var(--radius);
+}
+
+@utility border-brutal {
+  border-width: var(--border-w);
+  border-style: solid;
+}

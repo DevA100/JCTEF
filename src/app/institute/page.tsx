@@ -1,0 +1,100 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { CruiseBadge } from "@/components/cruise/badge";
+import { CruiseSteps } from "@/components/cruise/steps";
+import { ButtonLink } from "@/components/layout/button-link";
+import { FeatureGrid } from "@/components/sections/feature-grid";
+import { PageHero } from "@/components/sections/page-hero";
+import { SectionHeading } from "@/components/sections/section-heading";
+import { institute } from "@/lib/content";
+import { cx } from "@/lib/cruise-utils";
+
+export const metadata: Metadata = {
+  title: "JCTEF Institute",
+  description:
+    "The JCTEF Institute for Human Capital Development: the Human Capital Transformation Framework, the JCTEF Human Capital Index (JHCI) and how to become a JCTEF fellow.",
+};
+
+export default function InstitutePage() {
+  const { framework, jhci, fellow } = institute;
+  return (
+    <>
+      <PageHero eyebrow={institute.intro.eyebrow} title={institute.intro.title} text={institute.intro.text}>
+        <ul className="flex flex-wrap gap-2" aria-label="Areas of work">
+          {institute.intro.tags.map((tag) => (
+            <li key={tag}>
+              <CruiseBadge tone="surface">{tag}</CruiseBadge>
+            </li>
+          ))}
+        </ul>
+      </PageHero>
+
+      <section aria-labelledby="why-institute-title" className="section">
+        <div className="site-container grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:gap-16">
+          <SectionHeading id="why-institute-title" eyebrow="Transform, equip, empower" title={institute.why.title}>
+            <p>{institute.why.text}</p>
+          </SectionHeading>
+          <FeatureGrid items={institute.pillars} columns={2} className="lg:grid-cols-1" />
+        </div>
+      </section>
+
+      <section id="framework" aria-labelledby="framework-title" className="on-deep section scroll-mt-20">
+        <div className="site-container grid gap-10">
+          <SectionHeading id="framework-title" eyebrow={framework.eyebrow} title={framework.title}>
+            <p>{framework.text}</p>
+          </SectionHeading>
+          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {framework.stages.map((stage, i) => {
+              const last = i === framework.stages.length - 1;
+              return (
+              <li
+                key={stage.title}
+                className={cx("brutal brutal-static grid content-start gap-2 p-5", last && "on-primary sm:col-span-2 lg:col-span-1")}
+              >
+                <span aria-hidden="true" className={cx("font-display text-h2 leading-none font-extrabold", !last && "text-primary")}>
+                  {i + 1}
+                </span>
+                <h3 className="font-display text-[1.25rem] leading-tight font-extrabold">{stage.title}</h3>
+                <p className="text-small text-ink-muted">{stage.text}</p>
+              </li>
+              );
+            })}
+          </ol>
+        </div>
+      </section>
+
+      <section id="jhci" aria-labelledby="jhci-title" className="section scroll-mt-20">
+        <div className="site-container grid gap-10">
+          <SectionHeading id="jhci-title" eyebrow={jhci.eyebrow} title={jhci.title}>
+            <p>{jhci.text}</p>
+          </SectionHeading>
+          <FeatureGrid items={jhci.dimensions} />
+        </div>
+      </section>
+
+      <section aria-labelledby="serves-title" className="section bg-tint">
+        <div className="site-container grid gap-10">
+          <SectionHeading id="serves-title" eyebrow="Who we serve" title="Learning for everyone who builds human capital" />
+          <FeatureGrid items={institute.serves} />
+        </div>
+      </section>
+
+      <section id="fellow" aria-labelledby="fellow-title" className="section scroll-mt-20">
+        <div className="site-container">
+          <div className="brutal brutal-static grid gap-10 p-6 md:p-10">
+            <SectionHeading id="fellow-title" eyebrow={fellow.eyebrow} title={fellow.title}>
+              <p>{fellow.text}</p>
+            </SectionHeading>
+            <CruiseSteps steps={fellow.steps} current={0} label="How to become a JCTEF fellow" />
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <ButtonLink href={fellow.cta.href}>{fellow.cta.label}</ButtonLink>
+              <Link href="/programmes#eligibility" className="text-link inline-flex min-h-11 items-center">
+                Check the eligibility criteria
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
