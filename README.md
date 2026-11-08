@@ -57,7 +57,7 @@ Sign up at <https://www.brevo.com> using **info@jctef.org**. Then everyone on th
 1. In Brevo, open **Settings → Senders, domains & dedicated IPs → Domains** and click **Add a domain**. Enter `jctef.org`.
 2. Brevo lists DNS records: a Brevo code, DKIM and DMARC. Add each one in the DNS settings wherever jctef.org is registered.
 3. Click **Verify** and wait until every record shows a tick. This can take a few hours.
-4. Under **Senders**, add a sender on that domain, for example `website@jctef.org` named "JCTEF website". This is the `CONTACT_FROM_EMAIL`.
+4. Under **Senders**, add a sender on that domain, for example `info@jctef.org` named "JCTEF website". This is the `CONTACT_FROM_EMAIL`.
 
 Until the domain is verified, contact form emails may be rejected or end up in spam.
 
@@ -89,7 +89,7 @@ Treat the key like a password:
 | --- | --- | --- |
 | `BREVO_API_KEY` | `xkeysib-…` | Contact form and newsletter |
 | `CONTACT_TO_EMAIL` | `info@jctef.org` | Contact form: where messages arrive |
-| `CONTACT_FROM_EMAIL` | `website@jctef.org` | Contact form: the verified sender |
+| `CONTACT_FROM_EMAIL` | `info@jctef.org` | Contact form: the verified sender |
 | `BREVO_LIST_ID` | `3` | Newsletter |
 | `BREVO_DOI_TEMPLATE_ID` | `5` | Newsletter confirmation email |
 | `NEXT_PUBLIC_SITE_URL` | `https://jctef.org` (`http://localhost:3000` locally) | Link back to the site after confirming |

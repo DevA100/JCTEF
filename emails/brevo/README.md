@@ -32,7 +32,7 @@ The template uses `LOGO_URL` as a placeholder for the JCTEF logo.
 2. Fill in the template details:
    - **Template name:** JCTEF – Confirm subscription
    - **Subject:** Please confirm your subscription to JCTEF updates
-   - **From email:** the address in `CONTACT_FROM_EMAIL`, for example website@jctef.org. It must be a verified sender on the jctef.org domain.
+   - **From email:** the address in `CONTACT_FROM_EMAIL`, for example info@jctef.org. It must be a verified sender on the jctef.org domain.
    - **From name:** JCTEF
 3. Choose **Code your own** and paste the full contents of `confirm-subscription.html`.
 4. In the template settings, add the tag **optin**. Brevo needs this tag to use the template for double opt-in.
