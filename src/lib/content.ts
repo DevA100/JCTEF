@@ -483,12 +483,12 @@ export const outreachPhotos: OutreachPhoto[] = [
   {
     publicId: "IMG_7078_tocqtx",
     alt: "A group of JCTEF Cohort 1 fellows standing outdoors on a lawn, holding a banner for the JCTEF Transformation Programme end-of-programme meetup",
-    caption: "Cohort 1 end-of-programme meetup, Ikeja, Lagos, November 2026", // TODO: confirm (place and date from the event banner)
+    caption: "Cohort 1 end-of-programme meetup, Lagos chapter, Ikeja, November 2026", // TODO: confirm the date (from the event banner)
   },
   {
     publicId: "IMG_0238_xsd9lt",
     alt: "Two JCTEF fellows standing outdoors, holding a banner for the Cohort 1 end-of-programme meetup",
-    caption: "Cohort 1 end-of-programme meetup, Ikeja, Lagos, November 2026", // TODO: confirm (place and date from the event banner)
+    caption: "Cohort 1 end-of-programme meetup, Lagos chapter, Ikeja, November 2026", // TODO: confirm the date (from the event banner)
   },
 ];
 

@@ -1,9 +1,10 @@
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PostCover } from "@/components/sections/post-cover";
 import { formatPostDate, getPost, getPostSlugs } from "@/lib/blog";
+import { site } from "@/lib/content";
 
 // Unknown slugs fall through to notFound() in the page below.
 export function generateStaticParams() {
@@ -11,17 +12,43 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): Promise<Metadata> {
-  const post = await getPost((await params).slug);
+  const { slug } = await params;
+  const post = await getPost(slug);
   if (!post) return {};
+
+  const url = `/blog/${slug}`;
+  // The cover when there is one; otherwise a branded card with the title.
+  const image = post.cover
+    ? {
+        url: post.cover.src,
+        alt: post.cover.alt || post.title,
+        ...(post.cover.width && post.cover.height ? { width: post.cover.width, height: post.cover.height } : {}),
+      }
+    : { url: `/og/blog/${slug}`, alt: post.title, width: 1200, height: 630, type: "image/png" };
+
   return {
     title: post.title,
     description: post.excerpt,
+    authors: [{ name: post.author }],
+    keywords: post.tags.length ? post.tags : undefined,
+    alternates: { canonical: url },
     openGraph: {
       type: "article",
+      url,
+      siteName: site.name,
+      locale: "en_NG",
       title: post.title,
       description: post.excerpt,
       publishedTime: post.date,
-      images: post.cover ? [{ url: post.cover.src, width: post.cover.width, height: post.cover.height }] : undefined,
+      authors: [post.author],
+      tags: post.tags.length ? post.tags : undefined,
+      images: [image],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [image],
     },
   };
 }
@@ -46,19 +73,9 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
           </p>
         </header>
 
-        {post.cover && (
-          <div className="brutal brutal-static max-w-3xl overflow-hidden">
-            <Image
-              src={post.cover.src}
-              alt={post.cover.alt}
-              width={post.cover.width}
-              height={post.cover.height}
-              sizes="(min-width: 800px) 768px, 100vw"
-              preload
-              className="h-auto w-full"
-            />
-          </div>
-        )}
+        <div className="brutal brutal-static max-w-3xl overflow-hidden">
+          <PostCover cover={post.cover} title={post.title} variant="page" sizes="(min-width: 800px) 768px, 100vw" preload />
+        </div>
 
         <div className="prose-jctef measure">
           <Content />

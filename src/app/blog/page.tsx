@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { PageHero } from "@/components/sections/page-hero";
+import { PostCover } from "@/components/sections/post-cover";
 import { formatPostDate, getPosts } from "@/lib/blog";
 import { blog } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
@@ -22,16 +22,13 @@ export default async function BlogPage() {
           <Reveal as="ul" stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
               <li key={post.slug} className="brutal relative grid content-start overflow-hidden">
-                {post.cover && (
-                  <Image
-                    src={post.cover.src}
-                    alt=""
-                    width={post.cover.width}
-                    height={post.cover.height}
-                    sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
-                    className="aspect-video h-auto w-full border-b-(length:--border-w) border-ink object-cover"
-                  />
-                )}
+                <PostCover
+                  cover={post.cover}
+                  title={post.title}
+                  variant="card"
+                  sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+                  className="border-b-(length:--border-w) border-ink"
+                />
                 <div className="grid content-start gap-3 p-6">
                   <time dateTime={post.date} className="text-small text-ink-muted">
                     {formatPostDate(post.date)}
