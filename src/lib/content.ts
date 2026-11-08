@@ -422,7 +422,7 @@ export type OutreachPhoto = {
 export const outreach = {
   eyebrow: "Outreach",
   title: "Outreach in action",
-  text: "Moments from our work with young people and communities across Lagos.",
+  text: "Moments from our work with young people and communities across Nigeria.",
 };
 
 // TODO: confirm consent for every photo, including from parents or the
@@ -431,34 +431,34 @@ export const outreach = {
 export const outreachPhotos: OutreachPhoto[] = [
   {
     publicId: "IMG-20251024-WA0120_tiei8e",
-    alt: "A facilitator in a black T-shirt stands with a group of secondary school students in blue patterned uniforms in a classroom, with laptops open on the tables in front of them",
-    caption: "", // TODO: caption
+    alt: "A facilitator in a black T-shirt stands with a group of secondary school students in blue patterned uniforms in a classroom during a web development training session, with laptops open on the tables in front of them",
+    caption: "Web development training for SS3 students at Champions Headstart International School, Lagos, October 2025", // TODO: confirm the date
   },
   {
     publicId: "20251111_125140_1_euzahs",
-    alt: "A facilitator in a blue T-shirt stands with a large group of secondary school students in light blue shirts and navy uniforms in a computer room, with desktop computers on the desks and a projection screen behind them",
-    caption: "", // TODO: caption
+    alt: "A facilitator in a blue T-shirt stands with a large group of secondary school students in light blue shirts and navy uniforms in a computer room during an AI and tech careers session, with desktop computers on the desks and a projection screen behind them",
+    caption: "AI and tech careers session for SS3 students at Oduduwa College, Osun State, November 2025", // TODO: confirm the date
   },
   {
     publicId: "20251110_114900_1_nvd24j",
-    alt: "A facilitator in a red shirt presents from a laptop to adult participants seated at desks with computer monitors in a training room, with a slide projected on the screen at the front",
-    caption: "", // TODO: caption
+    alt: "A facilitator in a red shirt presents from a laptop to teachers seated at desks with computer monitors during an AI training session, with a slide projected on the screen at the front",
+    caption: "AI training for teachers at Oduduwa College, a government school in Osun State, November 2025", // TODO: confirm the date
   },
   {
     publicId: "20251111_132814_1_zgsj6y",
-    alt: "Seen from the back of a classroom, a large class of secondary school students in light blue uniforms raise their hands as a facilitator in a white T-shirt teaches at the whiteboard",
-    caption: "", // TODO: caption
+    alt: "Seen from the back of a classroom, a large class of secondary school students in light blue uniforms raise their hands as a facilitator in a white T-shirt leads an AI and tech careers session at the whiteboard",
+    caption: "AI and tech careers session for SS3 students at Oduduwa College, Osun State, November 2025", // TODO: confirm the date
   },
   // These two are also in the hero slideshow (kept here at the team's request).
   {
     publicId: "IMG_7078_tocqtx",
     alt: "A group of JCTEF Cohort 1 fellows standing outdoors on a lawn, holding a banner for the JCTEF Transformation Programme end-of-programme meetup",
-    caption: "", // TODO: caption
+    caption: "Cohort 1 end-of-programme meetup, Ikeja, Lagos, November 2026", // TODO: confirm (place and date from the event banner)
   },
   {
     publicId: "IMG_0238_xsd9lt",
     alt: "Two JCTEF fellows standing outdoors, holding a banner for the Cohort 1 end-of-programme meetup",
-    caption: "", // TODO: caption
+    caption: "Cohort 1 end-of-programme meetup, Ikeja, Lagos, November 2026", // TODO: confirm (place and date from the event banner)
   },
 ];
 
@@ -628,7 +628,7 @@ export const about = {
     {
       q: "Where does JCTEF operate?",
       a: [
-        "We are based in Lekki, Lagos. As the foundation grows, we aim to reach more regions across Nigeria.",
+        "We are based in Lekki, Lagos, and have run outreach in Lagos and Osun State. As the foundation grows, we aim to reach more regions across Nigeria.",
       ],
     },
     {
