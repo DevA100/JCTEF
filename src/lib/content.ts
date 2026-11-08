@@ -315,10 +315,10 @@ export const home = {
     /** Visually hidden heading; the section shows figures only. */
     title: "Our impact",
     stats: [
-      { value: "60+", label: "young people empowered" },
+      { value: "300+", label: "young people empowered" },
       // TODO: confirm partner count
       { value: "2", label: "partner organisations" },
-      { value: "3", label: "projects completed" },
+      { value: "6", label: "projects completed" },
       { value: "1+", label: "year of service" },
     ],
   },

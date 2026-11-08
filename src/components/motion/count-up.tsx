@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 const DURATION_MS = 900;
 
 /**
- * Counts a figure like "60+" up from 0 when it scrolls into view, keeping any
+ * Counts a figure like "300+" up from 0 when it scrolls into view, keeping any
  * prefix or suffix. The server HTML shows the final value, screen readers
  * only ever hear the final value, and reduced motion skips the count.
  */
