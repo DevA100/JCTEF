@@ -62,7 +62,7 @@ const organizationJsonLd = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#2ead45",
+  themeColor: "#0a1f5c", // brand navy (--deep)
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
