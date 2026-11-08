@@ -8,6 +8,7 @@ import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { programmes } from "@/lib/content";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Programmes",
@@ -50,7 +51,7 @@ export default function ProgrammesPage() {
       <section aria-labelledby="initiatives-title" className="section">
         <div className="site-container grid gap-10">
           <SectionHeading id="initiatives-title" eyebrow="Our initiatives" title="Programmes and initiatives" />
-          <div className="grid gap-8">
+          <Reveal stagger className="grid gap-8">
             {programmes.initiatives.map((item, i) => (
               <article
                 key={item.id}
@@ -101,7 +102,7 @@ export default function ProgrammesPage() {
                 </div>
               </article>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 

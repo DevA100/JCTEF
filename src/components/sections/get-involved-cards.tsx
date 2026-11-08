@@ -4,6 +4,7 @@ import { TrustLine } from "@/components/layout/trust-line";
 import { cx } from "@/lib/cruise-utils";
 import { home } from "@/lib/content";
 import { SectionHeading } from "./section-heading";
+import { Reveal } from "@/components/motion/reveal";
 
 const ICONS = [Users, Handshake, Heart];
 
@@ -13,7 +14,7 @@ export function GetInvolvedCards() {
     <section aria-labelledby="involved-title" className="on-deep section">
       <div className="site-container grid gap-10">
         <SectionHeading id="involved-title" eyebrow={getInvolved.eyebrow} title={getInvolved.title} />
-        <ul className="grid gap-6 md:grid-cols-3">
+        <Reveal as="ul" stagger className="grid gap-6 md:grid-cols-3">
           {getInvolved.cards.map((card, i) => {
             const Icon = ICONS[i];
             const isDonate = i === getInvolved.cards.length - 1;
@@ -34,7 +35,7 @@ export function GetInvolvedCards() {
               </li>
             );
           })}
-        </ul>
+        </Reveal>
       </div>
     </section>
   );

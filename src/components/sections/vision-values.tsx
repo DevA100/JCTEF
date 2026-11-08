@@ -1,6 +1,7 @@
 import { Eye, Target } from "lucide-react";
 import { coreValues, home, mission, vision } from "@/lib/content";
 import { SectionHeading } from "./section-heading";
+import { Reveal } from "@/components/motion/reveal";
 
 export function VisionValues() {
   return (
@@ -23,7 +24,7 @@ export function VisionValues() {
 
         <div>
           <h3 className="mb-6 text-h3">Our core values</h3>
-          <ul className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal as="ul" stagger className="grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
             {coreValues.map((value, i) => (
               <li key={value.title} className="flex gap-4">
                 <span
@@ -38,7 +39,7 @@ export function VisionValues() {
                 </div>
               </li>
             ))}
-          </ul>
+          </Reveal>
         </div>
       </div>
     </section>

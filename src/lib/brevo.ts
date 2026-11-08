@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * Minimal Brevo (ex-Sendinblue) REST client, used only by Server Actions.
  * Docs: https://developers.brevo.com/reference
@@ -16,8 +18,12 @@ export class BrevoError extends Error {
   }
 }
 
-export function brevoConfigured(...names: string[]): boolean {
-  return ["BREVO_API_KEY", ...names].every((name) => Boolean(process.env[name]));
+/**
+ * Names of required environment variables that are missing or empty.
+ * Only names are ever logged, never values.
+ */
+export function missingEnv(...names: string[]): string[] {
+  return names.filter((name) => !process.env[name]?.trim());
 }
 
 export async function brevo<T = unknown>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {

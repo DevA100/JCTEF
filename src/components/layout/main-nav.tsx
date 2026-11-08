@@ -28,8 +28,7 @@ export function DesktopNav({ links }: { links: NavLink[] }) {
               href={link.href}
               aria-current={link.active ? "page" : undefined}
               className={cx(
-                "inline-flex min-h-11 items-center font-body font-medium no-underline",
-                "decoration-primary decoration-3 underline-offset-6 hover:underline aria-[current=page]:underline",
+                "nav-link inline-flex min-h-11 items-center font-body font-medium no-underline",
               )}
             >
               {link.label}

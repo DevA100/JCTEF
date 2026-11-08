@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New volunteer application</title>
+</head>
+<body style="margin:0; padding:0; background-color:#F4F5F8;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F5F8;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+               style="width:600px; max-width:100%; background-color:#FFFFFF; border:2px solid #13225C;">
+
+          <tr>
+            <td style="padding:16px 24px; background-color:#13225C; font-family:Arial, Helvetica, sans-serif; font-size:13px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#9FD49A;">
+              New volunteer application · jctef.org
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:24px 24px 8px 24px; font-family:Arial, Helvetica, sans-serif;">
+              <h1 style="margin:0; font-size:22px; line-height:28px; color:#13225C;">{{ params.FULLNAME }}</h1>
+              <p style="margin:6px 0 0 0; font-size:15px; color:#3B4466;">Wants to volunteer as: <strong>{{ params.ROLE }}</strong></p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:16px 24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#3B4466; border-collapse:collapse;">
+                <tr>
+                  <td width="140" style="padding:8px 0; border-bottom:1px solid #E3E6EF; font-weight:700; color:#13225C; vertical-align:top;">Email</td>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF;"><a href="mailto:{{ params.EMAIL }}" style="color:#13225C;">{{ params.EMAIL }}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF; font-weight:700; color:#13225C; vertical-align:top;">Phone</td>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF;">{{ params.PHONE | default : "Not given" }}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF; font-weight:700; color:#13225C; vertical-align:top;">Location</td>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF;">{{ params.LOCATION | default : "Not given" }}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF; font-weight:700; color:#13225C; vertical-align:top;">Areas</td>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF;">{{ params.AREAS | default : "Not given" }}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF; font-weight:700; color:#13225C; vertical-align:top;">Availability</td>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF;">{{ params.AVAILABILITY | default : "Not given" }}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF; font-weight:700; color:#13225C; vertical-align:top;">Experience</td>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF; white-space:pre-line;">{{ params.EXPERIENCE | default : "Not given" }}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF; font-weight:700; color:#13225C; vertical-align:top;">Motivation</td>
+                  <td style="padding:8px 0; border-bottom:1px solid #E3E6EF; white-space:pre-line;">{{ params.MESSAGE | default : "Not given" }}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0; font-weight:700; color:#13225C; vertical-align:top;">Submitted</td>
+                  <td style="padding:8px 0;">{{ params.SUBMITTED_AT }}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:8px 24px 24px 24px; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; color:#6B7290;">
+              Reply to this email to respond to {{ params.FIRSTNAME | default : "the applicant" }} directly.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

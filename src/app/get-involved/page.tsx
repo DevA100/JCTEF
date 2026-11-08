@@ -7,6 +7,7 @@ import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { getInvolved } from "@/lib/content";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Get involved",
@@ -66,7 +67,7 @@ export default function GetInvolvedPage() {
               </ButtonLink>
             </div>
           </div>
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal as="ul" stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {volunteer.roles.map((role) => (
               <li key={role.title} className="brutal brutal-static grid content-start gap-2 p-5 md:p-6">
                 <h3 className="font-display text-[1.25rem] leading-tight font-extrabold">{role.title}</h3>
@@ -74,7 +75,7 @@ export default function GetInvolvedPage() {
                 <p className="text-ink-muted">{role.text}</p>
               </li>
             ))}
-          </ul>
+          </Reveal>
           <div className="grid gap-5">
             <h3 className="text-h3">What you gain as a JCTEF volunteer</h3>
             <FeatureGrid items={volunteer.benefits} columns={4} />
@@ -93,7 +94,7 @@ export default function GetInvolvedPage() {
               {partner.cta.label}
             </ButtonLink>
           </div>
-          <ul className="grid gap-5 md:grid-cols-2">
+          <Reveal as="ul" stagger className="grid gap-5 md:grid-cols-2">
             {partner.groups.map((group) => (
               <li key={group.title} className="brutal brutal-static grid content-start gap-3 p-6">
                 <h3 className="text-h3">{group.title}</h3>
@@ -108,7 +109,7 @@ export default function GetInvolvedPage() {
                 </ul>
               </li>
             ))}
-          </ul>
+          </Reveal>
         </div>
       </section>
 

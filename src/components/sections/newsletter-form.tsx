@@ -12,7 +12,6 @@ const initial: NewsletterState = { status: "idle", id: 0 };
 
 const TITLES: Record<Exclude<NewsletterState["status"], "idle">, string> = {
   confirm: "Check your inbox",
-  subscribed: "You're subscribed",
   already: "Already subscribed",
   error: "Not subscribed",
 };
@@ -35,6 +34,9 @@ function Form() {
     <form action={action} className="relative grid gap-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <CruiseInput label="First name" name="firstName" autoComplete="given-name" maxLength={60} />
+        <CruiseInput label="Last name" name="lastName" autoComplete="family-name" maxLength={60} />
+      </div>
+      <div>
         <CruiseInput
           label="Email address"
           name="email"

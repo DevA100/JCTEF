@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Baloo_2, Bricolage_Grotesque } from "next/font/google";
+import { BackToTop } from "@/components/layout/back-to-top";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { site } from "@/lib/content";
@@ -66,8 +67,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en-GB" className={`${baloo.variable} ${bricolage.variable}`}>
+    <html lang="en-GB" data-scroll-behavior="smooth" className={`${baloo.variable} ${bricolage.variable}`}>
       <body className="cruise flex min-h-dvh flex-col antialiased" data-corners="soft">
+        {/* Focus target for "Back to top". */}
+        <div id="top" tabIndex={-1} className="outline-none" />
         <a href="#main" className="skip-link brutal on-primary px-4 py-3 font-bold">
           Skip to main content
         </a>
@@ -76,6 +79,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter />
+        <BackToTop />
         <script
           type="application/ld+json"
           // Escape "<" so the JSON can never close the script tag (Next.js JSON-LD guide).

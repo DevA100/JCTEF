@@ -1,6 +1,7 @@
 import { CruiseAvatar } from "@/components/cruise/avatar";
 import { home, testimonials, type Testimonial } from "@/lib/content";
 import { SectionHeading } from "./section-heading";
+import { Reveal } from "@/components/motion/reveal";
 
 function Person({ item }: { item: Testimonial }) {
   return (
@@ -23,7 +24,7 @@ export function Testimonials() {
     <section aria-labelledby="testimonials-title" className="section">
       <div className="site-container grid gap-10">
         <SectionHeading id="testimonials-title" eyebrow={copy.eyebrow} title={copy.title} />
-        <ul className="grid gap-6 md:grid-cols-3">
+        <Reveal as="ul" stagger className="grid gap-6 md:grid-cols-3">
           {testimonials.map((item) => (
             <li key={item.name} className="brutal brutal-static grid content-between gap-6 p-6">
               {item.kind === "quote" ? (
@@ -47,7 +48,7 @@ export function Testimonials() {
               )}
             </li>
           ))}
-        </ul>
+        </Reveal>
       </div>
     </section>
   );

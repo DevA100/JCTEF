@@ -2,6 +2,7 @@ import { BookOpen, Briefcase, Sprout, Wrench } from "lucide-react";
 import Link from "next/link";
 import { home, pillars } from "@/lib/content";
 import { SectionHeading } from "./section-heading";
+import { Reveal } from "@/components/motion/reveal";
 
 const ICONS = [Sprout, Wrench, BookOpen, Briefcase];
 
@@ -23,7 +24,7 @@ export function AboutIntro() {
 
         <div>
           <h3 className="mb-5 text-label uppercase text-ink-muted">Our four pillars</h3>
-          <ul className="grid gap-4 sm:grid-cols-2">
+          <Reveal as="ul" stagger className="grid gap-4 sm:grid-cols-2">
             {pillars.map((pillar, i) => {
               const Icon = ICONS[i];
               return (
@@ -36,7 +37,7 @@ export function AboutIntro() {
                 </li>
               );
             })}
-          </ul>
+          </Reveal>
         </div>
       </div>
     </section>

@@ -1,3 +1,4 @@
+import { Reveal } from "@/components/motion/reveal";
 import { cx } from "@/lib/cruise-utils";
 import type { TitledText } from "@/lib/content";
 
@@ -14,7 +15,9 @@ export function FeatureGrid({
   className?: string;
 }) {
   return (
-    <ul
+    <Reveal
+      as="ul"
+      stagger
       className={cx(
         "grid gap-5 sm:grid-cols-2",
         columns === 3 && "lg:grid-cols-3",
@@ -33,6 +36,6 @@ export function FeatureGrid({
           <p className="text-ink-muted">{item.text}</p>
         </li>
       ))}
-    </ul>
+    </Reveal>
   );
 }

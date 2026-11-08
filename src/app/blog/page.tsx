@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PageHero } from "@/components/sections/page-hero";
 import { formatPostDate, getPosts } from "@/lib/blog";
 import { blog } from "@/lib/content";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -18,7 +19,7 @@ export default async function BlogPage() {
       <PageHero eyebrow={blog.eyebrow} title={blog.title} text={blog.text} />
       <section aria-label="Posts" className="section">
         <div className="site-container">
-          <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Reveal as="ul" stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
               <li key={post.slug} className="brutal relative grid content-start overflow-hidden">
                 {post.cover && (
@@ -45,7 +46,7 @@ export default async function BlogPage() {
                 </div>
               </li>
             ))}
-          </ul>
+          </Reveal>
         </div>
       </section>
     </>

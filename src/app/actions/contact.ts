@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { BrevoError, brevo, brevoConfigured, escapeHtml } from "@/lib/brevo";
+import { BrevoError, brevo, escapeHtml, missingEnv } from "@/lib/brevo";
 import { site } from "@/lib/content";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -57,8 +57,9 @@ export async function sendContactMessage(_prev: ContactState, formData: FormData
     };
   }
 
-  if (!brevoConfigured("CONTACT_TO_EMAIL", "CONTACT_FROM_EMAIL")) {
-    console.error("Contact form: BREVO_API_KEY, CONTACT_TO_EMAIL or CONTACT_FROM_EMAIL is not set.");
+  const missing = missingEnv("BREVO_API_KEY", "CONTACT_TO_EMAIL", "CONTACT_FROM_EMAIL");
+  if (missing.length > 0) {
+    console.error(`Contact form is not set up: missing ${missing.join(", ")} (see .env.example).`);
     return { status: "error", message: `Our form is not working right now. Please email us at ${site.email}.`, values };
   }
 

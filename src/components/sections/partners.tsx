@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cruiseButtonClasses } from "@/components/cruise/button";
 import { home, partnerTypes } from "@/lib/content";
 import { SectionHeading } from "./section-heading";
+import { Reveal } from "@/components/motion/reveal";
 
 const ICONS = [Landmark, Building2, Church, Globe];
 
@@ -19,7 +20,7 @@ export function Partners() {
             {partners.cta.label}
           </Link>
         </div>
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <Reveal as="ul" stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {partnerTypes.map((type, i) => {
             const Icon = ICONS[i];
             return (
@@ -32,7 +33,7 @@ export function Partners() {
               </li>
             );
           })}
-        </ul>
+        </Reveal>
       </div>
     </section>
   );

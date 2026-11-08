@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/layout/button-link";
 import { home, type JctefEvent } from "@/lib/content";
 import { getUpcomingEvents } from "@/lib/events";
 import { SectionHeading } from "./section-heading";
+import { Reveal } from "@/components/motion/reveal";
 
 /** Google Maps directions, built from the venue text so it updates with it. */
 function directionsUrl(venue: string) {
@@ -107,7 +108,7 @@ export async function Events() {
         )}
 
         {others.length > 0 && (
-          <ul className="grid gap-6 md:grid-cols-2">
+          <Reveal as="ul" stagger className="grid gap-6 md:grid-cols-2">
             {others.map((event) => (
               <li key={event.slug} className="brutal brutal-static grid content-start gap-4 p-6">
                 <CruiseBadge tone="muted" className="w-fit">
@@ -125,7 +126,7 @@ export async function Events() {
                 )}
               </li>
             ))}
-          </ul>
+          </Reveal>
         )}
       </div>
     </section>

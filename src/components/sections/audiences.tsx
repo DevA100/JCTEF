@@ -1,6 +1,7 @@
 import { GraduationCap, HandHeart, RefreshCw, Users } from "lucide-react";
 import { audiences, home } from "@/lib/content";
 import { SectionHeading } from "./section-heading";
+import { Reveal } from "@/components/motion/reveal";
 
 const ICONS = [Users, HandHeart, RefreshCw, GraduationCap];
 
@@ -9,7 +10,7 @@ export function Audiences() {
     <section aria-labelledby="audiences-title" className="section">
       <div className="site-container grid gap-10">
         <SectionHeading id="audiences-title" eyebrow={home.audiences.eyebrow} title={home.audiences.title} />
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <Reveal as="ul" stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {audiences.map((group, i) => {
             const Icon = ICONS[i];
             return (
@@ -20,7 +21,7 @@ export function Audiences() {
               </li>
             );
           })}
-        </ul>
+        </Reveal>
       </div>
     </section>
   );

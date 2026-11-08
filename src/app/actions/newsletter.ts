@@ -1,18 +1,19 @@
 "use server";
 
 import { z } from "zod";
-import { BrevoError, brevo, brevoConfigured } from "@/lib/brevo";
+import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { site } from "@/lib/content";
 import { rateLimit } from "@/lib/rate-limit";
 
 const schema = z.object({
   firstName: z.string().trim().max(60).optional(),
+  lastName: z.string().trim().max(60).optional(),
   email: z.email("Please enter a valid email address, like name@example.com.").max(200),
   consent: z.literal("on", "Please tick the box to agree to receive our updates."),
 });
 
 export type NewsletterState = {
-  status: "idle" | "confirm" | "subscribed" | "already" | "error";
+  status: "idle" | "confirm" | "already" | "error";
   /** Increments on every submit so the form can show a toast each time. */
   id: number;
   message?: string;
@@ -33,6 +34,7 @@ export async function subscribeToNewsletter(prev: NewsletterState, formData: For
 
   const parsed = schema.safeParse({
     firstName: String(formData.get("firstName") ?? "") || undefined,
+    lastName: String(formData.get("lastName") ?? "") || undefined,
     email: String(formData.get("email") ?? "").trim(),
     consent: formData.get("consent") ?? undefined,
   });
@@ -46,14 +48,34 @@ export async function subscribeToNewsletter(prev: NewsletterState, formData: For
     };
   }
 
-  if (!brevoConfigured("BREVO_LIST_ID")) {
-    console.error("Newsletter: BREVO_API_KEY or BREVO_LIST_ID is not set.");
-    return { status: "error", id, message: "Sign-ups are not working right now. Please try again later." };
+  const missing = missingEnv("BREVO_API_KEY", "BREVO_LIST_ID", "BREVO_DOI_TEMPLATE_ID");
+  const listId = Number(process.env.BREVO_LIST_ID);
+  const templateId = Number(process.env.BREVO_DOI_TEMPLATE_ID);
+  const badNumber = [
+    !Number.isInteger(listId) || listId <= 0 ? "BREVO_LIST_ID" : null,
+    !Number.isInteger(templateId) || templateId <= 0 ? "BREVO_DOI_TEMPLATE_ID" : null,
+  ].filter((name): name is string => name !== null && !missing.includes(name));
+  if (missing.length > 0 || badNumber.length > 0) {
+    // Names only, never values.
+    const problems = [
+      ...(missing.length > 0 ? [`missing ${missing.join(", ")}`] : []),
+      ...(badNumber.length > 0 ? [`${badNumber.join(" and ")} must be a number, e.g. 3`] : []),
+    ];
+    console.error(`Newsletter is not set up: ${problems.join("; ")} (see .env.example).`);
+    return {
+      status: "error",
+      id,
+      message: `Sign-ups aren't working right now. Please try again later, or email us at ${site.email} to join the list.`,
+    };
   }
 
-  const { email, firstName } = parsed.data;
-  const listId = Number(process.env.BREVO_LIST_ID);
-  const attributes = firstName ? { FIRSTNAME: firstName } : undefined;
+  const { email, firstName, lastName } = parsed.data;
+  // Brevo's built-in contact attributes; FIRSTNAME feeds the template's greeting.
+  const attributes = {
+    ...(firstName ? { FIRSTNAME: firstName } : {}),
+    ...(lastName ? { LASTNAME: lastName } : {}),
+  };
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/$/, "");
 
   try {
     // Already on the list? Say so rather than sending another email.
@@ -61,41 +83,45 @@ export async function subscribeToNewsletter(prev: NewsletterState, formData: For
       if (error instanceof BrevoError && error.status === 404) return null;
       throw error;
     });
-    if (existing?.listIds?.includes(listId)) {
-      return { status: "already", id, message: "You are already subscribed. Thank you for following our work." };
-    }
+    if (existing?.listIds?.includes(listId)) return ALREADY(id);
 
-    // Double opt-in when a confirmation template is set up (recommended).
-    const templateId = Number(process.env.BREVO_DOI_TEMPLATE_ID);
-    if (templateId) {
-      await brevo("/contacts/doubleOptinConfirmation", {
-        method: "POST",
-        body: {
-          email,
-          includeListIds: [listId],
-          templateId,
-          redirectionUrl: process.env.BREVO_DOI_REDIRECT_URL || `${site.url}/newsletter/confirmed`,
-          attributes,
-        },
-      });
-      return {
-        status: "confirm",
-        id,
-        message: "Almost done. Check your inbox and click the link in our email to confirm your subscription.",
-      };
-    }
-
-    // Single opt-in fallback.
-    await brevo("/contacts", {
+    // Double opt-in: Brevo emails a confirmation link (template in
+    // emails/brevo/confirm-subscription.html) and only adds the contact to the
+    // list once it is clicked. Docs: https://developers.brevo.com/reference/create-doi-contact
+    await brevo("/contacts/doubleOptinConfirmation", {
       method: "POST",
-      body: { email, attributes, listIds: [listId], updateEnabled: true },
+      body: {
+        email,
+        includeListIds: [listId],
+        templateId,
+        redirectionUrl: `${siteUrl}/newsletter/confirmed`,
+        ...(Object.keys(attributes).length > 0 ? { attributes } : {}),
+      },
     });
-    return { status: "subscribed", id, message: "You are subscribed. Thank you for following our work." };
+    return {
+      status: "confirm",
+      id,
+      message: "Almost there! Check your inbox and click the link to confirm your subscription.",
+    };
   } catch (error) {
-    if (error instanceof BrevoError && error.code === "duplicate_parameter") {
-      return { status: "already", id, message: "You are already subscribed. Thank you for following our work." };
+    if (error instanceof BrevoError && (error.code === "duplicate_parameter" || error.code === "duplicate_request")) {
+      return ALREADY(id);
     }
-    console.error("Newsletter: Brevo request failed", error instanceof BrevoError ? `${error.status} ${error.code}` : error);
-    return { status: "error", id, message: "Sorry, we could not sign you up just now. Please try again later." };
+    // Status, code and Brevo's message only: the API key is never logged.
+    console.error(
+      "Newsletter: Brevo request failed:",
+      error instanceof BrevoError ? `${error.status} ${error.code ?? ""} ${error.message}` : error,
+    );
+    return {
+      status: "error",
+      id,
+      message: `Sorry, we couldn't sign you up just now. Please try again in a few minutes, or email us at ${site.email}.`,
+    };
   }
 }
+
+const ALREADY = (id: number): NewsletterState => ({
+  status: "already",
+  id,
+  message: "You're already on our list. Thank you!",
+});

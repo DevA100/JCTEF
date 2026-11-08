@@ -66,17 +66,11 @@ Until the domain is verified, contact form emails may be rejected or end up in s
 1. Go to **Contacts → Lists → Create a list** and name it, for example "JCTEF newsletter".
 2. Note the number in the list's **ID** column. This is the `BREVO_LIST_ID`.
 
-**Double opt-in (recommended).** With double opt-in, subscribers confirm their email address before they are added to the list.
-
-1. Go to **Campaigns → Templates** and create a template from the **Double opt-in** (confirmation) layout. Its button must use the `{{ doubleoptin }}` link.
-2. Note the template's ID. This is the `BREVO_DOI_TEMPLATE_ID`.
-3. Subscribers who click the link land on `https://jctef.org/newsletter/confirmed`. You can change this with `BREVO_DOI_REDIRECT_URL`.
-
-If you leave `BREVO_DOI_TEMPLATE_ID` empty, people are added to the list straight away, without a confirmation email.
+**Double opt-in.** Subscribers confirm their email address before they're added to the list. The confirmation email's HTML is kept in this repo at `emails/brevo/confirm-subscription.html`. Follow `emails/brevo/README.md` to paste it into Brevo, tag it `optin`, activate it and copy its ID into `BREVO_DOI_TEMPLATE_ID`. After confirming, subscribers land on `/newsletter/confirmed`.
 
 ### 4. Generate the API key
 
-Go to **Settings → SMTP & API → API keys → Generate a new API key**. Name it "jctef.org website" and copy it straight away, because Brevo shows it only once. This is the `BREVO_API_KEY`.
+Go to **Settings → SMTP & API → API keys → Generate a new API key**. Give it the **Contacts** and **Transactional email** permissions, and turn off **Authorised IPs** blocking (Security → Authorised IPs), because hosting providers don't use fixed addresses. Name it "jctef.org website" and copy it straight away, because Brevo shows it only once. This is the `BREVO_API_KEY`.
 
 Treat the key like a password:
 
@@ -97,8 +91,8 @@ Treat the key like a password:
 | `CONTACT_TO_EMAIL` | `info@jctef.org` | Contact form: where messages arrive |
 | `CONTACT_FROM_EMAIL` | `website@jctef.org` | Contact form: the verified sender |
 | `BREVO_LIST_ID` | `3` | Newsletter |
-| `BREVO_DOI_TEMPLATE_ID` | `5` | Newsletter double opt-in (optional) |
-| `BREVO_DOI_REDIRECT_URL` | `https://jctef.org/newsletter/confirmed` | Newsletter double opt-in (optional) |
+| `BREVO_DOI_TEMPLATE_ID` | `5` | Newsletter confirmation email |
+| `NEXT_PUBLIC_SITE_URL` | `https://jctef.org` (`http://localhost:3000` locally) | Link back to the site after confirming |
 
 When someone replies to a contact form email, the reply goes to the visitor, because the visitor's address is set as reply-to.
 

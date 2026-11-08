@@ -80,7 +80,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t-(length:--border-w) border-ink/20">
-        <p className="site-container py-5 text-small text-ink-muted">
+        <p className="site-container py-5 pr-20 text-small text-ink-muted">
           © <CopyrightYear /> {site.name}. All rights reserved. · {registration.short}
         </p>
       </div>

@@ -12,35 +12,42 @@ function HeroText({ onPhoto }: { onPhoto: boolean }) {
 
   return (
     <div className="grid gap-6">
-      <p className="eyebrow">{hero.eyebrow}</p>
-      <h1 id="hero-title" className="text-hero text-balance">
+      <p className="eyebrow hero-in">{hero.eyebrow}</p>
+      <h1 id="hero-title" className="hero-in text-hero text-balance" style={{ "--hero-step": 1 } as React.CSSProperties}>
         {lead}{" "}
         <span className="relative inline-block">
           <span className="relative z-10">{last}</span>
           {/* Marker stroke under the key word. */}
-          <span aria-hidden="true" className="absolute inset-x-0 bottom-[0.08em] h-[0.32em] -rotate-1 bg-primary" />
+          <span aria-hidden="true" className="hero-marker absolute inset-x-0 bottom-[0.08em] h-[0.32em] -rotate-1 bg-primary" />
         </span>
       </h1>
-      <p className="measure text-body text-ink-muted md:text-[1.1875rem]">{hero.text}</p>
-      <CruiseButtonGroup className="pt-2">
-        <Link href={hero.primaryCta.href} className={cruiseButtonClasses()}>
-          {hero.primaryCta.label}
-        </Link>
-        <a
-          href={hero.secondaryCta.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          // On the photo, pin the secondary button to cream with navy text and
-          // a cream outline so it stands out on the dark overlay.
-          className={cruiseButtonClasses({
-            variant: "secondary",
-            className: cx(onPhoto && "border-[#fffaf0]! bg-[#fffaf0]! text-deep!"),
-          })}
-        >
-          {hero.secondaryCta.label}
-          <span className="visually-hidden"> (opens Flutterwave in a new tab)</span>
-        </a>
-      </CruiseButtonGroup>
+      <p
+        className="hero-in measure text-body text-ink-muted md:text-[1.1875rem]"
+        style={{ "--hero-step": 2 } as React.CSSProperties}
+      >
+        {hero.text}
+      </p>
+      <div className="hero-in" style={{ "--hero-step": 3 } as React.CSSProperties}>
+        <CruiseButtonGroup className="pt-2">
+          <Link href={hero.primaryCta.href} className={cruiseButtonClasses()}>
+            {hero.primaryCta.label}
+          </Link>
+          <a
+            href={hero.secondaryCta.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            // On the photo, pin the secondary button to cream with navy text and
+            // a cream outline so it stands out on the dark overlay.
+            className={cruiseButtonClasses({
+              variant: "secondary",
+              className: cx(onPhoto && "border-[#fffaf0]! bg-[#fffaf0]! text-deep!"),
+            })}
+          >
+            {hero.secondaryCta.label}
+            <span className="visually-hidden"> (opens Flutterwave in a new tab)</span>
+          </a>
+        </CruiseButtonGroup>
+      </div>
     </div>
   );
 }

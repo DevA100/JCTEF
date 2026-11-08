@@ -8,6 +8,7 @@ import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { frameworkStages, institute } from "@/lib/content";
 import { cx } from "@/lib/cruise-utils";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "JCTEF Institute",
@@ -43,7 +44,7 @@ export default function InstitutePage() {
           <SectionHeading id="framework-title" eyebrow={framework.eyebrow} title={framework.title}>
             <p>{framework.text}</p>
           </SectionHeading>
-          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal as="ol" stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {frameworkStages.map((stage) => {
               const last = stage.number === frameworkStages.length;
               return (
@@ -81,7 +82,7 @@ export default function InstitutePage() {
                 </li>
               );
             })}
-          </ol>
+          </Reveal>
         </div>
       </section>
 
