@@ -6,12 +6,14 @@ import { TrustLine } from "@/components/layout/trust-line";
 import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
+import { VolunteerForm } from "@/components/sections/volunteer-form";
 import { getInvolved } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Get involved",
-  description: "Volunteer, partner with JCTEF, become a JCTEF fellow or donate to help young people move from potential to productivity.",
+  description:
+    "Volunteer, partner with JCTEF, become a JCTEF fellow or donate to help young people move from potential to productivity.",
 };
 
 const jumpLinks = [
@@ -80,6 +82,18 @@ export default function GetInvolvedPage() {
             <h3 className="text-h3">What you gain as a JCTEF volunteer</h3>
             <FeatureGrid items={volunteer.benefits} columns={4} />
           </div>
+
+          {/* JCTEF's own application form (replaces the Google Form). */}
+          <div id="volunteer-form" className="grid scroll-mt-24 gap-6 lg:grid-cols-[1fr_1.6fr] lg:gap-12">
+            <div className="grid content-start gap-3">
+              <p className="eyebrow">{volunteer.form.eyebrow}</p>
+              <h3 className="text-h2">{volunteer.form.title}</h3>
+              <p className="text-ink-muted">{volunteer.form.text}</p>
+            </div>
+            <div className="brutal brutal-static p-5 md:p-8">
+              <VolunteerForm />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -123,7 +137,11 @@ export default function GetInvolvedPage() {
       {/* Fellow + donate */}
       <section aria-label="Become a fellow or donate" className="section bg-tint">
         <div className="site-container grid gap-6 md:grid-cols-2">
-          <article id="fellow" aria-labelledby="fellow-title" className="brutal brutal-static grid scroll-mt-24 content-start gap-4 p-6 md:p-8">
+          <article
+            id="fellow"
+            aria-labelledby="fellow-title"
+            className="brutal brutal-static grid scroll-mt-24 content-start gap-4 p-6 md:p-8"
+          >
             <p className="eyebrow">{fellow.eyebrow}</p>
             <h2 id="fellow-title" className="text-h2">
               {fellow.title}
@@ -135,7 +153,11 @@ export default function GetInvolvedPage() {
               </ButtonLink>
             </div>
           </article>
-          <article id="donate" aria-labelledby="donate-title" className="on-primary brutal brutal-static grid scroll-mt-24 content-start gap-4 p-6 md:p-8">
+          <article
+            id="donate"
+            aria-labelledby="donate-title"
+            className="on-primary brutal brutal-static grid scroll-mt-24 content-start gap-4 p-6 md:p-8"
+          >
             <p className="eyebrow">{donate.eyebrow}</p>
             <h2 id="donate-title" className="text-h2">
               {donate.title}

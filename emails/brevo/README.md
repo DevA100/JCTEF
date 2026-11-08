@@ -15,16 +15,13 @@ Two Brevo placeholders must stay exactly as they are:
 
 ### Before pasting: the logo
 
-The template uses `LOGO_URL` as a placeholder for the JCTEF logo.
+The template uses `LOGO_URL` as a placeholder for the logo, which is the site icon (the green globe favicon). Before pasting into Brevo, replace `LOGO_URL` with:
 
-1. Upload `public/images/jctef-logo.png` to Cloudinary (cloud `dreezy`) with the public ID `jctef-logo`.
-2. Replace `LOGO_URL` with:
+```text
+https://jctef.org/icons/icon-192.png
+```
 
-   ```text
-   https://res.cloudinary.com/dreezy/image/upload/f_png,w_320,q_auto/jctef-logo
-   ```
-
-   The address forces PNG, because some email apps can't show WebP or AVIF. It requests 320px wide, double the 160px display size, so the logo stays sharp on retina screens.
+That address only works once the new site is live on jctef.org. To test earlier, upload `public/icons/icon-192.png` to Cloudinary and use its address instead.
 
 ### Paste it into Brevo
 
@@ -45,6 +42,36 @@ The template uses `LOGO_URL` as a placeholder for the JCTEF logo.
 
 Edit the file here first, then paste the new version into the same Brevo template. The template ID stays the same, so nothing else needs to change.
 
+## Volunteer emails
+
+The volunteer form on `/get-involved#volunteer-form` sends two emails. **They don't need to be set up in Brevo.** The website reads these files, fills in the placeholders on the server and sends the finished HTML through Brevo, from `CONTACT_FROM_EMAIL`.
+
+| File | Sent to | Subject |
+| --- | --- | --- |
+| `volunteer-team-alert.html` | The team (`VOLUNTEER_TO_EMAIL`, default info@jctef.org). Replying goes to the applicant. | New volunteer application: {name} ({role}) |
+| `volunteer-received.html` | The applicant. Replying goes to info@jctef.org. | We've received your volunteer application |
+
+To change an email, edit the file and redeploy. The site's renderer understands the same tags the files already use:
+
+- `{{ params.NAME }}`
+- `{{ params.NAME | default : "…" }}`
+- `{% if params.NAME %}…{% endif %}`
+- `{% if params.NAME == "…" %}…{% endif %}`
+
+All values are HTML-escaped. `LOGO_URL` is replaced with the site icon, the favicon, on the live site (`/icons/icon-192.png`).
+
+Available placeholders: `FIRSTNAME`, `FULLNAME`, `EMAIL`, `PHONE`, `LOCATION`, `ROLE`, `AREAS`, `AVAILABILITY`, `EXPERIENCE`, `MESSAGE` and `SUBMITTED_AT` (Lagos time).
+
+### Volunteer contact list
+
+Every applicant is also added or updated as a Brevo contact, so the team has a record.
+
+1. Create a list, for example "Volunteer applicants", and put its ID in `BREVO_VOLUNTEER_LIST_ID`.
+2. Go to **Contacts → Settings → Contact attributes** and create a **text** attribute named `VOLUNTEER_ROLE`. `FIRSTNAME`, `LASTNAME` and `SMS` already exist.
+3. The API key needs the **Contacts** permission.
+
+If saving the contact fails, the application still goes through and the error is logged on the server.
+
 ## Related settings
 
 | Variable | Purpose |
@@ -53,3 +80,5 @@ Edit the file here first, then paste the new version into the same Brevo templat
 | `BREVO_LIST_ID` | The newsletter list that confirmed subscribers join |
 | `BREVO_DOI_TEMPLATE_ID` | The ID of this template in Brevo |
 | `NEXT_PUBLIC_SITE_URL` | Used to build the "confirmed" link: `<site>/newsletter/confirmed` |
+| `VOLUNTEER_TO_EMAIL` | Where volunteer applications go (default info@jctef.org) |
+| `BREVO_VOLUNTEER_LIST_ID` | List that keeps a record of every applicant |

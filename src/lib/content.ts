@@ -1137,8 +1137,13 @@ export const institute = {
 /* Get involved                                                               */
 /* -------------------------------------------------------------------------- */
 
-const volunteerForm =
-  "https://docs.google.com/forms/d/e/1FAIpQLSelTaCz81BOftTaYXsYBufH4F-tskxsA5a3P0ikLuMtIP54hg/viewform";
+/** Anchor of the volunteer application form on /get-involved. */
+const volunteerForm = "#volunteer-form";
+
+/** Options for the volunteer form. The values are what the team sees in the
+ * emails and in Brevo, so keep them readable. */
+export const volunteerRoles = ["Programme facilitator", "Mentor", "Events and outreach", "General volunteer"] as const;
+export const volunteerAvailability = ["Weekdays", "Weekends", "Evenings", "Flexible"] as const;
 
 export const getInvolved = {
   intro: {
@@ -1151,6 +1156,23 @@ export const getInvolved = {
     title: "Ways you can volunteer",
     text: "Give your expertise, time and passion to create meaningful impact.",
     formUrl: volunteerForm,
+    form: {
+      eyebrow: "Apply",
+      title: "Apply to volunteer",
+      text: "Tell us a little about yourself and how you would like to help. We read every application and will get back to you by email.",
+      roleLegend: "I'd like to volunteer as",
+      areasLegend: "Which areas could you facilitate?",
+      areasHint: "Choose any that fit. These are the stages of our framework.",
+      areasLink: { label: "What each stage covers", href: "/institute#framework" },
+      consentContact: "I agree to JCTEF contacting me about my application.",
+      // TODO: JCTEF to confirm minimum volunteer age and safeguarding checks
+      consentAge: "I am 18 or older.",
+      submit: "Send application",
+      sending: "Sending…",
+      success: (firstName: string, email: string) =>
+        `Thank you, ${firstName}. We've emailed a confirmation to ${email}.`,
+      error: "Something went wrong. Please try again, or email info@jctef.org.",
+    },
     facilitator: {
       title: "Volunteer as a programme facilitator",
       text: "Share your expertise by facilitating sessions in our Transformation Programme. Facilitators lead sessions in areas such as self-discovery, mental fitness, digital and foundational literacy, workforce readiness, financial literacy and more.",
@@ -1158,7 +1180,6 @@ export const getInvolved = {
         label: "See the areas you can facilitate",
         href: "/institute#framework",
       },
-      // TODO: confirm how facilitators apply (form, email or link)
       apply: { label: "Apply to volunteer", href: volunteerForm },
     },
     roles: [

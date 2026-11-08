@@ -8,6 +8,8 @@ const blogSlugs = readdirSync("content/blog")
   .map((file) => file.slice(0, -".mdx".length));
 
 const nextConfig: NextConfig = {
+  // The volunteer emails are read from emails/brevo/ at request time.
+  outputFileTracingIncludes: { "/**": ["./emails/brevo/*.html"] },
   cacheComponents: true,
   partialPrefetching: true,
   images: {

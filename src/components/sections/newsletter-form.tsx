@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { type NewsletterState, subscribeToNewsletter } from "@/app/actions/newsletter";
 import { CruiseButton } from "@/components/cruise/button";
 import { CruiseInput } from "@/components/cruise/input";
@@ -20,7 +20,12 @@ function Form() {
   const { toast } = useCruiseToast();
   const [state, action, pending] = useActionState(subscribeToNewsletter, initial);
 
+  const announced = useRef(0);
   useEffect(() => {
+    // Only react to a new result. Pages you leave are kept alive and their
+    // effects re-run when you come back; this stops old toasts reappearing.
+    if (state.id === announced.current) return;
+    announced.current = state.id;
     if (state.status === "idle" || !state.message) return;
     toast({
       tone: state.status === "error" ? "danger" : state.status === "already" ? "info" : "success",
