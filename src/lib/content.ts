@@ -75,7 +75,8 @@ export const site = {
   phone: "+234 815 171 4278",
   phoneHref: "tel:+2348151714278",
   whatsapp: "+234 815 171 4278",
-  whatsappMessage: "Hello JCTEF, I'd like to find out more about your programmes.",
+  whatsappMessage:
+    "Hello JCTEF, I'd like to find out more about your programmes.",
   hours: "Monday to Friday, 9:00am to 5:00pm WAT",
   enquiries: [
     { label: "General enquiries", email: "info@jctef.org" },
@@ -89,7 +90,10 @@ export const site = {
     { label: "Facebook", href: "https://www.facebook.com/OfficialJCTEF/" },
     { label: "Instagram", href: "https://www.instagram.com/official_jctef/" },
     { label: "X", href: "https://x.com/Official_jctef" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/company/cdm-foundation" },
+    {
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/company/cdm-foundation",
+    },
     { label: "TikTok", href: "https://www.tiktok.com/@jctef" },
     { label: "YouTube", href: "https://www.youtube.com/@jctef" },
   ] satisfies Social[],
@@ -202,7 +206,8 @@ export const audiences: (TitledText & { sentence?: string })[] = [
     title: "Young people aged 7 to 45",
     text: "At different life stages, equipping them to live and thrive purposefully.",
     /** Used as one sentence where the list reads as prose (About page). */
-    sentence: "Young people aged 7 to 45 at different life stages, equipping them to live and thrive purposefully.",
+    sentence:
+      "Young people aged 7 to 45 at different life stages, equipping them to live and thrive purposefully.",
   },
   {
     title: "Underprivileged or unemployed people",
@@ -225,12 +230,30 @@ export const mission =
   "To help individuals discover their potential, develop their human capital, strengthen their minds, acquire marketable skills and become productive contributors who create lasting value for themselves, their communities and society.";
 
 export const coreValues: TitledText[] = [
-  { title: "Transformation", text: "Lasting change begins on the inside, so we start with mindset." },
-  { title: "Empathy", text: "We meet people where they are, without labels or judgement." },
-  { title: "Integrity", text: "We do what we say, and we are honest about what we have done." },
-  { title: "Accountability", text: "We report progress to fellows, partners and donors alike." },
-  { title: "Excellence", text: "We hold our programmes, and ourselves, to a high standard." },
-  { title: "Innovation", text: "We test new ideas and keep what works for young people." },
+  {
+    title: "Transformation",
+    text: "Lasting change begins on the inside, so we start with mindset.",
+  },
+  {
+    title: "Empathy",
+    text: "We meet people where they are, without labels or judgement.",
+  },
+  {
+    title: "Integrity",
+    text: "We do what we say, and we are honest about what we have done.",
+  },
+  {
+    title: "Accountability",
+    text: "We report progress to fellows, partners and donors alike.",
+  },
+  {
+    title: "Excellence",
+    text: "We hold our programmes, and ourselves, to a high standard.",
+  },
+  {
+    title: "Innovation",
+    text: "We test new ideas and keep what works for young people.",
+  },
 ];
 // TODO: the one-line value descriptions above are new (the old site only
 // listed the six value names). Please review the wording.
@@ -334,7 +357,8 @@ export const home = {
     eyebrow: "Upcoming events",
     title: "Come and meet us",
     countdownLabel: "Time until RESET 2027",
-    venueNote: "Venue subject to change. Final details will be shared with registered attendees.",
+    venueNote:
+      "Venue subject to change. Final details will be shared with registered attendees.",
     directionsLabel: "Get directions",
   },
   partners: {
@@ -367,7 +391,8 @@ export const home = {
   newsletter: {
     title: "Stay up to date",
     text: "News about our fellows, events, research and new programmes, a few times a year.",
-    consent: "I agree to receive updates, publications and newsletters from JCTEF.",
+    consent:
+      "I agree to receive updates, publications and newsletters from JCTEF.",
   },
 };
 
@@ -432,22 +457,26 @@ export const outreachPhotos: OutreachPhoto[] = [
   {
     publicId: "IMG-20251024-WA0120_tiei8e",
     alt: "A facilitator in a black T-shirt stands with a group of secondary school students in blue patterned uniforms in a classroom during a web development training session, with laptops open on the tables in front of them",
-    caption: "Web development training for SS3 students at Champions Headstart International School, Lagos, October 2025", // TODO: confirm the date
+    caption:
+      "Web development training for SS3 students at Champions Headstart International School, Lagos, October 2025", // TODO: confirm the date
   },
   {
     publicId: "20251111_125140_1_euzahs",
     alt: "A facilitator in a blue T-shirt stands with a large group of secondary school students in light blue shirts and navy uniforms in a computer room during an AI and tech careers session, with desktop computers on the desks and a projection screen behind them",
-    caption: "AI and tech careers session for SS3 students at Oduduwa College, Osun State, November 2025", // TODO: confirm the date
+    caption:
+      "AI and tech careers session for SS3 students at Oduduwa College, Osun State, November 2025", // TODO: confirm the date
   },
   {
     publicId: "20251110_114900_1_nvd24j",
     alt: "A facilitator in a red shirt presents from a laptop to teachers seated at desks with computer monitors during an AI training session, with a slide projected on the screen at the front",
-    caption: "AI training for teachers at Oduduwa College, a government school in Osun State, November 2025", // TODO: confirm the date
+    caption:
+      "AI training for teachers at Oduduwa College, a government school in Osun State, November 2025", // TODO: confirm the date
   },
   {
     publicId: "20251111_132814_1_zgsj6y",
     alt: "Seen from the back of a classroom, a large class of secondary school students in light blue uniforms raise their hands as a facilitator in a white T-shirt leads an AI and tech careers session at the whiteboard",
-    caption: "AI and tech careers session for SS3 students at Oduduwa College, Osun State, November 2025", // TODO: confirm the date
+    caption:
+      "AI and tech careers session for SS3 students at St Davids College, Osun State, November 2025", // TODO: confirm the date
   },
   // These two are also in the hero slideshow (kept here at the team's request).
   {
@@ -480,12 +509,16 @@ export const faqs: Faq[] = [
     question: "Who can join JCTEF programmes?",
     answer:
       "Our programmes are for young people aged 7 to 45, including underprivileged or unemployed people, ex-offenders and people in recovery, orphans and school dropouts. They are open to both educated and non-educated people who are committed to personal growth.",
-    link: { label: "See the eligibility criteria", href: "/programmes#eligibility" },
+    link: {
+      label: "See the eligibility criteria",
+      href: "/programmes#eligibility",
+    },
   },
   {
     question: "How much does it cost to join a programme?",
     // Confirmed by the JCTEF team: free.
-    answer: "Our programmes are free to join, thanks to our partners, sponsors and donors.",
+    answer:
+      "Our programmes are free to join, thanks to our partners, sponsors and donors.",
   },
   {
     question: "How do I apply for the next cohort?",
@@ -497,7 +530,10 @@ export const faqs: Faq[] = [
     question: "How long does the programme last?",
     // Confirmed by the JCTEF team: three months.
     answer: "The JCTEF Transformation Programme lasts three months.",
-    link: { label: "About the Transformation Programme", href: "/programmes#transformation" },
+    link: {
+      label: "About the Transformation Programme",
+      href: "/programmes#transformation",
+    },
   },
   {
     question: "How can I volunteer or become a mentor?",
@@ -591,13 +627,19 @@ export const about = {
   },
   why: {
     eyebrow: "Why JCTEF exists",
-    title: "Built on a passion to see people become the best version of themselves",
+    title:
+      "Built on a passion to see people become the best version of themselves",
     text: [
       "Over the years, I have watched people lose their confidence, their joy and sometimes their sense of purpose. Not because they lacked value, but because they never had the opportunity, guidance or environment to discover what they were capable of becoming.",
       "Human potential is one of the world's greatest resources, yet one of its most underdeveloped. That conviction became the foundation of JCTEF.",
       "Our mission is not simply to empower people. It is to walk alongside them, providing guidance, practical tools, mentorship and opportunities that turn potential into productivity, purpose and lasting impact.",
     ],
-    affirmations: ["We believe in you.", "We see your potential.", "You matter.", "See you at the top!"],
+    affirmations: [
+      "We believe in you.",
+      "We see your potential.",
+      "You matter.",
+      "See you at the top!",
+    ],
   },
   faq: [
     {
@@ -800,7 +842,10 @@ export const programmes = {
         "Goal setting and strategic planning",
         "Connection and accountability",
       ],
-      cta: { label: "Register for RESET 2027", href: "https://bit.ly/Reset2027" },
+      cta: {
+        label: "Register for RESET 2027",
+        href: "https://bit.ly/Reset2027",
+      },
     },
     {
       id: "tech-paragon",
@@ -897,7 +942,12 @@ export const frameworkStages: FrameworkStage[] = [
   {
     number: 1,
     title: "Self-Discovery, Identity & Cognitive Development",
-    points: ["Identity and self-awareness", "Belief systems", "Purpose and direction", "Values, strengths and potential"],
+    points: [
+      "Identity and self-awareness",
+      "Belief systems",
+      "Purpose and direction",
+      "Values, strengths and potential",
+    ],
   },
   {
     number: 2,
@@ -942,12 +992,14 @@ export const frameworkStages: FrameworkStage[] = [
   {
     number: 6,
     title: "Financial Literacy & Wealth Creation",
-    tagline: "Understand money, make smarter financial decisions, and learn the principles of building wealth.",
+    tagline:
+      "Understand money, make smarter financial decisions, and learn the principles of building wealth.",
   },
   {
     number: 7,
     title: "Technical & Vocational Skills",
-    tagline: "Practical, industry-relevant skills for employment and enterprise.",
+    tagline:
+      "Practical, industry-relevant skills for employment and enterprise.",
   },
   {
     number: 8,
@@ -958,7 +1010,8 @@ export const frameworkStages: FrameworkStage[] = [
     number: 9,
     title: "Economic Placement & Enterprise Development",
     tagline: "Turn your capabilities into opportunities.",
-    summary: "This stage focuses on moving from capability to economic participation.",
+    summary:
+      "This stage focuses on moving from capability to economic participation.",
   },
 ];
 
@@ -969,7 +1022,8 @@ export const frameworkStages: FrameworkStage[] = [
 export const institute = {
   intro: {
     eyebrow: "JCTEF Institute",
-    title: "Advancing human capital through learning, frameworks and innovation",
+    title:
+      "Advancing human capital through learning, frameworks and innovation",
     text: "The JCTEF Institute for Human Capital Development is the knowledge and framework division of the foundation. We develop evidence-informed frameworks, learning resources and practical methods that strengthen human capital, improve workforce readiness and promote sustainable economic productivity.",
     tags: [
       "Human capital development",
@@ -1008,21 +1062,57 @@ export const institute = {
     title: "The JCTEF Human Capital Index (JHCI)",
     text: "We measure transformation, not just attendance. The JHCI is the Institute's assessment framework for tracking each fellow's growth from baseline to graduation and beyond.",
     dimensions: [
-      { title: "Mindset and personal growth", text: "Self-awareness, confidence, resilience and discipline." },
-      { title: "Competency development", text: "Practical knowledge, transferable skills and workplace competencies." },
-      { title: "Workforce readiness", text: "Employability, professionalism, communication and teamwork." },
-      { title: "Financial capability", text: "Financial literacy, entrepreneurship and responsible decisions." },
-      { title: "Technical and vocational competence", text: "Proficiency in the technical or trade skills learned." },
-      { title: "Economic readiness", text: "Preparedness for employment, enterprise or other productive work." },
+      {
+        title: "Mindset and personal growth",
+        text: "Self-awareness, confidence, resilience and discipline.",
+      },
+      {
+        title: "Competency development",
+        text: "Practical knowledge, transferable skills and workplace competencies.",
+      },
+      {
+        title: "Workforce readiness",
+        text: "Employability, professionalism, communication and teamwork.",
+      },
+      {
+        title: "Financial capability",
+        text: "Financial literacy, entrepreneurship and responsible decisions.",
+      },
+      {
+        title: "Technical and vocational competence",
+        text: "Proficiency in the technical or trade skills learned.",
+      },
+      {
+        title: "Economic readiness",
+        text: "Preparedness for employment, enterprise or other productive work.",
+      },
     ] satisfies TitledText[],
   },
   serves: [
-    { title: "Students and graduates", text: "Preparing young people for academic, career and personal success." },
-    { title: "Job seekers and young professionals", text: "Competence and confidence for meaningful employment." },
-    { title: "Aspiring entrepreneurs", text: "Support to build sustainable small businesses." },
-    { title: "Orphans, vulnerable youth and school dropouts", text: "Personal development, education support and skills training." },
-    { title: "Communities and development practitioners", text: "Community initiatives for human capital and productivity." },
-    { title: "Educators, trainers and facilitators", text: "Strengthening those who develop and mentor others." },
+    {
+      title: "Students and graduates",
+      text: "Preparing young people for academic, career and personal success.",
+    },
+    {
+      title: "Job seekers and young professionals",
+      text: "Competence and confidence for meaningful employment.",
+    },
+    {
+      title: "Aspiring entrepreneurs",
+      text: "Support to build sustainable small businesses.",
+    },
+    {
+      title: "Orphans, vulnerable youth and school dropouts",
+      text: "Personal development, education support and skills training.",
+    },
+    {
+      title: "Communities and development practitioners",
+      text: "Community initiatives for human capital and productivity.",
+    },
+    {
+      title: "Educators, trainers and facilitators",
+      text: "Strengthening those who develop and mentor others.",
+    },
   ] satisfies TitledText[],
   fellow: {
     eyebrow: "Become a JCTEF fellow",
@@ -1036,7 +1126,10 @@ export const institute = {
       { label: "Ongoing support", hint: "Mentorship and funding" },
     ],
     // TODO: is there an online application form? Until then, applications go to program@jctef.org.
-    cta: { label: "Apply by email", href: "mailto:program@jctef.org?subject=JCTEF%20fellowship%20application" },
+    cta: {
+      label: "Apply by email",
+      href: "mailto:program@jctef.org?subject=JCTEF%20fellowship%20application",
+    },
   },
 };
 
@@ -1061,7 +1154,10 @@ export const getInvolved = {
     facilitator: {
       title: "Volunteer as a programme facilitator",
       text: "Share your expertise by facilitating sessions in our Transformation Programme. Facilitators lead sessions in areas such as self-discovery, mental fitness, digital and foundational literacy, workforce readiness, financial literacy and more.",
-      cta: { label: "See the areas you can facilitate", href: "/institute#framework" },
+      cta: {
+        label: "See the areas you can facilitate",
+        href: "/institute#framework",
+      },
       // TODO: confirm how facilitators apply (form, email or link)
       apply: { label: "Apply to volunteer", href: volunteerForm },
     },
@@ -1098,10 +1194,22 @@ export const getInvolved = {
       },
     ],
     benefits: [
-      { title: "Recognition", text: "Volunteer recognition and acknowledgement for your contribution." },
-      { title: "Growth and networking", text: "Meet professionals and changemakers while building new skills." },
-      { title: "Leadership", text: "Grow into leadership roles and help shape JCTEF initiatives." },
-      { title: "Recommendation", text: "Outstanding volunteers may receive recommendation letters." },
+      {
+        title: "Recognition",
+        text: "Volunteer recognition and acknowledgement for your contribution.",
+      },
+      {
+        title: "Growth and networking",
+        text: "Meet professionals and changemakers while building new skills.",
+      },
+      {
+        title: "Leadership",
+        text: "Grow into leadership roles and help shape JCTEF initiatives.",
+      },
+      {
+        title: "Recommendation",
+        text: "Outstanding volunteers may receive recommendation letters.",
+      },
     ] satisfies TitledText[],
   },
   partner: {
@@ -1112,33 +1220,78 @@ export const getInvolved = {
       {
         title: "Educational institutions",
         tagline: "Expanding access to learning",
-        items: ["Joint training programmes", "Professional certification", "Learning resources", "Guest lectures and workshops", "Educational sponsorships"],
+        items: [
+          "Joint training programmes",
+          "Professional certification",
+          "Learning resources",
+          "Guest lectures and workshops",
+          "Educational sponsorships",
+        ],
       },
       {
         title: "Corporate and industry partners",
         tagline: "Creating employment pathways",
-        items: ["Jobs and graduate recruitment", "Internship placements", "Apprenticeships", "Workplace mentorship", "Industry-led training"],
+        items: [
+          "Jobs and graduate recruitment",
+          "Internship placements",
+          "Apprenticeships",
+          "Workplace mentorship",
+          "Industry-led training",
+        ],
       },
       {
         title: "Development and nonprofit organisations",
         tagline: "Supporting transformation through investment",
-        items: ["Sponsor fellows' training", "Fund vocational skills", "Scholarships and education support", "Programme sponsorship", "Start-up grants"],
+        items: [
+          "Sponsor fellows' training",
+          "Fund vocational skills",
+          "Scholarships and education support",
+          "Programme sponsorship",
+          "Start-up grants",
+        ],
       },
       {
         title: "Trainers, mentors and experts",
         tagline: "Sharing knowledge, building capacity",
-        items: ["Facilitate training sessions", "Mentor fellows", "Develop learning resources", "Review curricula", "Career guidance"],
+        items: [
+          "Facilitate training sessions",
+          "Mentor fellows",
+          "Develop learning resources",
+          "Review curricula",
+          "Career guidance",
+        ],
       },
     ],
     benefits: [
-      { title: "Shared vision", text: "Work with an organisation committed to sustainable empowerment." },
-      { title: "Meaningful social impact", text: "Equip people to become productive contributors to society." },
-      { title: "Talent pipeline", text: "Meet trained, job-ready fellows for internships and employment." },
-      { title: "Transparency", text: "Regular updates on delivery, fellow progress and the impact of your support." },
-      { title: "Community development", text: "Strengthen education, skills, enterprise and economic inclusion." },
-      { title: "CSR recognition", text: "Show your commitment to responsible corporate citizenship." },
+      {
+        title: "Shared vision",
+        text: "Work with an organisation committed to sustainable empowerment.",
+      },
+      {
+        title: "Meaningful social impact",
+        text: "Equip people to become productive contributors to society.",
+      },
+      {
+        title: "Talent pipeline",
+        text: "Meet trained, job-ready fellows for internships and employment.",
+      },
+      {
+        title: "Transparency",
+        text: "Regular updates on delivery, fellow progress and the impact of your support.",
+      },
+      {
+        title: "Community development",
+        text: "Strengthen education, skills, enterprise and economic inclusion.",
+      },
+      {
+        title: "CSR recognition",
+        text: "Show your commitment to responsible corporate citizenship.",
+      },
     ] satisfies TitledText[],
-    cta: { label: "Email our partnerships team", href: "mailto:partner@jctef.org?subject=Partnering%20with%20JCTEF" },
+    cta: {
+      label: "Email our partnerships team",
+      href: "mailto:partner@jctef.org?subject=Partnering%20with%20JCTEF",
+    },
   },
   fellow: {
     eyebrow: "Become a fellow",
