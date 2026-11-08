@@ -1,10 +1,10 @@
 import { Check } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { CruiseBadge } from "@/components/cruise/badge";
 import { ButtonLink } from "@/components/layout/button-link";
 import { FeatureGrid } from "@/components/sections/feature-grid";
-import { Journey } from "@/components/sections/journey";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { programmes } from "@/lib/content";
@@ -12,7 +12,7 @@ import { programmes } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Programmes",
   description:
-    "The JCTEF Transformation Programme, Young Minds Initiative, Campus Transformation and Wellness Initiative, Business Summit and Annual Retreat.",
+    "The JCTEF Transformation Programme, Young Minds Initiative, Campus Transformation and Wellness Initiative, Business Summit, Annual Retreat and Women in Tech: The Tech Paragon.",
 };
 
 export default function ProgrammesPage() {
@@ -47,8 +47,6 @@ export default function ProgrammesPage() {
         </div>
       </section>
 
-      <Journey showCta={false} />
-
       <section aria-labelledby="initiatives-title" className="section">
         <div className="site-container grid gap-10">
           <SectionHeading id="initiatives-title" eyebrow="Our initiatives" title="Programmes and initiatives" />
@@ -67,23 +65,39 @@ export default function ProgrammesPage() {
                   <h3 id={`${item.id}-title`} className="text-h3 md:text-h2">
                     {item.title}
                   </h3>
-                  <p className="text-ink-muted">{item.text}</p>
+                  {[item.text].flat().map((p) => (
+                    <p key={p} className="text-ink-muted">
+                      {p}
+                    </p>
+                  ))}
                   {item.cta && (
                     <div className="pt-2">
                       <ButtonLink href={item.cta.href}>{item.cta.label}</ButtonLink>
                     </div>
                   )}
                 </div>
-                <div>
-                  <h4 className="mb-3 text-label uppercase text-ink-muted">Focus areas</h4>
-                  <ul className="grid gap-2.5">
-                    {item.points.map((point) => (
-                      <li key={point} className="flex gap-3">
-                        <Check aria-hidden="true" strokeWidth={3} className="mt-0.5 size-5 shrink-0 text-success" />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
+                <div className="grid content-start gap-6">
+                  {item.image && (
+                    <Image
+                      src={item.image.src}
+                      alt={item.image.alt}
+                      width={item.image.width}
+                      height={item.image.height}
+                      sizes="(min-width: 768px) 480px, 100vw"
+                      className="h-auto w-full rounded-brutal border-(length:--border-w) border-ink"
+                    />
+                  )}
+                  <div>
+                    <h4 className="mb-3 text-label uppercase text-ink-muted">Focus areas</h4>
+                    <ul className="grid gap-2.5">
+                      {item.points.map((point) => (
+                        <li key={point} className="flex gap-3">
+                          <Check aria-hidden="true" strokeWidth={3} className="mt-0.5 size-5 shrink-0 text-success" />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </article>
             ))}
@@ -100,8 +114,8 @@ export default function ProgrammesPage() {
 
       <section id="eligibility" aria-labelledby="eligibility-title" className="section scroll-mt-20">
         <div className="site-container grid gap-10">
-          <SectionHeading id="eligibility-title" eyebrow="Eligibility" title="How to join our programmes">
-            <p>Many of our programmes are free, thanks to our partners and donors. Every applicant goes through screening first.</p>
+          <SectionHeading id="eligibility-title" eyebrow={programmes.join.eyebrow} title={programmes.join.title}>
+            <p>{programmes.join.text}</p>
           </SectionHeading>
           <FeatureGrid items={programmes.eligibility} columns={4} numbered />
           <div className="flex flex-col gap-4 sm:flex-row">

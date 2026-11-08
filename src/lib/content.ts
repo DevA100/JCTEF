@@ -16,27 +16,43 @@
 
 export type Link = { label: string; href: string };
 export type TitledText = { title: string; text: string };
-export type Social = {
-  label: string;
-  /** null = not shown until the team confirms the right account. */
-  href: string | null;
-};
+export type Social = { label: string; href: string };
 export type JctefEvent = {
   slug: string;
   title: string;
   subtitle?: string;
   /** ISO 8601 with the Lagos offset (WAT, +01:00), or null if not set yet. */
   startsAt: string | null;
+  /** When it finishes. Events disappear from the site once this (or, if
+   * missing, the end of the start day) has passed. */
+  endsAt?: string;
   /** Human-readable date line, e.g. "Saturday 12 December 2026". */
   dateLabel: string;
   timeLabel?: string;
+  /** General area, used when there is no specific venue yet. */
   location: string;
+  /** Specific venue. Gets a "Get directions" link to Google Maps. */
+  venue?: string;
+  /** false shows a "subject to change" note under the venue. */
+  venueConfirmed?: boolean;
   summary: string;
   cta?: Link;
   image?: { src: string; alt: string; width: number; height: number };
 };
-export type Testimonial = { quote: string; name: string; role: string; photo?: string };
-export type BlogPost = { slug: string; title: string; excerpt: string; date: string };
+/**
+ * `kind: "quote"` is the fellow's own words (shown in quotation marks).
+ * `kind: "summary"` was written about the fellow, so it is shown as
+ * "What they gained", never as a quote.
+ */
+export type Testimonial = {
+  kind: "quote" | "summary";
+  text: string;
+  name: string;
+  role: string;
+  /** Pronoun for the summary heading, e.g. "What she gained". */
+  pronoun?: "she" | "he" | "they";
+  photo?: string;
+};
 
 /* -------------------------------------------------------------------------- */
 /* Site-wide                                                                  */
@@ -46,16 +62,18 @@ export const site = {
   name: "Jacob Chidimma Transformation and Empowerment Foundation",
   shortName: "JCTEF",
   tagline: "Transform, Equip, Empower",
-  coreMessage: "From dependency to productivity",
+  coreMessage: "From potential to productivity",
   description:
-    "JCTEF is a youth-focused nonprofit in Lekki, Lagos, helping young people move from dependency to productivity through mindset transformation, skills training, mentorship and access to funding.",
+    "JCTEF is a youth-focused nonprofit in Lekki, Lagos, helping young people move from potential to productivity through mindset transformation, skills training, mentorship and access to funding.",
   url: "https://jctef.org",
   donateUrl: "https://flutterwave.com/donate/1pci95j4kyk9",
-  address: "Lekki, Lagos, Nigeria", // TODO: add a full street address if the office can be listed publicly.
+  /** Corporate Affairs Commission (CAC) registration number. */
+  registration: { label: "RC", number: "8937457" },
+  // Area only, by decision of the JCTEF team: never publish a street address.
+  address: "Lekki, Lagos, Nigeria",
   email: "info@jctef.org",
   phone: "+234 815 171 4278",
   phoneHref: "tel:+2348151714278",
-  // TODO: confirm this is also the number JCTEF uses for WhatsApp.
   whatsapp: "+234 815 171 4278",
   whatsappMessage: "Hello JCTEF, I'd like to find out more about your programmes.",
   hours: "Monday to Friday, 9:00am to 5:00pm WAT",
@@ -67,19 +85,23 @@ export const site = {
     { label: "Donations and support", email: "donate@jctef.org" },
     { label: "Volunteering", email: "info@jctef.org" },
   ],
-  // TODO: the old site's Facebook, X and LinkedIn links point to "CDM"
-  // accounts (cdmcommunity, CDM_Group, cdm-foundation). Send the correct
-  // JCTEF links; they stay hidden until then.
   socials: [
-    // TODO: the old site lists two Instagram accounts: @official_jctef
-    // (footer) and @jacobchidimmafoundation (contact page). Which is current?
+    { label: "Facebook", href: "https://www.facebook.com/OfficialJCTEF/" },
     { label: "Instagram", href: "https://www.instagram.com/official_jctef/" },
+    { label: "X", href: "https://x.com/Official_jctef" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/company/cdm-foundation" },
+    { label: "TikTok", href: "https://www.tiktok.com/@jctef" },
     { label: "YouTube", href: "https://www.youtube.com/@jctef" },
-    { label: "Facebook", href: null },
-    { label: "X (Twitter)", href: null },
-    { label: "LinkedIn", href: null },
   ] satisfies Social[],
 } as const;
+
+/** Registration wording: small trust signals, never a headline. */
+const rc = `${site.registration.label} ${site.registration.number}`;
+export const registration = {
+  short: rc,
+  trust: `Registered nonprofit · ${rc}`,
+  full: `Registered with the Corporate Affairs Commission (CAC), Nigeria. ${rc}.`,
+};
 
 export const navigation = {
   main: [
@@ -108,6 +130,10 @@ export const navigation = {
 /* Shared building blocks                                                     */
 /* -------------------------------------------------------------------------- */
 
+/** What JCTEF helps young people do. Shared by the homepage and About page. */
+export const outcome =
+  "move from potential to productivity and from unemployment to opportunity, so they can thrive purposefully";
+
 /** The four pillars of JCTEF's work. */
 export const pillars: (TitledText & { short: string })[] = [
   {
@@ -132,7 +158,11 @@ export const pillars: (TitledText & { short: string })[] = [
   },
 ];
 
-/** The six programme stages: the journey from dependency to productivity. */
+/**
+ * The six programme stages: the journey from potential to productivity.
+ * Currently unused: the journey section was removed from the homepage and the
+ * Programmes page at the JCTEF team's request. Kept for future use.
+ */
 export const programmeStages: (TitledText & { short: string })[] = [
   {
     short: "Mindset",
@@ -166,13 +196,13 @@ export const programmeStages: (TitledText & { short: string })[] = [
   },
 ];
 
-/** Who JCTEF serves (homepage version). */
-export const audiences: TitledText[] = [
+/** Who JCTEF serves (homepage cards and About page list). */
+export const audiences: (TitledText & { sentence?: string })[] = [
   {
-    // TODO: the old site says "ages 2–45" (almost certainly a typo). The
-    // RESET 2027 poster says 18–45. Please confirm the target age range.
-    title: "Young people aged 18 to 45",
-    text: "Youth at different life stages who are ready to move from dependency to productivity.",
+    title: "Young people aged 7 to 45",
+    text: "At different life stages, equipping them to live and thrive purposefully.",
+    /** Used as one sentence where the list reads as prose (About page). */
+    sentence: "Young people aged 7 to 45 at different life stages, equipping them to live and thrive purposefully.",
   },
   {
     title: "Underprivileged or unemployed people",
@@ -189,7 +219,7 @@ export const audiences: TitledText[] = [
 ];
 
 export const vision =
-  "To become a globally recognised organisation for human transformation, advancing human capital development through education, research, innovation and practical empowerment, while raising a generation of purpose-driven, productive and economically independent individuals who transform communities and nations.";
+  "To become a globally recognised organisation for human transformation, advancing human capital development through strategic programmes and practical empowerment, while raising a generation of purpose-driven, productive and economically independent individuals who transform communities and nations.";
 
 export const mission =
   "To help individuals discover their potential, develop their human capital, strengthen their minds, acquire marketable skills and become productive contributors who create lasting value for themselves, their communities and society.";
@@ -225,9 +255,28 @@ export const partnerTypes: TitledText[] = [
   },
 ];
 
-// TODO: the old site repeated one placeholder testimonial three times. Add
-// real, consented quotes from fellows (name, role, optional photo) here.
-export const testimonials: Testimonial[] = [];
+// TODO: confirm each fellow approved this wording for publication
+export const testimonials: Testimonial[] = [
+  {
+    kind: "summary",
+    pronoun: "she",
+    name: "Ojo Boluwatife Moyosore",
+    role: "JCTEF Fellow, Cohort 1",
+    text: "Gained insight into capacity building, valuable skills, and how to sell her value and skills.",
+  },
+  {
+    kind: "quote",
+    name: "Jinadu Teslim O.",
+    role: "JCTEF Fellow, Cohort 1",
+    text: "I gained guidance on self-discovery and identifying my path, and insight into how to translate my value into earning. I'm grateful to JCTEF for helping me gain clarity.",
+  },
+  {
+    kind: "quote",
+    name: "Joshua Oluwadare Ajao",
+    role: "JCTEF Fellow, Cohort 1",
+    text: "JCTEF helped me with character development, especially emotional intelligence. People around me have been commenting on the positive change, and I'm grateful to JCTEF for the work they do.",
+  },
+];
 
 /* -------------------------------------------------------------------------- */
 /* Homepage                                                                   */
@@ -236,8 +285,8 @@ export const testimonials: Testimonial[] = [];
 export const home = {
   hero: {
     eyebrow: "Transform, Equip, Empower",
-    title: "From dependency to productivity",
-    text: "Structured programmes that take young people in Lagos through mindset transformation, hands-on skills, mentorship and access to funding, so they can build economic resilience and lead purposeful lives.",
+    title: "From potential to productivity",
+    text: "Focused on human capital development through structured programmes that guide young people through mindset transformation, personal development, capacity building, practical skills acquisition, mentorship, and access to funding and other opportunities, equipping them to build economic resilience and live purposeful, productive lives.",
     primaryCta: { label: "Explore our programmes", href: "/programmes" },
     secondaryCta: { label: "Support JCTEF", href: site.donateUrl },
     // TODO: replace with a real, consented photo of JCTEF fellows
@@ -254,35 +303,28 @@ export const home = {
     title: "Lasting empowerment begins with transformation",
     text: [
       "JCTEF is a youth-focused nonprofit organisation committed to transforming lives by equipping young people with the mindset, skills, opportunities and support they need to thrive.",
-      "Before people can change their circumstances, they must first change the way they think, grow in their capabilities and discover their purpose. So we help young people move from dependency to productivity, from unemployment to opportunity and from potential to purpose.",
+      `Before people can change their circumstances, they must first change the way they think, grow in their capabilities and discover their purpose. So we help young people ${outcome}.`,
     ],
     cta: { label: "Learn more about us", href: "/about" },
-  },
-  journey: {
-    eyebrow: "The journey",
-    title: "Six stops from dependency to productivity",
-    text: "Every JCTEF fellow follows the same structured route. Nobody is dropped off halfway.",
-    start: "Dependency",
-    end: "Productivity",
-    cta: { label: "See how the programme works", href: "/programmes" },
   },
   audiences: {
     eyebrow: "Who we serve",
     title: "Built for the young people others overlook",
   },
   impact: {
-    eyebrow: "Our impact so far",
-    title: "Our first cohort",
-    text: "We are a young foundation and we would rather show you honest numbers than big ones. Here is where we are after our first year.",
-    // TODO: confirm these figures (carried over from the old site's
-    // counters: 1+ years, 30+ youth, 2+ partners, 2+ projects).
+    /** Visually hidden heading; the section shows figures only. */
+    title: "Our impact",
     stats: [
-      { value: "30+", label: "young people empowered" },
+      { value: "60+", label: "young people empowered" },
+      // TODO: confirm partner count
       { value: "2", label: "partner organisations" },
-      { value: "2", label: "projects completed" },
-      { value: "1", label: "year of service" },
+      { value: "3", label: "projects completed" },
+      { value: "1+", label: "year of service" },
     ],
-    footnote: "Cohort 1 of the JCTEF Transformation Programme began on 15 August 2026.",
+  },
+  testimonials: {
+    eyebrow: "In their words",
+    title: "Fellows from Cohort 1",
   },
   values: {
     eyebrow: "Our direction",
@@ -292,6 +334,8 @@ export const home = {
     eyebrow: "Upcoming events",
     title: "Come and meet us",
     countdownLabel: "Time until RESET 2027",
+    venueNote: "Venue subject to change. Final details will be shared with registered attendees.",
+    directionsLabel: "Get directions",
   },
   partners: {
     eyebrow: "Partnerships",
@@ -328,6 +372,95 @@ export const home = {
 };
 
 /* -------------------------------------------------------------------------- */
+/* Homepage hero slideshow                                                    */
+/* -------------------------------------------------------------------------- */
+
+export type HeroSlide = {
+  /** Cloudinary public ID (cloud: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME). Never a raw
+   * file URL: Cloudinary converts every photo, including iPhone HEIC files, to
+   * AVIF/WebP/JPEG for each browser. */
+  publicId: string;
+  /** Who is in the photo and what is happening. */
+  alt: string;
+  /** CSS object-position for any extra cropping after Cloudinary's face crop. */
+  focus: string;
+};
+
+// TODO: confirm everyone in these photos agreed to appear on the website.
+// IMG_0238 was uploaded twice (IMG_0238_xsd9lt and IMG_0238_t45fdj are the
+// same photo), so only one copy is used.
+// If this list is empty, the hero falls back to the illustration layout.
+export const heroSlides: HeroSlide[] = [
+  {
+    publicId: "IMG_7078_tocqtx",
+    alt: "A group of JCTEF Cohort 1 fellows standing outdoors on a lawn, holding a banner for the JCTEF Transformation Programme end-of-programme meetup",
+    focus: "center 35%",
+  },
+  {
+    publicId: "IMG_0238_xsd9lt",
+    alt: "Two JCTEF fellows standing outdoors, holding a banner for the Cohort 1 end-of-programme meetup",
+    focus: "center 30%",
+  },
+];
+
+/* -------------------------------------------------------------------------- */
+/* Homepage FAQs                                                              */
+/* -------------------------------------------------------------------------- */
+
+export type Faq = { question: string; answer: string; link?: Link };
+
+// TODO: JCTEF team to review and approve FAQ answers
+export const faqs: Faq[] = [
+  {
+    question: "What is JCTEF?",
+    answer:
+      "The Jacob Chidimma Transformation and Empowerment Foundation (JCTEF) is a youth-focused nonprofit in Lekki, Lagos. We help young people move from potential to productivity through mindset transformation, skills training, mentorship and access to funding.",
+    link: { label: "More about JCTEF", href: "/about" },
+  },
+  {
+    question: "Who can join JCTEF programmes?",
+    answer:
+      "Our programmes are for young people aged 7 to 45, including underprivileged or unemployed people, ex-offenders and people in recovery, orphans and school dropouts. They are open to both educated and non-educated people who are committed to personal growth.",
+    link: { label: "See the eligibility criteria", href: "/programmes#eligibility" },
+  },
+  {
+    question: "How much does it cost to join a programme?",
+    // Confirmed by the JCTEF team: free.
+    answer: "Our programmes are free to join, thanks to our partners, sponsors and donors.",
+  },
+  {
+    question: "How do I apply for the next cohort?",
+    answer:
+      "Email program@jctef.org or call us to apply. Every applicant goes through screening, including background checks and an interview, before joining a cohort.",
+    link: { label: "How to become a fellow", href: "/institute#fellow" },
+  },
+  {
+    question: "How long does the programme last?",
+    // Confirmed by the JCTEF team: three months.
+    answer: "The JCTEF Transformation Programme lasts three months.",
+    link: { label: "About the Transformation Programme", href: "/programmes#transformation" },
+  },
+  {
+    question: "How can I volunteer or become a mentor?",
+    answer:
+      "Fill in our volunteer form. We welcome mentors, trainers, counsellors and mental health professionals, as well as people with admin, creative and outreach skills.",
+    link: { label: "Ways to volunteer", href: "/get-involved#volunteer" },
+  },
+  {
+    question: "How can my organisation partner with JCTEF?",
+    answer:
+      "Email our partnerships team at partner@jctef.org. Partners can sponsor fellows' training, offer internships and mentorship, or fund skills and start-up support.",
+    link: { label: "Partner with us", href: "/get-involved#partner" },
+  },
+  {
+    question: "How can I donate, and how is my donation used?",
+    answer:
+      "You can donate online through our Flutterwave page. Donations fund training, technical and vocational skills, mentorship, education support and start-up grants for young people.",
+    link: { label: "Donate now", href: site.donateUrl },
+  },
+];
+
+/* -------------------------------------------------------------------------- */
 /* Events                                                                     */
 /* -------------------------------------------------------------------------- */
 
@@ -337,10 +470,13 @@ export const events: JctefEvent[] = [
     title: "RESET 2027: JCTEF Annual Retreat",
     subtitle: "Reflect. Recalibrate. Rebuild.",
     startsAt: "2026-12-12T11:00:00+01:00",
+    endsAt: "2026-12-12T17:00:00+01:00",
     dateLabel: "Saturday 12 December 2026",
     timeLabel: "11:00am to 5:00pm WAT",
-    // TODO: add the venue once it is announced.
-    location: "Lagos (venue to be announced)",
+    location: "Lekki, Lagos",
+    venue: "Lekki Conservation Centre, Lekki, Lagos",
+    // Set to true once the venue is final: the "subject to change" note disappears.
+    venueConfirmed: false,
     summary:
       "A one-day retreat to step away from the pressure of the year, reflect honestly and plan intentionally for the year ahead.",
     cta: { label: "Register for RESET 2027", href: "https://bit.ly/Reset2027" },
@@ -385,7 +521,7 @@ export const about = {
     title: "Transforming lives through human capital development",
     text: [
       "The Jacob Chidimma Transformation and Empowerment Foundation (JCTEF) is a youth-focused nonprofit organisation committed to transforming lives by equipping young people with the mindset, skills, opportunities and support they need to thrive.",
-      "Through human capital development, skills acquisition, mentorship, workforce development, entrepreneurship support, financial literacy, capacity building and access to funding, we help young people move from dependency to productivity, from unemployment to opportunity and from potential to purpose.",
+      `Through human capital development, skills acquisition, mentorship, workforce development, entrepreneurship support, financial literacy, capacity building and access to funding, we help young people ${outcome}.`,
       "Our mission goes beyond providing resources. We cultivate character, build competence, inspire leadership and empower individuals to become catalysts for positive change in their families, communities and society.",
     ],
     ripple: [
@@ -415,7 +551,7 @@ export const about = {
     {
       q: "Are JCTEF programmes free?",
       a: [
-        "Many of our programmes are free, thanks to our partners, sponsors and donors. Some specialised programmes have their own eligibility or registration requirements.",
+        "Yes. Our programmes are free to join, thanks to our partners, sponsors and donors. Some specialised programmes have their own eligibility or registration requirements.",
       ],
     },
     {
@@ -480,7 +616,7 @@ export const founder = {
     {
       title: "Choosing growth over circumstances",
       text: [
-        "I learned that true transformation begins from within. Through faith, continuous learning and self-reflection, I broke free from limiting beliefs. As my mindset changed, new opportunities followed: I moved into software engineering and built a career in banking.",
+        "I learned that true transformation begins from within. Through faith, continuous learning and self-reflection, I broke free from limiting beliefs. As my mindset changed, new opportunities followed: I built a career in banking, then switched careers into software engineering and earned a Master of Information Technology (Software Engineering) from Miva Open University. And the growth continues.",
         "One question stayed with me: what about the millions of young people whose potential remains untapped because they lack guidance, opportunity and belief in themselves? That question became JCTEF.",
       ],
     },
@@ -503,6 +639,18 @@ export const founder = {
 /* -------------------------------------------------------------------------- */
 /* Programmes                                                                 */
 /* -------------------------------------------------------------------------- */
+
+export type Initiative = {
+  /** Anchor on /programmes, e.g. /programmes#tech-paragon */
+  id: string;
+  title: string;
+  tag: string;
+  /** One string per paragraph, or a single paragraph. */
+  text: string | string[];
+  points: string[];
+  image?: { src: string; alt: string; width: number; height: number };
+  cta?: Link;
+};
 
 export const programmes = {
   intro: {
@@ -595,7 +743,38 @@ export const programmes = {
       ],
       cta: { label: "Register for RESET 2027", href: "https://bit.ly/Reset2027" },
     },
-  ],
+    {
+      id: "tech-paragon",
+      title: "Women in Tech: The Tech Paragon",
+      tag: "Women in tech · Across Africa",
+      text: [
+        "Women in Tech: The Tech Paragon is an initiative that empowers women in tech to move from passive participants to active participants, growing them into tech leaders and builders of innovative tech solutions.",
+        "Through a community of women in tech across Africa, members fix each other's crowns, supporting and encouraging one another. Most importantly, the initiative brings opportunities to women in tech to help them scale.",
+        "It is built on a simple principle: when you empower a woman, you empower a nation. It also tackles the inequality and bias women face in the tech sector.",
+      ],
+      points: [
+        "From passive to active participants in tech",
+        "Growing tech leaders and builders of innovative solutions",
+        "A supportive community of women in tech across Africa",
+        "Opportunities that help women in tech scale",
+        "Tackling inequality and bias in the tech sector",
+      ],
+      // TODO: Tech Paragon photo
+      image: {
+        src: "/images/tech-paragon-placeholder.svg",
+        alt: "Placeholder illustration of a crown above a laptop, standing in for a photo of The Tech Paragon community",
+        width: 1200,
+        height: 800,
+      },
+      // TODO: confirm how women join (link, form or email)
+      cta: { label: "Ask about joining", href: "/contact" },
+    },
+  ] as Initiative[],
+  join: {
+    eyebrow: "Eligibility",
+    title: "How to join our Transformation Programme",
+    text: "The Transformation Programme is free to join, thanks to our partners and donors. Every applicant goes through screening first.",
+  },
   impactAreas: [
     {
       title: "Mental transformation",
@@ -624,9 +803,8 @@ export const programmes = {
   ] satisfies TitledText[],
   eligibility: [
     {
-      // TODO: confirm the age range (old site: "2–45"; RESET poster: 18–45).
       title: "Age",
-      text: "Aged 18 to 45, at any life stage, and in need of support to transform and grow.",
+      text: "Aged 7 to 45, at any life stage, and in need of support to transform and grow.",
     },
     {
       title: "Commitment to change",
@@ -642,6 +820,88 @@ export const programmes = {
     },
   ] satisfies TitledText[],
 };
+
+/* -------------------------------------------------------------------------- */
+/* JCTEF Institute: Human Capital Transformation Framework                    */
+/* -------------------------------------------------------------------------- */
+
+export type FrameworkStage = {
+  number: number;
+  title: string;
+  tagline?: string;
+  summary?: string;
+  points?: string[];
+};
+
+/** The nine stages of the JCTEF Human Capital Transformation Framework. */
+export const frameworkStages: FrameworkStage[] = [
+  {
+    number: 1,
+    title: "Self-Discovery, Identity & Cognitive Development",
+    points: ["Identity and self-awareness", "Belief systems", "Purpose and direction", "Values, strengths and potential"],
+  },
+  {
+    number: 2,
+    title: "Mental Fitness, Emotional Wellbeing & Resilience",
+    tagline: "Develop the capacity to function, adapt and thrive.",
+    points: [
+      "Emotional intelligence",
+      "Emotional regulation",
+      "Emotional wellbeing and recovery from difficult experiences",
+      "Resilience",
+      "Stress management",
+    ],
+  },
+  {
+    number: 3,
+    title: "Relationship Capital & Networking",
+    tagline: "Know how to connect.",
+  },
+  {
+    number: 4,
+    title: "Digital & Foundational Literacy",
+    points: [
+      "Digital competency",
+      "Workplace technology awareness",
+      "Digital communication",
+      "Practical use of productivity and collaboration tools",
+    ],
+  },
+  {
+    number: 5,
+    title: "Workforce Readiness",
+    points: [
+      "CV development",
+      "Interview preparation",
+      "Workplace professionalism",
+      "Communication",
+      "Teamwork",
+      "Workplace ethics",
+      "Career readiness",
+    ],
+  },
+  {
+    number: 6,
+    title: "Financial Literacy & Wealth Creation",
+    tagline: "Understand money, make smarter financial decisions, and learn the principles of building wealth.",
+  },
+  {
+    number: 7,
+    title: "Technical & Vocational Skills",
+    tagline: "Practical, industry-relevant skills for employment and enterprise.",
+  },
+  {
+    number: 8,
+    title: "Marketing & Selling Your Skills, Products and Services",
+    tagline: "Turning your value into income.",
+  },
+  {
+    number: 9,
+    title: "Economic Placement & Enterprise Development",
+    tagline: "Turn your capabilities into opportunities.",
+    summary: "This stage focuses on moving from capability to economic participation.",
+  },
+];
 
 /* -------------------------------------------------------------------------- */
 /* JCTEF Institute                                                            */
@@ -683,15 +943,6 @@ export const institute = {
     eyebrow: "The framework",
     title: "A structured pathway from potential to productivity",
     text: "The JCTEF Human Capital Transformation Framework is the Institute's own method for developing people through personal transformation, capacity building and economic readiness.",
-    stages: [
-      { title: "Self-discovery", text: "Identity, strengths, purpose, values and potential." },
-      { title: "Mental fitness", text: "Resilience, discipline, confidence, emotional intelligence and a growth mindset." },
-      { title: "Digital and foundational skills", text: "Digital literacy, communication, problem-solving and workplace basics." },
-      { title: "Workforce readiness", text: "Professionalism, career development, leadership, teamwork and ethics." },
-      { title: "Financial literacy", text: "Money management, entrepreneurship and wealth-building habits." },
-      { title: "Technical and vocational skills", text: "Practical, industry-relevant skills for employment and enterprise." },
-      { title: "Economic productivity", text: "Moving into jobs, enterprise and other productive opportunities." },
-    ] satisfies TitledText[],
   },
   jhci: {
     eyebrow: "Measuring what matters",
@@ -741,13 +992,20 @@ export const getInvolved = {
   intro: {
     eyebrow: "Get involved",
     title: "Join us in transforming lives",
-    text: "Transformation happens through collective action. Whether you volunteer, mentor, partner or give, everyone has a part to play in building a more productive and empowered society.",
+    text: "Transformation happens through collective action. Whether you volunteer, mentor, partner or sponsor, everyone has a part to play in building a more productive and empowered society.",
   },
   volunteer: {
     eyebrow: "Volunteer",
     title: "Ways you can volunteer",
     text: "Give your expertise, time and passion to create meaningful impact.",
     formUrl: volunteerForm,
+    facilitator: {
+      title: "Volunteer as a programme facilitator",
+      text: "Share your expertise by facilitating sessions in our Transformation Programme. Facilitators lead sessions in areas such as self-discovery, mental fitness, digital and foundational literacy, workforce readiness, financial literacy and more.",
+      cta: { label: "See the areas you can facilitate", href: "/institute#framework" },
+      // TODO: confirm how facilitators apply (form, email or link)
+      apply: { label: "Apply to volunteer", href: volunteerForm },
+    },
     roles: [
       {
         title: "Mentorship and career guidance",
@@ -834,7 +1092,7 @@ export const getInvolved = {
     title: "Your gift is an investment in human potential",
     text: "Donations fund training, technical and vocational skills, mentorship, education support and start-up grants for young people who need a first step.",
     cta: { label: "Donate with Flutterwave", href: site.donateUrl },
-    // TODO: add bank transfer details for donors who prefer them, if any.
+    // Flutterwave only (JCTEF team decision): no bank details on the site.
   },
 };
 
@@ -852,6 +1110,5 @@ export const blog = {
   eyebrow: "Blog",
   title: "News and stories",
   text: "Updates from our fellows, programmes, events and research.",
-  // TODO: migrate posts from the old WordPress blog (jctef.org/blog), or add new ones here.
-  posts: [] as BlogPost[],
+  // Posts live in content/blog/<slug>.mdx (migrated from the old WordPress site).
 };

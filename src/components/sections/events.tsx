@@ -3,8 +3,14 @@ import Image from "next/image";
 import { CruiseBadge } from "@/components/cruise/badge";
 import { CruiseCountdown } from "@/components/cruise/countdown";
 import { ButtonLink } from "@/components/layout/button-link";
-import { events, home, type JctefEvent } from "@/lib/content";
+import { home, type JctefEvent } from "@/lib/content";
+import { getUpcomingEvents } from "@/lib/events";
 import { SectionHeading } from "./section-heading";
+
+/** Google Maps directions, built from the venue text so it updates with it. */
+function directionsUrl(venue: string) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(venue)}`;
+}
 
 function EventMeta({ event }: { event: JctefEvent }) {
   return (
@@ -21,7 +27,23 @@ function EventMeta({ event }: { event: JctefEvent }) {
       )}
       <li className="flex items-start gap-2">
         <MapPin aria-hidden="true" className="mt-0.5 size-5 shrink-0" />
-        {event.location}
+        {event.venue ? (
+          <span className="grid gap-1">
+            <span>{event.venue}</span>
+            {!event.venueConfirmed && <span className="text-ink-muted">{home.events.venueNote}</span>}
+            <a
+              href={directionsUrl(event.venue)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-link inline-flex min-h-11 w-fit items-center"
+            >
+              {home.events.directionsLabel}
+              <span className="visually-hidden"> to {event.venue} on Google Maps (opens in a new tab)</span>
+            </a>
+          </span>
+        ) : (
+          event.location
+        )}
       </li>
     </ul>
   );
@@ -29,10 +51,12 @@ function EventMeta({ event }: { event: JctefEvent }) {
 
 /**
  * Upcoming events. The first dated event in content.ts is featured with a
- * live countdown (the only client JS in this section).
+ * live countdown (the only client JS in this section). Finished events are
+ * dropped automatically (see getUpcomingEvents).
  */
-export function Events() {
-  // TODO(JCTEF): remove past events from content.ts after they happen.
+export async function Events() {
+  const events = await getUpcomingEvents();
+  if (events.length === 0) return null;
   const featured = events.find((e) => e.startsAt !== null);
   const others = events.filter((e) => e !== featured);
 

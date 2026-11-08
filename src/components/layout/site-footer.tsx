@@ -1,7 +1,8 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
+import { TrustLine } from "@/components/layout/trust-line";
 import { CruiseWhatsAppButton } from "@/components/cruise/whatsapp-button";
-import { navigation, site } from "@/lib/content";
+import { navigation, registration, site } from "@/lib/content";
 
 /** Cached for a day, so the year rolls over without a request-time render. */
 async function CopyrightYear() {
@@ -11,8 +12,6 @@ async function CopyrightYear() {
 }
 
 export function SiteFooter() {
-  const socials = site.socials.filter((s) => s.href !== null);
-
   return (
     <footer className="on-deep">
       <div className="danfo-stripe on-primary" aria-hidden="true" />
@@ -53,17 +52,17 @@ export function SiteFooter() {
 
         <div>
           <h2 className="mb-4 text-label uppercase text-ink-muted">Follow us</h2>
-          <ul className="grid gap-0.5">
-            {socials.map((social) => (
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+            {site.socials.map((social) => (
               <li key={social.label}>
                 <a
-                  href={social.href!}
+                  href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`JCTEF on ${social.label} (opens in a new tab)`}
                   className="inline-flex min-h-11 items-center hover:underline"
                 >
                   {social.label}
-                  <span className="visually-hidden"> (opens in a new tab)</span>
                 </a>
               </li>
             ))}
@@ -77,11 +76,12 @@ export function SiteFooter() {
             Donate to JCTEF
             <span className="visually-hidden"> (opens in a new tab)</span>
           </a>
+          <TrustLine />
         </div>
       </div>
       <div className="border-t-(length:--border-w) border-ink/20">
         <p className="site-container py-5 text-small text-ink-muted">
-          © <CopyrightYear /> {site.name}. All rights reserved.
+          © <CopyrightYear /> {site.name}. All rights reserved. · {registration.short}
         </p>
       </div>
     </footer>

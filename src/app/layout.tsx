@@ -35,6 +35,31 @@ export const metadata: Metadata = {
   },
 };
 
+/** Organization structured data for search engines. */
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  name: site.shortName,
+  alternateName: site.name,
+  legalName: site.name,
+  url: site.url,
+  logo: `${site.url}/images/jctef-logo.png`,
+  email: site.email,
+  telephone: site.phoneHref.replace("tel:", ""),
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Lekki",
+    addressRegion: "Lagos",
+    addressCountry: "NG",
+  },
+  sameAs: site.socials.map((s) => s.href),
+  identifier: {
+    "@type": "PropertyValue",
+    propertyID: "CAC registration number (Nigeria)",
+    value: `${site.registration.label} ${site.registration.number}`,
+  },
+};
+
 export const viewport: Viewport = {
   themeColor: "#2ead45",
 };
@@ -51,6 +76,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter />
+        <script
+          type="application/ld+json"
+          // Escape "<" so the JSON can never close the script tag (Next.js JSON-LD guide).
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c") }}
+        />
       </body>
     </html>
   );

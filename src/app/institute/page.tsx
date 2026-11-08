@@ -6,7 +6,7 @@ import { ButtonLink } from "@/components/layout/button-link";
 import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
-import { institute } from "@/lib/content";
+import { frameworkStages, institute } from "@/lib/content";
 import { cx } from "@/lib/cruise-utils";
 
 export const metadata: Metadata = {
@@ -43,20 +43,42 @@ export default function InstitutePage() {
           <SectionHeading id="framework-title" eyebrow={framework.eyebrow} title={framework.title}>
             <p>{framework.text}</p>
           </SectionHeading>
-          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {framework.stages.map((stage, i) => {
-              const last = i === framework.stages.length - 1;
+          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {frameworkStages.map((stage) => {
+              const last = stage.number === frameworkStages.length;
               return (
-              <li
-                key={stage.title}
-                className={cx("brutal brutal-static grid content-start gap-2 p-5", last && "on-primary sm:col-span-2 lg:col-span-1")}
-              >
-                <span aria-hidden="true" className={cx("font-display text-h2 leading-none font-extrabold", !last && "text-primary")}>
-                  {i + 1}
-                </span>
-                <h3 className="font-display text-[1.25rem] leading-tight font-extrabold">{stage.title}</h3>
-                <p className="text-small text-ink-muted">{stage.text}</p>
-              </li>
+                <li
+                  key={stage.number}
+                  className={cx("brutal brutal-static flex flex-col gap-3 p-5 md:p-6", last && "on-primary")}
+                >
+                  <div className="flex items-start gap-4">
+                    <span
+                      aria-hidden="true"
+                      className={cx("font-display text-h2 leading-none font-extrabold", !last && "text-primary")}
+                    >
+                      {String(stage.number).padStart(2, "0")}
+                    </span>
+                    <h3 className="pt-1 font-display text-[1.1875rem] leading-tight font-extrabold">
+                      <span className="visually-hidden">Stage {stage.number}: </span>
+                      {stage.title}
+                    </h3>
+                  </div>
+                  {stage.tagline && <p className={cx("italic", !last && "text-ink-muted")}>{stage.tagline}</p>}
+                  {stage.summary && <p className="text-small">{stage.summary}</p>}
+                  {stage.points && (
+                    <ul className="grid gap-1.5 text-small">
+                      {stage.points.map((point) => (
+                        <li key={point} className="flex gap-2">
+                          <span
+                            aria-hidden="true"
+                            className={cx("mt-[0.45em] size-1.5 shrink-0 rounded-full", last ? "bg-ink" : "bg-primary")}
+                          />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
               );
             })}
           </ol>

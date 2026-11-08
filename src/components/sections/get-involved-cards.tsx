@@ -1,5 +1,6 @@
 import { Handshake, Heart, Users } from "lucide-react";
 import { ButtonLink } from "@/components/layout/button-link";
+import { TrustLine } from "@/components/layout/trust-line";
 import { cx } from "@/lib/cruise-utils";
 import { home } from "@/lib/content";
 import { SectionHeading } from "./section-heading";
@@ -29,6 +30,7 @@ export function GetInvolvedCards() {
                     {card.cta.label}
                   </ButtonLink>
                 </div>
+                {isDonate && <TrustLine />}
               </li>
             );
           })}

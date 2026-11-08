@@ -32,7 +32,7 @@
     <rect x="440" y="900" width="120" height="16"/><rect x="640" y="900" width="120" height="16"/>
     <rect x="840" y="900" width="120" height="16"/><rect x="1040" y="900" width="120" height="16"/>
   </g>
-  <!-- Rising arrow: dependency to productivity -->
+  <!-- Rising arrow: potential to productivity -->
   <path d="M120 760 L420 600 L600 680 L1040 360" fill="none" stroke="#FFFFFF" stroke-width="34" stroke-linejoin="round" stroke-linecap="square"/>
   <path d="M120 760 L420 600 L600 680 L1040 360" fill="none" stroke="#2EAD45" stroke-width="18" stroke-linejoin="round" stroke-linecap="square"/>
   <path d="M960 340 L1070 340 L1070 450" fill="none" stroke="#2EAD45" stroke-width="18" stroke-linecap="square"/>

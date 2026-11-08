@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ButtonLink } from "@/components/layout/button-link";
+import { TrustLine } from "@/components/layout/trust-line";
 import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
@@ -9,7 +10,7 @@ import { getInvolved } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Get involved",
-  description: "Volunteer, partner with JCTEF, become a JCTEF fellow or donate to help young people move from dependency to productivity.",
+  description: "Volunteer, partner with JCTEF, become a JCTEF fellow or donate to help young people move from potential to productivity.",
 };
 
 const jumpLinks = [
@@ -50,6 +51,20 @@ export default function GetInvolvedPage() {
             <ButtonLink href={volunteer.formUrl} className="shrink-0">
               Apply to volunteer
             </ButtonLink>
+          </div>
+          <div className="on-primary brutal brutal-static grid gap-5 p-6 md:grid-cols-[1.4fr_1fr] md:items-center md:gap-10 md:p-8">
+            <div className="grid gap-3">
+              <h3 className="text-h3 md:text-h2">{volunteer.facilitator.title}</h3>
+              <p>{volunteer.facilitator.text}</p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row md:flex-col md:items-start lg:flex-row">
+              <ButtonLink href={volunteer.facilitator.cta.href} variant="secondary">
+                {volunteer.facilitator.cta.label}
+              </ButtonLink>
+              <ButtonLink href={volunteer.facilitator.apply.href} variant="inverted">
+                {volunteer.facilitator.apply.label}
+              </ButtonLink>
+            </div>
           </div>
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {volunteer.roles.map((role) => (
@@ -130,6 +145,7 @@ export default function GetInvolvedPage() {
                 {donate.cta.label}
               </ButtonLink>
             </div>
+            <TrustLine />
           </article>
         </div>
       </section>

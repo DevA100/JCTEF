@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CruiseAccordion } from "@/components/cruise/accordion";
 import { ButtonLink } from "@/components/layout/button-link";
+import { TrustLine } from "@/components/layout/trust-line";
 import { Founder } from "@/components/sections/founder";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
@@ -34,9 +35,16 @@ export default function AboutPage() {
               {audiences.map((a) => (
                 <li key={a.title} className="flex gap-3">
                   <span aria-hidden="true" className="mt-2 size-2.5 shrink-0 bg-primary" />
-                  <span>
-                    <strong>{a.title}.</strong> <span className="text-ink-muted">{a.text}</span>
-                  </span>
+                  {a.sentence?.startsWith(a.title) ? (
+                    <span>
+                      <strong>{a.title}</strong>
+                      <span className="text-ink-muted">{a.sentence.slice(a.title.length)}</span>
+                    </span>
+                  ) : (
+                    <span>
+                      <strong>{a.title}.</strong> <span className="text-ink-muted">{a.text}</span>
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -72,6 +80,9 @@ export default function AboutPage() {
 
       <div className="bg-tint">
         <VisionValues />
+        <div className="site-container -mt-8 pb-12 md:-mt-12 md:pb-16">
+          <TrustLine full />
+        </div>
       </div>
 
       <section aria-labelledby="faq-title" className="section">

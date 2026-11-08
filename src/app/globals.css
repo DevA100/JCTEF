@@ -127,6 +127,73 @@
     text-decoration-thickness: 3px;
   }
 
+  /* Long-form text for blog posts (rendered from MDX). */
+  .prose-jctef {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .prose-jctef > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-jctef h2 {
+    margin-top: 2em;
+    font: 800 var(--text-h3) / 1.2 var(--font-display);
+  }
+  .prose-jctef h3,
+  .prose-jctef h4 {
+    margin-top: 1.6em;
+    font: 800 1.25rem / 1.3 var(--font-display);
+  }
+  .prose-jctef ul,
+  .prose-jctef ol {
+    padding-left: 1.5rem;
+  }
+  .prose-jctef ul {
+    list-style: disc;
+  }
+  .prose-jctef ol {
+    list-style: decimal;
+  }
+  .prose-jctef li + li {
+    margin-top: 0.4em;
+  }
+  .prose-jctef li::marker {
+    color: var(--ink-muted);
+  }
+  .prose-jctef a {
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .prose-jctef blockquote {
+    border-left: 4px solid var(--primary);
+    padding-left: 1.25rem;
+    font-size: 1.1875rem;
+    font-weight: 600;
+  }
+  .prose-jctef hr {
+    margin-block: 2.5em;
+    border: 0;
+    border-top: var(--border-w) solid color-mix(in srgb, var(--ink) 20%, transparent);
+  }
+
+  /* Text on the hero photos: light ink over the navy overlay. */
+  .on-photo {
+    --ink: #fffaf0;
+    --ink-muted: #e4e9f6;
+    color: var(--ink);
+  }
+
+  @keyframes hero-zoom {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.06);
+    }
+  }
+
   /* Skip link: hidden until focused. */
   .skip-link {
     position: absolute;
