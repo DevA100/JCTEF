@@ -404,6 +404,65 @@ export const heroSlides: HeroSlide[] = [
 ];
 
 /* -------------------------------------------------------------------------- */
+/* Homepage: Outreach in action gallery                                       */
+/* -------------------------------------------------------------------------- */
+
+export type OutreachPhoto = {
+  /** Cloudinary public ID (cloud: dreezy), never a raw file URL. */
+  publicId: string;
+  /** What is happening in the photo, factually. */
+  alt: string;
+  /** What, where and when, e.g. "Mindset session, Ikeja, September 2026".
+   * Leave empty until known; the caption strip is then hidden. */
+  caption: string;
+  /** CSS object-position for the lightbox, if faces need nudging. */
+  focus?: string;
+};
+
+export const outreach = {
+  eyebrow: "Outreach",
+  title: "Outreach in action",
+  text: "Moments from our work with young people and communities across Lagos.",
+};
+
+// TODO: confirm consent for every photo, including from parents or the
+// school for photos of children.
+// The section stays hidden while this list is empty.
+export const outreachPhotos: OutreachPhoto[] = [
+  {
+    publicId: "IMG-20251024-WA0120_tiei8e",
+    alt: "A facilitator in a black T-shirt stands with a group of secondary school students in blue patterned uniforms in a classroom, with laptops open on the tables in front of them",
+    caption: "", // TODO: caption
+  },
+  {
+    publicId: "20251111_125140_1_euzahs",
+    alt: "A facilitator in a blue T-shirt stands with a large group of secondary school students in light blue shirts and navy uniforms in a computer room, with desktop computers on the desks and a projection screen behind them",
+    caption: "", // TODO: caption
+  },
+  {
+    publicId: "20251110_114900_1_nvd24j",
+    alt: "A facilitator in a red shirt presents from a laptop to adult participants seated at desks with computer monitors in a training room, with a slide projected on the screen at the front",
+    caption: "", // TODO: caption
+  },
+  {
+    publicId: "20251111_132814_1_zgsj6y",
+    alt: "Seen from the back of a classroom, a large class of secondary school students in light blue uniforms raise their hands as a facilitator in a white T-shirt teaches at the whiteboard",
+    caption: "", // TODO: caption
+  },
+  // These two are also in the hero slideshow (kept here at the team's request).
+  {
+    publicId: "IMG_7078_tocqtx",
+    alt: "A group of JCTEF Cohort 1 fellows standing outdoors on a lawn, holding a banner for the JCTEF Transformation Programme end-of-programme meetup",
+    caption: "", // TODO: caption
+  },
+  {
+    publicId: "IMG_0238_xsd9lt",
+    alt: "Two JCTEF fellows standing outdoors, holding a banner for the Cohort 1 end-of-programme meetup",
+    caption: "", // TODO: caption
+  },
+];
+
+/* -------------------------------------------------------------------------- */
 /* Homepage FAQs                                                              */
 /* -------------------------------------------------------------------------- */
 
