@@ -14,8 +14,8 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   images: {
     qualities: [75],
-    // Hero photos are served by Cloudinary (next-cloudinary's own loader).
-    remotePatterns: [new URL("https://res.cloudinary.com/dreezy/**")],
+    // Hero and outreach photos (dreezy); team photos on /about (fccjt5sr).
+    remotePatterns: [new URL("https://res.cloudinary.com/dreezy/**"), new URL("https://res.cloudinary.com/fccjt5sr/**")],
   },
   turbopack: {
     // There is a stray package-lock.json in the home folder; pin the root here.

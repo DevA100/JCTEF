@@ -5,6 +5,7 @@ import { TrustLine } from "@/components/layout/trust-line";
 import { Founder } from "@/components/sections/founder";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
+import { Team } from "@/components/sections/team";
 import { VisionValues } from "@/components/sections/vision-values";
 import { about, audiences } from "@/lib/content";
 
@@ -77,6 +78,8 @@ export default function AboutPage() {
       </section>
 
       <Founder />
+
+      <Team />
 
       <div className="bg-tint">
         <VisionValues />

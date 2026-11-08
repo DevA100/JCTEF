@@ -55,6 +55,12 @@
     outline-offset: 3px;
   }
 
+  /* Tailwind's reset gives buttons the default arrow; show a hand instead.
+     Disabled buttons keep Cruise's not-allowed (or wait while sending). */
+  .cruise :where(button, [role="button"], input[type="submit"], select):not(:disabled) {
+    cursor: pointer;
+  }
+
   html {
     scroll-behavior: smooth;
   }

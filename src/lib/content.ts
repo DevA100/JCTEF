@@ -738,6 +738,27 @@ export const founder = {
   ],
 };
 
+export type TeamMember = {
+  name: string;
+  role: string;
+  location: string;
+  /** Any Cloudinary URL; the card crops it to a face-centred square. */
+  image?: string;
+  /** For later. Leave out until the team sends them. */
+  bio?: string;
+  linkedin?: string;
+};
+
+/** "Meet our team" on /about. The founder has her own section, so she is not listed here. */
+export const team: TeamMember[] = [
+  { name: "Tamunoemi Ibrahim", role: "Programme Director", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/Tamunoemi_Ibrahim.png" },
+  { name: "Franklin Oladipo", role: "Technical Director", location: "United Kingdom", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794170083/Franklin_Oladipo.jpg" },
+  { name: "Sandra Okoh", role: "Programme Coordinator", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169951/Sandra_Okoh_1.jpg" },
+  { name: "Idris Bankole", role: "Technical Programme Coordinator", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/idris_bankole.jpg" },
+  { name: "Faleto Adeoye", role: "Workforce Coordinator", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169951/Faleto_Adeoye_1.jpg" },
+  { name: "Chioma Favour Ojo", role: "Manager, The Tech Paragon", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/Chioma_Favour_Ojo.jpg" },
+];
+
 /* -------------------------------------------------------------------------- */
 /* Programmes                                                                 */
 /* -------------------------------------------------------------------------- */
