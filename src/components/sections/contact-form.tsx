@@ -58,6 +58,8 @@ function Form() {
         hint="Optional. A Nigerian mobile number, e.g. 0803 123 4567."
       />
       <CruiseTextarea
+        // Remount after each result: resets the character count and height.
+        key={`message-${state.id}`}
         label="Your message"
         name="message"
         required

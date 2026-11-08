@@ -1,5 +1,6 @@
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CruiseWhatsAppButton } from "@/components/cruise/whatsapp-button";
 import { ContactForm } from "@/components/sections/contact-form";
 import { PageHero } from "@/components/sections/page-hero";
@@ -64,9 +65,15 @@ export default function ContactPage() {
                   <div key={item.label} className="grid gap-0.5 sm:grid-cols-[12rem_1fr] sm:items-center sm:gap-4">
                     <dt className="text-small font-bold text-ink-muted">{item.label}</dt>
                     <dd>
-                      <a href={`mailto:${item.email}`} className="text-link inline-flex min-h-11 items-center">
-                        {item.email}
-                      </a>
+                      {"href" in item ? (
+                        <Link href={item.href} className="text-link inline-flex min-h-11 items-center">
+                          {item.linkLabel}
+                        </Link>
+                      ) : (
+                        <a href={`mailto:${item.email}`} className="text-link inline-flex min-h-11 items-center">
+                          {item.email}
+                        </a>
+                      )}
                     </dd>
                   </div>
                 ))}

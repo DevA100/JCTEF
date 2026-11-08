@@ -178,6 +178,20 @@
     border-top: var(--border-w) solid color-mix(in srgb, var(--ink) 20%, transparent);
   }
 
+  /* A light card inside a dark (.on-deep) band, e.g. the partnership form.
+     Restores the light tokens; the green hard shadow stays visible on navy. */
+  .on-light {
+    color-scheme: light;
+    --ink: #0a1f5c;
+    --ink-muted: #4a5578;
+    --surface: #ffffff;
+    --paper: #fffaf0;
+    --muted: #ece6d6;
+    --tint: color-mix(in srgb, var(--primary) 14%, #ffffff);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
   /* Text on the hero photos: light ink over the navy overlay. */
   .on-photo {
     --ink: #fffaf0;

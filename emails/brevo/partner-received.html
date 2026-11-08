@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light only">
+  <title>We've received your partnership enquiry</title>
+  <style>
+    @media only screen and (max-width: 600px) {
+      .container { width: 100% !important; }
+      .px { padding-left: 24px !important; padding-right: 24px !important; }
+      .h1 { font-size: 28px !important; line-height: 34px !important; }
+    }
+    a { color: #13225C; }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#FDF8EF;">
+
+  <!-- Preheader -->
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#FDF8EF;">
+    Thank you for your interest in partnering with JCTEF. Here's what happens next.
+  </div>
+
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FDF8EF;">
+    <tr>
+      <td align="center" style="padding:32px 12px;">
+
+        <table role="presentation" class="container" width="560" cellpadding="0" cellspacing="0" border="0"
+               style="width:560px; max-width:560px; background-color:#FFFFFF; border:3px solid #13225C; border-right-width:8px; border-bottom-width:8px;">
+
+          <!-- Logo -->
+          <tr>
+            <td class="px" style="padding:32px 40px 8px 40px;">
+              <img src="LOGO_URL" width="64" height="64" alt="JCTEF"
+                   style="display:block; width:64px; max-width:64px; height:64px; border:0;">
+            </td>
+          </tr>
+
+          <!-- Green rule -->
+          <tr>
+            <td class="px" style="padding:16px 40px 0 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr><td width="40" height="4" style="background-color:#58A94F; font-size:0; line-height:0;">&nbsp;</td></tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Heading -->
+          <tr>
+            <td class="px" style="padding:20px 40px 0 40px; font-family:Arial, Helvetica, sans-serif;">
+              <h1 class="h1" style="margin:0; font-size:32px; line-height:38px; font-weight:800; color:#13225C;">
+                Thank you for reaching out
+              </h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td class="px" style="padding:20px 40px 0 40px; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:26px; color:#3B4466;">
+              <p style="margin:0 0 16px 0;">Hi {{ params.FIRSTNAME | default : "there" }},</p>
+              <p style="margin:0 0 16px 0;">
+                Thank you for your interest in partnering with the Jacob Chidimma Transformation and Empowerment Foundation (JCTEF). We've received your enquiry, and we're glad you want to help young people move from potential to productivity.
+              </p>
+              <p style="margin:0;">
+                Our partnerships team will review your enquiry and get back to you.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Summary -->
+          <tr>
+            <td class="px" style="padding:24px 40px 0 40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="border:2px solid #13225C; background-color:#F3F8F0;">
+                <tr>
+                  <td style="padding:16px 20px 4px 20px; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:18px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#13225C;">
+                    Your enquiry
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:4px 20px 16px 20px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#3B4466;">
+                    <strong style="color:#13225C;">Organisation:</strong> {{ params.ORGANISATION }}<br>
+                    <strong style="color:#13225C;">Organisation type:</strong> {{ params.ORG_TYPE }}<br>
+                    {% if params.AREAS %}<strong style="color:#13225C;">Areas of interest:</strong> {{ params.AREAS }}<br>{% endif %}
+                    <strong style="color:#13225C;">Submitted:</strong> {{ params.SUBMITTED_AT }}
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Programmes -->
+          <tr>
+            <td class="px" style="padding:20px 40px 0 40px; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:26px; color:#3B4466;">
+              <p style="margin:0;">
+                In the meantime, take a look at the programmes your partnership could support.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="px" style="padding:20px 40px 0 40px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" bgcolor="#58A94F"
+                      style="background-color:#58A94F; border:3px solid #13225C; border-right-width:6px; border-bottom-width:6px;">
+                    <a href="https://jctef.org/programmes" target="_blank"
+                       style="display:inline-block; padding:14px 28px; font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#13225C; text-decoration:none;">
+                      Learn about our programmes
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Closing -->
+          <tr>
+            <td class="px" style="padding:24px 40px 32px 40px; font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:24px; color:#3B4466;">
+              <p style="margin:0 0 16px 0;">
+                If you have any questions, just reply to this email or write to
+                <a href="mailto:info@jctef.org" style="color:#13225C; font-weight:700;">info@jctef.org</a>.
+              </p>
+              <p style="margin:0;">With gratitude,<br><strong style="color:#13225C;">The JCTEF Team</strong></p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="px" style="padding:24px 40px; background-color:#13225C; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; color:#D8DCEB;">
+              <p style="margin:0 0 8px 0; font-weight:700; color:#FFFFFF;">Transform, Equip, Empower</p>
+              <p style="margin:0 0 8px 0;">
+                Jacob Chidimma Transformation and Empowerment Foundation<br>
+                Lekki, Lagos, Nigeria · RC 8937457
+              </p>
+              <p style="margin:0 0 8px 0;">
+                <a href="mailto:info@jctef.org" style="color:#FFFFFF;">info@jctef.org</a> ·
+                <a href="https://jctef.org" style="color:#FFFFFF;">jctef.org</a>
+              </p>
+              <p style="margin:0;">
+                <a href="https://www.instagram.com/official_jctef/" style="color:#9FD49A;">Instagram</a> ·
+                <a href="https://www.facebook.com/OfficialJCTEF/" style="color:#9FD49A;">Facebook</a> ·
+                <a href="https://x.com/Official_jctef" style="color:#9FD49A;">X</a> ·
+                <a href="https://www.tiktok.com/@jctef" style="color:#9FD49A;">TikTok</a> ·
+                <a href="https://www.youtube.com/@jctef" style="color:#9FD49A;">YouTube</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

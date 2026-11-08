@@ -82,7 +82,8 @@ export const site = {
     { label: "General enquiries", email: "info@jctef.org" },
     { label: "Youth applications", email: "program@jctef.org" },
     { label: "Training information", email: "training@jctef.org" },
-    { label: "Partnerships", email: "partner@jctef.org" },
+    // Partnerships use the enquiry form, which sends to PARTNER_TO_EMAIL.
+    { label: "Partnerships", email: "partner@jctef.org", href: "/get-involved#partner-form", linkLabel: "Partnership enquiry form" },
     { label: "Donations and support", email: "donate@jctef.org" },
     { label: "Volunteering", email: "info@jctef.org" },
   ],
@@ -124,7 +125,7 @@ export const navigation = {
     { label: "Programmes", href: "/programmes" },
     { label: "JCTEF Institute", href: "/institute" },
     { label: "Get involved", href: "/get-involved" },
-    { label: "Partner with us", href: "/get-involved#partner" },
+    { label: "Partner with us", href: "/get-involved#partner-form" },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
   ] satisfies Link[],
@@ -365,7 +366,7 @@ export const home = {
     eyebrow: "Partnerships",
     title: "We cannot do this alone",
     text: "Lasting transformation is built together. We partner with organisations that share our belief in young people.",
-    cta: { label: "Partner with us", href: "/get-involved#partner" },
+    cta: { label: "Partner with us", href: "/get-involved#partner-form" },
   },
   getInvolved: {
     eyebrow: "Get involved",
@@ -379,7 +380,7 @@ export const home = {
       {
         title: "Partner",
         text: "Sponsor a cohort, host interns or co-design programmes with us.",
-        cta: { label: "Partner with us", href: "/get-involved#partner" },
+        cta: { label: "Partner with us", href: "/get-involved#partner-form" },
       },
       {
         title: "Donate",
@@ -544,8 +545,8 @@ export const faqs: Faq[] = [
   {
     question: "How can my organisation partner with JCTEF?",
     answer:
-      "Email our partnerships team at partner@jctef.org. Partners can sponsor fellows' training, offer internships and mentorship, or fund skills and start-up support.",
-    link: { label: "Partner with us", href: "/get-involved#partner" },
+      "Send us a partnership enquiry through the form on our Get Involved page. Partners can sponsor fellows' training, offer internships and mentorship, or fund skills and start-up support.",
+    link: { label: "Partner with us", href: "/get-involved#partner-form" },
   },
   {
     question: "How can I donate, and how is my donation used?",
@@ -1145,6 +1146,19 @@ const volunteerForm = "#volunteer-form";
 export const volunteerRoles = ["Programme facilitator", "Mentor", "Events and outreach", "General volunteer"] as const;
 export const volunteerAvailability = ["Weekdays", "Weekends", "Evenings", "Flexible"] as const;
 
+/** Organisation types for the partnership enquiry form. */
+export const partnerOrgTypes = [
+  "Educational institution",
+  "Corporate or industry partner",
+  "Development or nonprofit organisation",
+  "Trainer, mentor or expert",
+  "Government agency",
+  "Faith-based organisation",
+  "Philanthropist or individual",
+  "Other",
+] as const;
+export type PartnerOrgType = (typeof partnerOrgTypes)[number];
+
 export const getInvolved = {
   intro: {
     eyebrow: "Get involved",
@@ -1309,9 +1323,23 @@ export const getInvolved = {
         text: "Show your commitment to responsible corporate citizenship.",
       },
     ] satisfies TitledText[],
+    form: {
+      title: "Start a partnership",
+      text: "Tell us about your organisation and the partnership you have in mind. Our partnerships team will get back to you.",
+      orgTypeLabel: "Organisation type",
+      areasLegend: "Areas of interest",
+      areasHint: "Choose any that fit.",
+      areasHintNoType: "Choose an organisation type above to see options for it.",
+      consent: "I agree to JCTEF contacting me about this enquiry.",
+      submit: "Send enquiry",
+      sending: "Sending…",
+      success: (firstName: string) => `Thank you, ${firstName}. Our partnerships team will be in touch.`,
+      error: (email: string) => `Something went wrong. Please try again, or email ${email}.`,
+      fallback: "Prefer email? Write to",
+    },
     cta: {
-      label: "Email our partnerships team",
-      href: "mailto:partner@jctef.org?subject=Partnering%20with%20JCTEF",
+      label: "Become a partner",
+      href: "#partner-form",
     },
   },
   fellow: {
@@ -1332,6 +1360,33 @@ export const getInvolved = {
 /* -------------------------------------------------------------------------- */
 /* Contact + blog                                                             */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * "Areas of interest" options for the partnership form, built from the
+ * partner cards above. Types without their own card (and no selection) get a
+ * mix of the most common asks across all cards.
+ */
+const partnerTypeToGroup: Partial<Record<PartnerOrgType, string>> = {
+  "Educational institution": "Educational institutions",
+  "Corporate or industry partner": "Corporate and industry partners",
+  "Development or nonprofit organisation": "Development and nonprofit organisations",
+  "Trainer, mentor or expert": "Trainers, mentors and experts",
+  "Philanthropist or individual": "Development and nonprofit organisations",
+};
+const commonPartnerAreas = [
+  "Programme sponsorship",
+  "Sponsor fellows' training",
+  "Internship placements",
+  "Mentor fellows",
+  "Joint training programmes",
+  "Scholarships and education support",
+];
+export function partnerAreasFor(type?: string): string[] {
+  const group = getInvolved.partner.groups.find((g) => g.title === partnerTypeToGroup[type as PartnerOrgType]);
+  return group ? group.items : commonPartnerAreas;
+}
+/** Every option the form can show (for server-side validation). */
+export const allPartnerAreas = [...new Set(getInvolved.partner.groups.flatMap((g) => g.items))];
 
 export const contact = {
   eyebrow: "Contact us",

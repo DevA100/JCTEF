@@ -216,6 +216,8 @@ function Form() {
       )}
 
       <CruiseTextarea
+        // Remount after each result: resets the character count and height.
+        key={`experience-${state.id}`}
         label="Relevant experience"
         name="experience"
         hint="Optional. Skills, roles or causes you've worked on."
@@ -225,6 +227,8 @@ function Form() {
         error={errors.experience}
       />
       <CruiseTextarea
+        // Remount after each result: resets the character count and height.
+        key={`message-${state.id}`}
         label="Why do you want to volunteer with JCTEF?"
         name="message"
         required

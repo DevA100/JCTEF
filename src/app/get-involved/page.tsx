@@ -6,8 +6,10 @@ import { TrustLine } from "@/components/layout/trust-line";
 import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
+import { PartnerForm } from "@/components/sections/partner-form";
 import { VolunteerForm } from "@/components/sections/volunteer-form";
 import { getInvolved } from "@/lib/content";
+import { partnershipEmail } from "@/lib/partnership";
 import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
@@ -25,6 +27,7 @@ const jumpLinks = [
 
 export default function GetInvolvedPage() {
   const { volunteer, partner, fellow, donate } = getInvolved;
+  const partnerEmail = partnershipEmail();
   return (
     <>
       <PageHero eyebrow={getInvolved.intro.eyebrow} title={getInvolved.intro.title} text={getInvolved.intro.text}>
@@ -124,6 +127,26 @@ export default function GetInvolvedPage() {
               </li>
             ))}
           </Reveal>
+
+          {/* Partnership enquiry form (replaces the old mailto link). */}
+          <div id="partner-form" className="grid scroll-mt-24 gap-6 lg:grid-cols-[1fr_1.6fr] lg:gap-12">
+            <div className="grid content-start gap-3">
+              <p className="eyebrow">{partner.eyebrow}</p>
+              <h3 className="text-h2">{partner.form.title}</h3>
+              <p className="text-ink-muted">{partner.form.text}</p>
+            </div>
+            <div className="grid gap-4">
+              <div className="on-light brutal brutal-static p-5 md:p-8">
+                <PartnerForm teamEmail={partnerEmail} />
+              </div>
+              <p className="text-small text-ink-muted">
+                {partner.form.fallback}{" "}
+                <a href={`mailto:${partnerEmail}`} className="text-link">
+                  {partnerEmail}
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

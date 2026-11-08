@@ -72,6 +72,25 @@ Every applicant is also added or updated as a Brevo contact, so the team has a r
 
 If saving the contact fails, the application still goes through and the error is logged on the server.
 
+## Partnership emails
+
+The partnership enquiry form on `/get-involved#partner-form` works like the volunteer form. The site renders these files and sends them through Brevo, so there's nothing to set up in Brevo.
+
+| File | Sent to | Subject |
+| --- | --- | --- |
+| `partner-team-alert.html` | The team (`PARTNER_TO_EMAIL`, e.g. partner@jctef.org; info@jctef.org if not set). Replying goes to the enquirer. | New partnership enquiry: {{ params.ORGANISATION }} ({{ params.ORG_TYPE }}) |
+| `partner-received.html` | The enquirer. Replying goes to `PARTNER_TO_EMAIL`. | We've received your partnership enquiry |
+
+Placeholders: `FIRSTNAME`, `FULLNAME`, `EMAIL`, `PHONE`, `ORGANISATION`, `ROLE`, `ORG_TYPE`, `AREAS`, `WEBSITE`, `MESSAGE` and `SUBMITTED_AT` (Lagos time).
+
+### Partner contact list
+
+1. Create a list, for example "Partnership enquiries", and put its ID in `BREVO_PARTNER_LIST_ID`.
+2. Go to **Contacts → Settings → Contact attributes** and create a **text** attribute named `ORG_TYPE`. `FIRSTNAME`, `LASTNAME`, `COMPANY` and `SMS` already exist. If `COMPANY` doesn't, create it as text too.
+3. The API key needs the **Contacts** permission.
+
+If saving the contact fails, the enquiry still goes through and the error is logged.
+
 ## Related settings
 
 | Variable | Purpose |
@@ -82,3 +101,5 @@ If saving the contact fails, the application still goes through and the error is
 | `NEXT_PUBLIC_SITE_URL` | Used to build the "confirmed" link: `<site>/newsletter/confirmed` |
 | `VOLUNTEER_TO_EMAIL` | Where volunteer applications go (default info@jctef.org) |
 | `BREVO_VOLUNTEER_LIST_ID` | List that keeps a record of every applicant |
+| `PARTNER_TO_EMAIL` | Where partnership enquiries go, e.g. partner@jctef.org (info@jctef.org if not set) |
+| `BREVO_PARTNER_LIST_ID` | List that keeps a record of every enquirer |
