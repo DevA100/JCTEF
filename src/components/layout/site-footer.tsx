@@ -1,6 +1,5 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
-import { TrustLine } from "@/components/layout/trust-line";
 import { CruiseWhatsAppButton } from "@/components/cruise/whatsapp-button";
 import { navigation, registration, site } from "@/lib/content";
 
@@ -76,7 +75,6 @@ export function SiteFooter() {
             Donate to JCTEF
             <span className="visually-hidden"> (opens in a new tab)</span>
           </a>
-          <TrustLine />
         </div>
       </div>
       <div className="border-t-(length:--border-w) border-ink/20">

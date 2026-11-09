@@ -230,6 +230,7 @@ export const vision =
 export const mission =
   "To help individuals discover their potential, develop their human capital, strengthen their minds, acquire marketable skills and become productive contributors who create lasting value for themselves, their communities and society.";
 
+// TODO: confirm with JCTEF team (core values descriptions)
 export const coreValues: TitledText[] = [
   {
     title: "Transformation",
@@ -335,6 +336,7 @@ export const home = {
     eyebrow: "Who we serve",
     title: "Built for the young people others overlook",
   },
+  // TODO: confirm figures with JCTEF team
   impact: {
     /** Visually hidden heading; the section shows figures only. */
     title: "Our impact",
@@ -591,6 +593,7 @@ export const events: JctefEvent[] = [
     dateLabel: "Dates to be announced",
     location: "Lagos",
     summary:
+      // TODO: confirm with JCTEF team ("quarterly cohort")
       "Our flagship three-month human capital development programme. Applications open before each quarterly cohort.",
     cta: { label: "Ask about the next cohort", href: "/contact" },
   },
@@ -646,6 +649,7 @@ export const about = {
     {
       q: "How can I join a JCTEF programme?",
       a: [
+        // TODO: confirm with JCTEF team ("quarterly Transformation Cohorts")
         "JCTEF runs quarterly Transformation Cohorts: our flagship three-month human capital development programme. It is open to both educated and non-educated people who are committed to personal growth.",
         "Every applicant goes through screening and assessment. Selected fellows complete baseline and periodic evaluations using the JCTEF Human Capital Index (JHCI). Outstanding fellows may receive extra support, including skills training, mentorship, start-up support and access to funding, depending on eligibility and availability.",
       ],
@@ -1366,6 +1370,7 @@ export const getInvolved = {
   fellow: {
     eyebrow: "Become a fellow",
     title: "Ready to transform your own life?",
+    // TODO: confirm with JCTEF team ("quarterly Transformation Cohorts")
     text: "Our quarterly Transformation Cohorts are open to educated and non-educated people who are committed to growth.",
     cta: { label: "How to become a fellow", href: "/institute#fellow" },
   },

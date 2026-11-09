@@ -34,6 +34,8 @@ export const metadata: Metadata = {
     url: site.url,
     description: site.description,
   },
+  // The image itself is app/opengraph-image.tsx.
+  twitter: { card: "summary_large_image" },
 };
 
 /** Organization structured data for search engines. */

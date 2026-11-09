@@ -17,14 +17,17 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): P
   if (!post) return {};
 
   const url = `/blog/${slug}`;
-  // The cover when there is one; otherwise a branded card with the title.
-  const image = post.cover
-    ? {
-        url: post.cover.src,
-        alt: post.cover.alt || post.title,
-        ...(post.cover.width && post.cover.height ? { width: post.cover.width, height: post.cover.height } : {}),
-      }
-    : { url: `/og/blog/${slug}`, alt: post.title, width: 1200, height: 630, type: "image/png" };
+  // The post's cover; without one, the site's default image (app/opengraph-image.tsx).
+  const images = post.cover
+    ? [
+        {
+          url: post.cover.src,
+          alt: post.cover.alt || post.title,
+          ...(post.cover.width && post.cover.height ? { width: post.cover.width, height: post.cover.height } : {}),
+        },
+      ]
+    : // A page's own openGraph replaces the inherited one, so name the default explicitly.
+      [{ url: "/opengraph-image", width: 1200, height: 630, alt: "JCTEF: From potential to productivity. jctef.org" }];
 
   return {
     title: post.title,
@@ -42,13 +45,13 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): P
       publishedTime: post.date,
       authors: [post.author],
       tags: post.tags.length ? post.tags : undefined,
-      images: [image],
+      images,
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.excerpt,
-      images: [image],
+      images,
     },
   };
 }
