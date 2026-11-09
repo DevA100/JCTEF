@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { CruiseBadge } from "@/components/cruise/badge";
 import { CruiseSteps } from "@/components/cruise/steps";
@@ -6,15 +7,11 @@ import { ButtonLink } from "@/components/layout/button-link";
 import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
-import { frameworkStages, institute } from "@/lib/content";
+import { frameworkStages, institute, seo } from "@/lib/content";
 import { cx } from "@/lib/cruise-utils";
 import { Reveal } from "@/components/motion/reveal";
 
-export const metadata: Metadata = {
-  title: "JCTEF Institute",
-  description:
-    "The JCTEF Institute for Human Capital Development: the Human Capital Transformation Framework, the JCTEF Human Capital Index (JHCI) and how to become a JCTEF fellow.",
-};
+export const metadata: Metadata = pageMetadata({ ...seo.institute, path: "/institute", absoluteTitle: true });
 
 export default function InstitutePage() {
   const { framework, jhci, fellow } = institute;

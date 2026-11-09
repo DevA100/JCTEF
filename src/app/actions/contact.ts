@@ -1,16 +1,22 @@
 "use server";
 
+import "server-only";
+import { after } from "next/server";
 import { z } from "zod";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { contactEmail } from "@/lib/emails/contact-email";
 import { site } from "@/lib/content";
-import { rateLimit } from "@/lib/rate-limit";
+import { guardMessage, guardSubmission } from "@/lib/form-guard";
+import { optionalPhone, plainText } from "@/lib/form-text";
+import { appendToSheet } from "@/lib/sheets";
 
-const schema = z.object({
-  name: z.string().trim().min(1, "Please enter your name.").max(100, "Please keep your name under 100 characters."),
+const FIELDS = ["name", "email", "phone", "message"] as const;
+
+const schema = z.strictObject({
+  name: plainText(100).pipe(z.string().min(1, "Please enter your name.")),
   email: z.email("Please enter a valid email address, like name@example.com.").max(200),
-  phone: z.string().trim().max(20).optional(),
-  message: z.string().trim().min(1, "Please write a message.").max(2000, "Please keep your message under 2,000 characters."),
+  phone: optionalPhone,
+  message: plainText(2000).pipe(z.string().min(1, "Please write a message.")),
 });
 
 type Field = "name" | "email" | "message";
@@ -38,14 +44,8 @@ export async function sendContactMessage(prev: ContactState, formData: FormData)
     return { status: "success", id, message: "Thank you. Your message has been sent." };
   }
 
-  if (!(await rateLimit("contact", { limit: 5, windowMs: 15 * 60_000 }))) {
-    return {
-      status: "error",
-      id,
-      message: `You have sent several messages in a short time. Please wait a few minutes, or email us at ${site.email}.`,
-      values,
-    };
-  }
+  const guard = await guardSubmission("Contact", formData, FIELDS);
+  if (!guard.ok) return { status: "error", id, message: guardMessage(guard.reason, site.email), values };
 
   const parsed = schema.safeParse(raw);
   if (!parsed.success) {
@@ -59,13 +59,16 @@ export async function sendContactMessage(prev: ContactState, formData: FormData)
     };
   }
 
+  // Copy to the Google Sheet once the response is sent. Never fails the form.
+  const { name, email, phone, message } = parsed.data;
+  after(() => appendToSheet("contact", { Name: name, Email: email, Phone: phone, Message: message }));
+
   const missing = missingEnv("BREVO_API_KEY", "CONTACT_TO_EMAIL", "CONTACT_FROM_EMAIL");
   if (missing.length > 0) {
     console.error(`Contact form is not set up: missing ${missing.join(", ")} (see .env.example).`);
     return { status: "error", id, message: `Our form is not working right now. Please email us at ${site.email}.`, values };
   }
 
-  const { name, email, phone, message } = parsed.data;
   const mail = contactEmail({ name, email, phone, message });
 
   try {

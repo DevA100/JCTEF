@@ -4,52 +4,46 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PostCover } from "@/components/sections/post-cover";
 import { formatPostDate, getPost, getPostSlugs } from "@/lib/blog";
-import { site } from "@/lib/content";
+import { cloudinaryTransform } from "@/lib/cloudinary";
+import { pageMetadata, SHARE_IMAGE_SIZE } from "@/lib/metadata";
 
 // Unknown slugs fall through to notFound() in the page below.
 export function generateStaticParams() {
   return getPostSlugs().map((slug) => ({ slug }));
 }
 
+/** Exactly 1200 × 630 JPG: some apps don't show WebP or AVIF in previews. */
+const SHARE_CROP = "c_fill,g_auto,w_1200,h_630,f_jpg,q_75";
+
 export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return {};
 
-  const url = `/blog/${slug}`;
-  // The cover when there is one; otherwise a branded card with the title.
-  const image = post.cover
-    ? {
-        url: post.cover.src,
-        alt: post.cover.alt || post.title,
-        ...(post.cover.width && post.cover.height ? { width: post.cover.width, height: post.cover.height } : {}),
-      }
-    : { url: `/og/blog/${slug}`, alt: post.title, width: 1200, height: 630, type: "image/png" };
+  const cover = post.cover;
+  const alt = cover?.alt || post.title;
+  const images = !cover
+    ? // No cover: the post's own card from ./opengraph-image.tsx.
+      [{ url: `/blog/${slug}/opengraph-image/card`, ...SHARE_IMAGE_SIZE, alt: post.title, type: "image/png" }]
+    : cover.src.startsWith("https://res.cloudinary.com/")
+      ? [{ url: cloudinaryTransform(cover.src, SHARE_CROP), ...SHARE_IMAGE_SIZE, alt, type: "image/jpeg" }]
+      : [{ url: cover.src, alt, ...(cover.width && cover.height ? { width: cover.width, height: cover.height } : {}) }];
 
   return {
-    title: post.title,
-    description: post.excerpt,
+    ...pageMetadata({
+      title: post.title,
+      description: post.excerpt,
+      path: `/blog/${slug}`,
+      images,
+      openGraph: {
+        type: "article",
+        publishedTime: post.date,
+        authors: [post.author],
+        ...(post.tags.length ? { tags: post.tags } : {}),
+      },
+    }),
     authors: [{ name: post.author }],
-    keywords: post.tags.length ? post.tags : undefined,
-    alternates: { canonical: url },
-    openGraph: {
-      type: "article",
-      url,
-      siteName: site.name,
-      locale: "en_NG",
-      title: post.title,
-      description: post.excerpt,
-      publishedTime: post.date,
-      authors: [post.author],
-      tags: post.tags.length ? post.tags : undefined,
-      images: [image],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
-      images: [image],
-    },
+    ...(post.tags.length ? { keywords: post.tags } : {}),
   };
 }
 

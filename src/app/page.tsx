@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import { seo } from "@/lib/content";
+import { pageMetadata } from "@/lib/metadata";
 import { AboutIntro } from "@/components/sections/about-intro";
 import { Audiences } from "@/components/sections/audiences";
 import { Events } from "@/components/sections/events";
@@ -10,6 +13,8 @@ import { Testimonials } from "@/components/sections/testimonials";
 import { Outreach } from "@/components/sections/outreach";
 import { Partners } from "@/components/sections/partners";
 import { VisionValues } from "@/components/sections/vision-values";
+
+export const metadata: Metadata = pageMetadata({ ...seo.home, path: "/", absoluteTitle: true });
 
 export default function HomePage() {
   return (

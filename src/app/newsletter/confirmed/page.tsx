@@ -5,6 +5,7 @@ import { ButtonLink } from "@/components/layout/button-link";
 export const metadata: Metadata = {
   title: "Subscription confirmed",
   robots: { index: false },
+  alternates: { canonical: "/newsletter/confirmed" },
 };
 
 /** Brevo sends people here after they click the link in the confirmation email. */

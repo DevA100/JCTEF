@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { PageHero } from "@/components/sections/page-hero";
 import { PostCover } from "@/components/sections/post-cover";
 import { formatPostDate, getPosts } from "@/lib/blog";
-import { blog } from "@/lib/content";
+import { blog, seo } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description: "News and stories from JCTEF: our fellows, programmes, events and research.",
-};
+export const metadata: Metadata = pageMetadata({ ...seo.blog, path: "/blog" });
 
 export default async function BlogPage() {
   const posts = await getPosts();

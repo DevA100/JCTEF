@@ -4,7 +4,9 @@ import type { ComponentProps } from "react";
 
 /** Internal links use next/link; external ones open in a new tab. */
 function MdxLink({ href = "", children, ...props }: ComponentProps<"a">) {
-  if (href.startsWith("/")) {
+  // Second line of defence (the MDX sanitiser removes these at build time).
+  if (/^(javascript|vbscript|data):/i.test(href.replace(/[\u0000-\u0020]/g, ""))) return <span>{children}</span>;
+  if (href.startsWith("/") && !href.startsWith("//")) {
     return (
       <Link href={href} {...props}>
         {children}
@@ -12,7 +14,7 @@ function MdxLink({ href = "", children, ...props }: ComponentProps<"a">) {
     );
   }
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+    <a {...props} href={href} target="_blank" rel="noopener noreferrer">
       {children}
       <span className="visually-hidden"> (opens in a new tab)</span>
     </a>

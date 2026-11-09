@@ -1,0 +1,15 @@
+# Weekly dependency updates. Minor and patch updates arrive as one grouped
+# pull request; major versions (which can break things) come separately.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Africa/Lagos
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]

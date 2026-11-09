@@ -13,6 +13,7 @@ import { getInvolved, partnerAreasFor, partnerOrgTypes } from "@/lib/content";
 import { cx } from "@/lib/cruise-utils";
 import { type PartnerField, partnerErrors, partnerSchema, readPartnerForm } from "@/lib/partner-schema";
 import { Honeypot } from "./honeypot";
+import { Turnstile } from "./turnstile";
 
 const copy = getInvolved.partner.form;
 const initial: PartnerState = { status: "idle", id: 0 };
@@ -37,7 +38,7 @@ function Form({ teamEmail }: { teamEmail: string }) {
     state.status === "success"
       ? `Enquiry sent! ${copy.success(state.firstName ?? "")}`
       : state.status === "error"
-        ? copy.error(teamEmail)
+        ? (state.message ?? copy.error(teamEmail))
         : "";
 
   const focusFirstError = () =>
@@ -51,7 +52,7 @@ function Form({ teamEmail }: { teamEmail: string }) {
     if (state.status === "success") {
       toast({ tone: "success", title: "Enquiry sent!", description: copy.success(state.firstName ?? ""), duration: 8000 });
     } else if (state.status === "error") {
-      toast({ tone: "danger", title: "Not sent", description: copy.error(teamEmail), duration: 8000 });
+      toast({ tone: "danger", title: "Not sent", description: state.message ?? copy.error(teamEmail), duration: 8000 });
     } else if (state.status === "invalid") {
       focusFirstError();
     }
@@ -192,6 +193,7 @@ function Form({ teamEmail }: { teamEmail: string }) {
       </div>
 
       <Honeypot />
+      <Turnstile key={`turnstile-${state.id}`} action="partner" />
 
       <div>
         <CruiseButton type="submit" disabled={pending} aria-disabled={pending} className={cx(pending && "cursor-wait")}>

@@ -1,13 +1,17 @@
 "use server";
 
+import "server-only";
 import { z } from "zod";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { site } from "@/lib/content";
-import { rateLimit } from "@/lib/rate-limit";
+import { guardMessage, guardSubmission } from "@/lib/form-guard";
+import { optionalPlainText } from "@/lib/form-text";
 
-const schema = z.object({
-  firstName: z.string().trim().max(60).optional(),
-  lastName: z.string().trim().max(60).optional(),
+const FIELDS = ["firstName", "lastName", "email", "consent"] as const;
+
+const schema = z.strictObject({
+  firstName: optionalPlainText(60),
+  lastName: optionalPlainText(60),
   email: z.email("Please enter a valid email address, like name@example.com.").max(200),
   consent: z.literal("on", "Please tick the box to agree to receive our updates."),
 });
@@ -28,9 +32,8 @@ export async function subscribeToNewsletter(prev: NewsletterState, formData: For
     return { status: "confirm", id };
   }
 
-  if (!(await rateLimit("newsletter", { limit: 5, windowMs: 15 * 60_000 }))) {
-    return { status: "error", id, message: "Too many attempts. Please wait a few minutes and try again." };
-  }
+  const guard = await guardSubmission("Newsletter", formData, FIELDS);
+  if (!guard.ok) return { status: "error", id, message: guardMessage(guard.reason, site.email) };
 
   const parsed = schema.safeParse({
     firstName: String(formData.get("firstName") ?? "") || undefined,

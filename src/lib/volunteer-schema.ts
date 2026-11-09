@@ -1,4 +1,7 @@
 import { z } from "zod";
+
+// No eval-based speed-ups: keeps the Content Security Policy free of 'unsafe-eval'.
+z.config({ jitless: true });
 import { frameworkStages, volunteerAvailability, volunteerRoles } from "./content";
 
 /**
@@ -24,8 +27,14 @@ const optional = (max: number) =>
 
 const stageTitles = frameworkStages.map((stage) => stage.title) as [string, ...string[]];
 
+/** Every field the form sends (anything else is rejected on the server). */
+export const VOLUNTEER_FIELDS = [
+  "firstName", "lastName", "email", "phone", "location", "role", "areas",
+  "availability", "experience", "message", "consentContact", "consentAge",
+] as const;
+
 export const volunteerSchema = z
-  .object({
+  .strictObject({
     firstName: clean(60).pipe(z.string().min(1, "Please enter your first name.")),
     lastName: clean(60).pipe(z.string().min(1, "Please enter your last name.")),
     email: z.string().trim().pipe(z.email("Please enter a valid email address, like name@example.com.").max(200)),

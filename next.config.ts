@@ -1,13 +1,34 @@
 import { readdirSync } from "node:fs";
+import path from "node:path";
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
+import { securityHeaders } from "./security-headers.mjs";
 
 // Blog posts migrated from WordPress lived at jctef.org/<slug>/.
 const blogSlugs = readdirSync("content/blog")
   .filter((file) => file.endsWith(".mdx"))
   .map((file) => file.slice(0, -".mdx".length));
 
+// One source of truth for the security headers (also mirrored in netlify.toml,
+// checked before every build). See security-headers.mjs for why both exist.
+// The CSP is left out in development: React's dev tools need eval and hot
+// reload needs websockets.
+const headersForAllRoutes = securityHeaders.filter(
+  (h) => process.env.NODE_ENV === "production" || !h.key.startsWith("Content-Security-Policy"),
+);
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  // Inlined into the browser bundle: the Turnstile site key is public by design.
+  // The secret key (TURNSTILE_SECRET_KEY) is only read on the server.
+  env: { TURNSTILE_SITE_KEY: process.env.TURNSTILE_SITE_KEY ?? "" },
+  experimental: {
+    serverActions: {
+      // Our forms are a few KB of text. Same-origin only (the default);
+      // src/lib/form-guard.ts also rejects requests with no Origin header.
+      bodySizeLimit: "100kb",
+    },
+  },
   // The volunteer emails are read from emails/brevo/ at request time.
   outputFileTracingIncludes: { "/**": ["./emails/brevo/*.html"] },
   cacheComponents: true,
@@ -26,6 +47,9 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+  async headers() {
+    return [{ source: "/:path*", headers: headersForAllRoutes }];
   },
   // Old WordPress URLs, so existing links and search results keep working.
   async redirects() {
@@ -48,9 +72,15 @@ const nextConfig: NextConfig = {
 
 const withMDX = createMDX({
   options: {
-    // Plugin names as strings so Turbopack can load them. Exposes the YAML
-    // frontmatter of each post as `export const frontmatter`.
-    remarkPlugins: ["remark-frontmatter", ["remark-mdx-frontmatter", { name: "frontmatter" }]],
+    // Plugin names as strings so Turbopack can load them. The sanitiser runs
+    // first (it removes any code in posts); then the YAML frontmatter is
+    // exposed as `export const frontmatter`.
+    remarkPlugins: [
+      "remark-frontmatter",
+      // Absolute path: Turbopack resolves plugin strings like package names.
+      path.join(import.meta.dirname, "src/lib/mdx/remark-sanitize.mjs"),
+      ["remark-mdx-frontmatter", { name: "frontmatter" }],
+    ],
   },
 });
 

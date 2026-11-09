@@ -1,10 +1,13 @@
 "use server";
 
+import "server-only";
+import { after } from "next/server";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { site } from "@/lib/content";
 import { renderEmailTemplate } from "@/lib/emails/render-template";
-import { rateLimit } from "@/lib/rate-limit";
-import { type VolunteerField, readVolunteerForm, volunteerErrors, volunteerSchema } from "@/lib/volunteer-schema";
+import { guardMessage, guardSubmission } from "@/lib/form-guard";
+import { appendToSheet } from "@/lib/sheets";
+import { VOLUNTEER_FIELDS, type VolunteerField, readVolunteerForm, volunteerErrors, volunteerSchema } from "@/lib/volunteer-schema";
 
 export type VolunteerState = {
   status: "idle" | "success" | "invalid" | "error";
@@ -12,6 +15,8 @@ export type VolunteerState = {
   id: number;
   firstName?: string;
   email?: string;
+  /** Shown instead of the usual error text (e.g. rate limit, security check). */
+  message?: string;
   errors?: Partial<Record<VolunteerField, string>>;
   /** What the person typed, so nothing is lost on an error. */
   values?: Record<string, unknown>;
@@ -39,16 +44,30 @@ export async function submitVolunteerApplication(prev: VolunteerState, formData:
     return { status: "success", id, firstName: String(raw.firstName), email: String(raw.email) };
   }
 
-  if (!(await rateLimit("volunteer", { limit: 3, windowMs: 15 * 60_000 }))) {
-    console.error("Volunteer form: rate limit reached");
-    return { status: "error", id, values: raw };
-  }
+  const guard = await guardSubmission("Volunteer", formData, VOLUNTEER_FIELDS);
+  if (!guard.ok) return { status: "error", id, message: guardMessage(guard.reason, site.email), values: raw };
 
   const parsed = volunteerSchema.safeParse(raw);
   if (!parsed.success) {
     return { status: "invalid", id, errors: volunteerErrors(parsed.error), values: raw };
   }
   const a = parsed.data;
+
+  // Copy to the Google Sheet once the response is sent. Never fails the form.
+  after(() =>
+    appendToSheet("volunteer", {
+      "First name": a.firstName,
+      "Last name": a.lastName,
+      Email: a.email,
+      Phone: a.phone,
+      Location: a.location,
+      "Volunteering as": a.role,
+      "Facilitation areas": a.areas,
+      Availability: a.availability,
+      Experience: a.experience,
+      Motivation: a.message,
+    }),
+  );
 
   const missing = missingEnv("BREVO_API_KEY", "CONTACT_FROM_EMAIL");
   if (missing.length > 0) {

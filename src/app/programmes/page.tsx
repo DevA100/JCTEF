@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Image from "next/image";
 import Link from "next/link";
 import { CruiseBadge } from "@/components/cruise/badge";
@@ -7,14 +8,10 @@ import { ButtonLink } from "@/components/layout/button-link";
 import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
-import { programmes } from "@/lib/content";
+import { programmes, seo } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 
-export const metadata: Metadata = {
-  title: "Programmes",
-  description:
-    "The JCTEF Transformation Programme, Young Minds Initiative, Campus Transformation and Wellness Initiative, Business Summit, Annual Retreat and Women in Tech: The Tech Paragon.",
-};
+export const metadata: Metadata = pageMetadata({ ...seo.programmes, path: "/programmes" });
 
 export default function ProgrammesPage() {
   return (

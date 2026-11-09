@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { ButtonLink } from "@/components/layout/button-link";
 import { TrustLine } from "@/components/layout/trust-line";
@@ -8,15 +9,11 @@ import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { PartnerForm } from "@/components/sections/partner-form";
 import { VolunteerForm } from "@/components/sections/volunteer-form";
-import { getInvolved } from "@/lib/content";
+import { getInvolved, seo } from "@/lib/content";
 import { partnershipEmail } from "@/lib/partnership";
 import { Reveal } from "@/components/motion/reveal";
 
-export const metadata: Metadata = {
-  title: "Get involved",
-  description:
-    "Volunteer, partner with JCTEF, become a JCTEF fellow or donate to help young people move from potential to productivity.",
-};
+export const metadata: Metadata = pageMetadata({ ...seo.getInvolved, path: "/get-involved" });
 
 const jumpLinks = [
   { label: "Volunteer", href: "#volunteer" },

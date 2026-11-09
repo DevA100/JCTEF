@@ -1,15 +1,13 @@
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { CruiseWhatsAppButton } from "@/components/cruise/whatsapp-button";
 import { ContactForm } from "@/components/sections/contact-form";
 import { PageHero } from "@/components/sections/page-hero";
-import { contact, site } from "@/lib/content";
+import { contact, site, seo } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Contact JCTEF in Lekki, Lagos: email info@jctef.org, call +234 815 171 4278 or chat with us on WhatsApp.",
-};
+export const metadata: Metadata = pageMetadata({ ...seo.contact, path: "/contact" });
 
 export default function ContactPage() {
   return (
