@@ -39,11 +39,12 @@ export const csp = [
 ].join("; ");
 
 /**
- * Report-only for now: browsers log what the policy would block but block
- * nothing. To enforce, change this to "Content-Security-Policy" here AND in
- * netlify.toml (the build fails until both match).
+ * Enforced (switched from report-only on 2026-11-09 after a clean run with no
+ * violations). To go back to report-only while testing a change, use
+ * "Content-Security-Policy-Report-Only" here AND in netlify.toml (the build
+ * fails until both match).
  */
-export const CSP_HEADER = "Content-Security-Policy-Report-Only";
+export const CSP_HEADER = "Content-Security-Policy";
 
 /** @type {{ key: string; value: string }[]} */
 export const securityHeaders = [
