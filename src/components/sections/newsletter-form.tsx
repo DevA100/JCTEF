@@ -5,7 +5,8 @@ import { type NewsletterState, subscribeToNewsletter } from "@/app/actions/newsl
 import { CruiseButton } from "@/components/cruise/button";
 import { CruiseInput } from "@/components/cruise/input";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
-import { home } from "@/lib/content";
+import { home, site } from "@/lib/content";
+import { withFailSafe } from "@/lib/form-action";
 import { Honeypot } from "./honeypot";
 import { Turnstile } from "./turnstile";
 
@@ -17,9 +18,15 @@ const TITLES: Record<Exclude<NewsletterState["status"], "idle">, string> = {
   error: "Not subscribed",
 };
 
+const submit = withFailSafe<NewsletterState>(
+  subscribeToNewsletter,
+  (prev, _formData, message) => ({ status: "error", id: prev.id + 1, message }),
+  site.email,
+);
+
 function Form() {
   const { toast } = useCruiseToast();
-  const [state, action, pending] = useActionState(subscribeToNewsletter, initial);
+  const [state, action, pending] = useActionState(submit, initial);
 
   const announced = useRef(0);
   useEffect(() => {

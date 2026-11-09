@@ -1,6 +1,7 @@
 "use server";
 
 import "server-only";
+import { logActionFailure, unexpectedErrorMessage } from "@/lib/action-errors";
 import { after } from "next/server";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { site } from "@/lib/content";
@@ -35,7 +36,7 @@ const describe = (error: unknown) =>
  *    Failure is logged only.
  * The HTML files are rendered on the server (src/lib/emails/render-template.ts).
  */
-export async function submitVolunteerApplication(prev: VolunteerState, formData: FormData): Promise<VolunteerState> {
+async function handle(prev: VolunteerState, formData: FormData): Promise<VolunteerState> {
   const id = prev.id + 1;
   const raw = readVolunteerForm(formData);
 
@@ -46,6 +47,8 @@ export async function submitVolunteerApplication(prev: VolunteerState, formData:
 
   const guard = await guardSubmission("Volunteer", formData, VOLUNTEER_FIELDS);
   if (!guard.ok) return { status: "error", id, message: guardMessage(guard.reason, site.email), values: raw };
+  // "No" when Turnstile couldn't verify this submission (it's still accepted).
+  const verified = guard.verified ? "Yes" : "No";
 
   const parsed = volunteerSchema.safeParse(raw);
   if (!parsed.success) {
@@ -66,6 +69,7 @@ export async function submitVolunteerApplication(prev: VolunteerState, formData:
       Availability: a.availability,
       Experience: a.experience,
       Motivation: a.message,
+      Verified: verified,
     }),
   );
 
@@ -89,6 +93,7 @@ export async function submitVolunteerApplication(prev: VolunteerState, formData:
     AVAILABILITY: a.availability ?? "",
     EXPERIENCE: a.experience ?? "",
     MESSAGE: a.message,
+    VERIFIED: verified,
     SUBMITTED_AT: new Intl.DateTimeFormat("en-GB", {
       dateStyle: "full",
       timeStyle: "short",
@@ -115,6 +120,7 @@ export async function submitVolunteerApplication(prev: VolunteerState, formData:
     ...(a.areas.length ? [`Areas: ${params.AREAS}`] : []),
     `Availability: ${a.availability ?? "Not given"}`,
     `Submitted: ${params.SUBMITTED_AT}`,
+    `Verified by security check: ${verified}${verified === "No" ? " (please review before responding)" : ""}`,
   ];
 
   // 1. Team alert: required.
@@ -188,4 +194,14 @@ export async function submitVolunteerApplication(prev: VolunteerState, formData:
   if (contact.status === "rejected") console.error("Volunteer form: saving the contact failed:", describe(contact.reason));
 
   return { status: "success", id, firstName: a.firstName, email: a.email };
+}
+
+/** Never throws: any failure becomes an error result (and an error toast). */
+export async function submitVolunteerApplication(prev: VolunteerState, formData: FormData): Promise<VolunteerState> {
+  try {
+    return await handle(prev, formData);
+  } catch (error) {
+    logActionFailure("Volunteer", error);
+    return { status: "error", id: prev.id + 1, message: unexpectedErrorMessage(site.email), values: readVolunteerForm(formData) };
+  }
 }

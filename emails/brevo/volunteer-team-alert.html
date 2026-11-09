@@ -22,6 +22,7 @@
             <td style="padding:24px 24px 8px 24px; font-family:Arial, Helvetica, sans-serif;">
               <h1 style="margin:0; font-size:22px; line-height:28px; color:#13225C;">{{ params.FULLNAME }}</h1>
               <p style="margin:6px 0 0 0; font-size:15px; color:#3B4466;">Wants to volunteer as: <strong>{{ params.ROLE }}</strong></p>
+              {% if params.VERIFIED == "No" %}<p style="margin:12px 0 0 0; padding:8px 12px; background-color:#FFF4D6; border-left:4px solid #E0A100; font-size:13px; line-height:20px; color:#6B4E00;">Not verified by the security check. Please review before responding.</p>{% endif %}
             </td>
           </tr>
 

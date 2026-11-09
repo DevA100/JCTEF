@@ -1,6 +1,7 @@
 "use server";
 
 import "server-only";
+import { logActionFailure, unexpectedErrorMessage } from "@/lib/action-errors";
 import { z } from "zod";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { site } from "@/lib/content";
@@ -24,7 +25,7 @@ export type NewsletterState = {
   errors?: { email?: string; consent?: string };
 };
 
-export async function subscribeToNewsletter(prev: NewsletterState, formData: FormData): Promise<NewsletterState> {
+async function handle(prev: NewsletterState, formData: FormData): Promise<NewsletterState> {
   const id = prev.id + 1;
 
   // Honeypot: hidden from people, filled in by bots.
@@ -128,3 +129,13 @@ const ALREADY = (id: number): NewsletterState => ({
   id,
   message: "You're already on our list. Thank you!",
 });
+
+/** Never throws: any failure becomes an error result (and an error toast). */
+export async function subscribeToNewsletter(prev: NewsletterState, formData: FormData): Promise<NewsletterState> {
+  try {
+    return await handle(prev, formData);
+  } catch (error) {
+    logActionFailure("Newsletter", error);
+    return { status: "error", id: prev.id + 1, message: unexpectedErrorMessage(site.email) };
+  }
+}

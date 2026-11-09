@@ -8,26 +8,49 @@ import { CruiseInput } from "@/components/cruise/input";
 import { CruisePhoneInput } from "@/components/cruise/phone-input";
 import { CruiseTextarea } from "@/components/cruise/textarea";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
+import { site } from "@/lib/content";
+import { withFailSafe } from "@/lib/form-action";
 import { Honeypot } from "./honeypot";
 import { Turnstile } from "./turnstile";
 
 const initial: ContactState = { status: "idle", id: 0 };
 
+const submit = withFailSafe<ContactState>(
+  sendContactMessage,
+  (prev, formData, message) => ({
+    status: "error",
+    id: prev.id + 1,
+    message,
+    values: {
+      name: String(formData.get("name") ?? ""),
+      email: String(formData.get("email") ?? ""),
+      phone: String(formData.get("phone") ?? "") || undefined,
+      message: String(formData.get("message") ?? ""),
+    },
+  }),
+  site.email,
+);
+
 function Form() {
   const { toast } = useCruiseToast();
-  const [state, action, pending] = useActionState(sendContactMessage, initial);
+  const [state, action, pending] = useActionState(submit, initial);
   const v = state.status === "error" ? state.values : undefined;
 
-  // Success shows as a toast (announced to screen readers as a status).
+  // Fields to fix show as an alert beside the form; everything else (success,
+  // or a failure the person can't fix in the form) shows as a toast.
+  const fieldErrors = state.status === "error" && Object.values(state.errors ?? {}).some(Boolean);
   const announced = useRef(0);
   useEffect(() => {
     // Only react to a new result. Pages you leave are kept alive and their
     // effects re-run when you come back; this stops old toasts reappearing.
     if (state.id === announced.current) return;
     announced.current = state.id;
-    if (state.status !== "success") return;
-    toast({ tone: "success", title: "Message sent", description: state.message, duration: 7000 });
-  }, [state, toast]);
+    if (state.status === "success") {
+      toast({ tone: "success", title: "Message sent", description: state.message, duration: 7000 });
+    } else if (state.status === "error" && !fieldErrors) {
+      toast({ tone: "danger", title: "Your message was not sent", description: state.message, duration: 9000 });
+    }
+  }, [state, toast, fieldErrors]);
 
   return (
     <form action={action} className="grid gap-5">
@@ -78,7 +101,7 @@ function Form() {
       </div>
       {/* Errors stay next to the form, beside the fields that need fixing. */}
       <div aria-live="polite">
-        {state.status === "error" && (
+        {fieldErrors && (
           <CruiseAlert tone="danger" title="Your message was not sent">
             {state.message}
           </CruiseAlert>

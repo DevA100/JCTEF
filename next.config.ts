@@ -24,9 +24,13 @@ const nextConfig: NextConfig = {
   env: { TURNSTILE_SITE_KEY: process.env.TURNSTILE_SITE_KEY ?? "" },
   experimental: {
     serverActions: {
-      // Our forms are a few KB of text. Same-origin only (the default);
-      // src/lib/form-guard.ts also rejects requests with no Origin header.
+      // Our forms are a few KB of text.
       bodySizeLimit: "100kb",
+      // Same-origin is always allowed (that covers deploy previews). These
+      // add the live domains explicitly, so a form still works if a proxy
+      // sends a different Host. src/lib/form-guard.ts also rejects requests
+      // with no Origin header.
+      allowedOrigins: ["jctef.org", "www.jctef.org"],
     },
   },
   // The volunteer emails are read from emails/brevo/ at request time.

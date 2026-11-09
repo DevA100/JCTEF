@@ -1,6 +1,7 @@
 "use server";
 
 import "server-only";
+import { logActionFailure, unexpectedErrorMessage } from "@/lib/action-errors";
 import { after } from "next/server";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { site } from "@/lib/content";
@@ -32,7 +33,7 @@ const describe = (error: unknown) =>
  * 2. Confirmation to the enquirer (emails/brevo/partner-received.html). Logged only.
  * 3. Enquirer added or updated in BREVO_PARTNER_LIST_ID. Logged only.
  */
-export async function submitPartnerEnquiry(prev: PartnerState, formData: FormData): Promise<PartnerState> {
+async function handle(prev: PartnerState, formData: FormData): Promise<PartnerState> {
   const id = prev.id + 1;
   const raw = readPartnerForm(formData);
   const firstOf = (name: unknown) =>
@@ -47,6 +48,8 @@ export async function submitPartnerEnquiry(prev: PartnerState, formData: FormDat
 
   const guard = await guardSubmission("Partnership", formData, PARTNER_FIELDS);
   if (!guard.ok) return { status: "error", id, message: guardMessage(guard.reason, partnershipEmail()), values: raw };
+  // "No" when Turnstile couldn't verify this submission (it's still accepted).
+  const verified = guard.verified ? "Yes" : "No";
 
   const parsed = partnerSchema.safeParse(raw);
   if (!parsed.success) {
@@ -66,6 +69,7 @@ export async function submitPartnerEnquiry(prev: PartnerState, formData: FormDat
       "Areas of interest": e.areas,
       Website: e.website,
       Message: e.message,
+      Verified: verified,
     }),
   );
 
@@ -91,6 +95,7 @@ export async function submitPartnerEnquiry(prev: PartnerState, formData: FormDat
     AREAS: e.areas.join(", "),
     WEBSITE: e.website ?? "",
     MESSAGE: e.message,
+    VERIFIED: verified,
     SUBMITTED_AT: new Intl.DateTimeFormat("en-GB", {
       dateStyle: "full",
       timeStyle: "short",
@@ -115,6 +120,7 @@ export async function submitPartnerEnquiry(prev: PartnerState, formData: FormDat
     ...(e.areas.length ? [`Areas of interest: ${params.AREAS}`] : []),
     ...(e.website ? [`Website: ${e.website}`] : []),
     `Submitted: ${params.SUBMITTED_AT}`,
+    `Verified by security check: ${verified}${verified === "No" ? " (please review before responding)" : ""}`,
   ];
 
   // 1. Team alert: required.
@@ -187,4 +193,14 @@ export async function submitPartnerEnquiry(prev: PartnerState, formData: FormDat
   if (contact.status === "rejected") console.error("Partnership form: saving the contact failed:", describe(contact.reason));
 
   return { status: "success", id, firstName };
+}
+
+/** Never throws: any failure becomes an error result (and an error toast). */
+export async function submitPartnerEnquiry(prev: PartnerState, formData: FormData): Promise<PartnerState> {
+  try {
+    return await handle(prev, formData);
+  } catch (error) {
+    logActionFailure("Partnership", error);
+    return { status: "error", id: prev.id + 1, message: unexpectedErrorMessage(partnershipEmail()), values: readPartnerForm(formData) };
+  }
 }

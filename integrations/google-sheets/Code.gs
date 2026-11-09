@@ -20,19 +20,20 @@ var TABS = {
     headers: [
       'Submitted at', 'First name', 'Last name', 'Email', 'Phone', 'Location',
       'Volunteering as', 'Facilitation areas', 'Availability', 'Experience',
-      'Motivation', 'Status',
+      'Motivation', 'Verified', 'Status',
     ],
   },
   partner: {
     name: 'Partners',
     headers: [
       'Submitted at', 'Full name', 'Organisation', 'Role', 'Email', 'Phone',
-      'Organisation type', 'Areas of interest', 'Website', 'Message', 'Status',
+      'Organisation type', 'Areas of interest', 'Website', 'Message', 'Verified',
+      'Status',
     ],
   },
   contact: {
     name: 'Contact messages',
-    headers: ['Submitted at', 'Name', 'Email', 'Phone', 'Message', 'Status'],
+    headers: ['Submitted at', 'Name', 'Email', 'Phone', 'Message', 'Verified', 'Status'],
   },
 };
 
