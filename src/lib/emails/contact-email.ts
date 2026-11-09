@@ -8,17 +8,24 @@ import { site } from "@/lib/content";
  * styles, so it renders in Gmail, Outlook and phone mail apps). Every value
  * from the form is HTML-escaped.
  */
+/** Amber note shown under the heading of team alerts Turnstile couldn't verify. */
+export const UNVERIFIED_NOTE = `
+              <p style="margin:12px 0 0 0; padding:8px 12px; background-color:#FFF4D6; border-left:4px solid #E0A100; font-size:13px; line-height:20px; color:#6B4E00;">Not verified by the security check. Please review before responding.</p>`;
+
 export function contactEmail({
   name,
   email,
   phone,
   message,
+  verified = true,
   submittedAt = new Date(),
 }: {
   name: string;
   email: string;
   phone?: string;
   message: string;
+  /** False when Turnstile couldn't verify the submission: the email says so. */
+  verified?: boolean;
   submittedAt?: Date;
 }) {
   const when = new Intl.DateTimeFormat("en-GB", {
@@ -62,7 +69,7 @@ export function contactEmail({
           <tr>
             <td style="padding:24px 24px 4px 24px; font-family:Arial, Helvetica, sans-serif;">
               <h1 style="margin:0; font-size:22px; line-height:28px; color:#13225C;">${e(name)}</h1>
-              <p style="margin:6px 0 0 0; font-size:15px; color:#3B4466;">sent a message through the website.</p>
+              <p style="margin:6px 0 0 0; font-size:15px; color:#3B4466;">sent a message through the website.</p>${verified ? "" : UNVERIFIED_NOTE}
             </td>
           </tr>
 
@@ -126,6 +133,7 @@ export function contactEmail({
     `Email: ${email}`,
     `Phone: ${phone || "Not given"}`,
     `Sent: ${when}`,
+    ...(verified ? [] : [`Not verified by the security check. Please review before responding.`]),
     ``,
     message,
     ``,

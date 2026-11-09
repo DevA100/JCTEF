@@ -10,14 +10,21 @@ import { CruisePhoneInput } from "@/components/cruise/phone-input";
 import { CruiseSelect } from "@/components/cruise/select";
 import { CruiseTextarea } from "@/components/cruise/textarea";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
-import { frameworkStages, getInvolved, volunteerAvailability, volunteerRoles } from "@/lib/content";
+import { frameworkStages, getInvolved, site, volunteerAvailability, volunteerRoles } from "@/lib/content";
 import { cx } from "@/lib/cruise-utils";
+import { withFailSafe } from "@/lib/form-action";
 import { readVolunteerForm, type VolunteerField, volunteerErrors, volunteerSchema } from "@/lib/volunteer-schema";
 import { Honeypot } from "./honeypot";
 import { Turnstile } from "./turnstile";
 
 const copy = getInvolved.volunteer.form;
 const initial: VolunteerState = { status: "idle", id: 0 };
+
+const submit = withFailSafe<VolunteerState>(
+  submitVolunteerApplication,
+  (prev, formData, message) => ({ status: "error", id: prev.id + 1, message, values: readVolunteerForm(formData) }),
+  site.email,
+);
 
 /** An error line under a group of radios or checkboxes. */
 function GroupError({ id, message }: { id: string; message?: string }) {
@@ -32,7 +39,7 @@ function GroupError({ id, message }: { id: string; message?: string }) {
 function Form() {
   const { toast } = useCruiseToast();
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, action, pending] = useActionState(submitVolunteerApplication, initial);
+  const [state, action, pending] = useActionState(submit, initial);
   /** Browser-side errors, tied to the server result they were made after. */
   const [client, setClient] = useState<{ id: number; errors: Partial<Record<VolunteerField, string>> } | null>(null);
   /** The role picked since the last server result (shows the areas list). */

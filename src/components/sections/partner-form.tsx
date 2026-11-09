@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useActionState, useEffect, useRef, useState } from "react";
+import { type FormEvent, useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { type PartnerState, submitPartnerEnquiry } from "@/app/actions/partner";
 import { CruiseButton } from "@/components/cruise/button";
 import { CruiseCheckbox } from "@/components/cruise/checkbox";
@@ -11,6 +11,7 @@ import { CruiseTextarea } from "@/components/cruise/textarea";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
 import { getInvolved, partnerAreasFor, partnerOrgTypes } from "@/lib/content";
 import { cx } from "@/lib/cruise-utils";
+import { withFailSafe } from "@/lib/form-action";
 import { type PartnerField, partnerErrors, partnerSchema, readPartnerForm } from "@/lib/partner-schema";
 import { Honeypot } from "./honeypot";
 import { Turnstile } from "./turnstile";
@@ -22,7 +23,16 @@ function Form({ teamEmail }: { teamEmail: string }) {
   const { toast } = useCruiseToast();
   const formRef = useRef<HTMLFormElement>(null);
   const announced = useRef(0);
-  const [state, action, pending] = useActionState(submitPartnerEnquiry, initial);
+  const submit = useMemo(
+    () =>
+      withFailSafe<PartnerState>(
+        submitPartnerEnquiry,
+        (prev, formData, message) => ({ status: "error", id: prev.id + 1, message, values: readPartnerForm(formData) }),
+        teamEmail,
+      ),
+    [teamEmail],
+  );
+  const [state, action, pending] = useActionState(submit, initial);
   /** Browser-side errors, tied to the server result they were made after. */
   const [client, setClient] = useState<{ id: number; errors: Partial<Record<PartnerField, string>> } | null>(null);
   /** The organisation type picked since the last server result. */

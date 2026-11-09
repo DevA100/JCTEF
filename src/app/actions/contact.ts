@@ -1,6 +1,7 @@
 "use server";
 
 import "server-only";
+import { logActionFailure, unexpectedErrorMessage } from "@/lib/action-errors";
 import { after } from "next/server";
 import { z } from "zod";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
@@ -29,7 +30,7 @@ export type ContactState = {
   values?: { name: string; email: string; phone?: string; message: string };
 };
 
-export async function sendContactMessage(prev: ContactState, formData: FormData): Promise<ContactState> {
+async function handle(prev: ContactState, formData: FormData): Promise<ContactState> {
   const id = prev.id + 1;
   const raw = {
     name: String(formData.get("name") ?? ""),
@@ -61,7 +62,8 @@ export async function sendContactMessage(prev: ContactState, formData: FormData)
 
   // Copy to the Google Sheet once the response is sent. Never fails the form.
   const { name, email, phone, message } = parsed.data;
-  after(() => appendToSheet("contact", { Name: name, Email: email, Phone: phone, Message: message }));
+  const verified = guard.verified ? "Yes" : "No";
+  after(() => appendToSheet("contact", { Name: name, Email: email, Phone: phone, Message: message, Verified: verified }));
 
   const missing = missingEnv("BREVO_API_KEY", "CONTACT_TO_EMAIL", "CONTACT_FROM_EMAIL");
   if (missing.length > 0) {
@@ -69,7 +71,7 @@ export async function sendContactMessage(prev: ContactState, formData: FormData)
     return { status: "error", id, message: `Our form is not working right now. Please email us at ${site.email}.`, values };
   }
 
-  const mail = contactEmail({ name, email, phone, message });
+  const mail = contactEmail({ name, email, phone, message, verified: guard.verified });
 
   try {
     await brevo("/smtp/email", {
@@ -94,4 +96,24 @@ export async function sendContactMessage(prev: ContactState, formData: FormData)
   }
 
   return { status: "success", id, message: "Thank you. Your message has been sent and we will reply by email." };
+}
+
+/** Never throws: any failure becomes an error result (and an error toast). */
+export async function sendContactMessage(prev: ContactState, formData: FormData): Promise<ContactState> {
+  try {
+    return await handle(prev, formData);
+  } catch (error) {
+    logActionFailure("Contact", error);
+    return {
+      status: "error",
+      id: prev.id + 1,
+      message: unexpectedErrorMessage(site.email),
+      values: {
+        name: String(formData.get("name") ?? ""),
+        email: String(formData.get("email") ?? ""),
+        phone: String(formData.get("phone") ?? "") || undefined,
+        message: String(formData.get("message") ?? ""),
+      },
+    };
+  }
 }

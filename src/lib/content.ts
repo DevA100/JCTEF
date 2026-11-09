@@ -116,7 +116,7 @@ export const seo = {
   home: {
     title: `${site.shortName}: ${site.coreMessage}`,
     description:
-      "JCTEF is a youth-focused nonprofit in Lekki, Lagos, helping young people move from potential to productivity through mindset, skills, mentorship and funding.",
+      "JCTEF is a youth-focused nonprofit in Lekki, Lagos, focused on human capital development through structured programmes that guide young people through mindset transformation, personal development, capacity building, practical skills acquisition, mentorship, and access to funding and other opportunities, equipping them to build economic resilience and live purposeful, productive lives.",
   },
   about: {
     title: "About JCTEF",
@@ -126,7 +126,7 @@ export const seo = {
   programmes: {
     title: "Our programmes",
     description:
-      "Transformation Programme, Young Minds, Campus Wellness, Business Summit, Annual Retreat and The Tech Paragon: JCTEF's pathways from potential to productivity.",
+      "Transformation Programme, Young Minds, Campus Wellness, Business Summit, Annual Retreat and The Tech Paragon, Women in Tech Community: JCTEF's pathways from potential to productivity.",
   },
   institute: {
     title: "JCTEF Institute",
