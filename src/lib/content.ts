@@ -108,6 +108,48 @@ export const registration = {
   full: `Registered with the Corporate Affairs Commission (CAC), Nigeria. ${rc}.`,
 };
 
+/**
+ * Link previews (WhatsApp, X, LinkedIn, Facebook, Telegram, Slack) and search
+ * results: one title and description per page. Descriptions: 120-160 characters.
+ */
+export const seo = {
+  home: {
+    title: `${site.shortName}: ${site.coreMessage}`,
+    description:
+      "JCTEF is a youth-focused nonprofit in Lekki, Lagos, helping young people move from potential to productivity through mindset, skills, mentorship and funding.",
+  },
+  about: {
+    title: "About JCTEF",
+    description:
+      "Who we are at JCTEF: the young people we serve, our vision, mission and values, the story of our founder Chidimma Jacob Angel, and the team behind it all.",
+  },
+  programmes: {
+    title: "Our programmes",
+    description:
+      "Transformation Programme, Young Minds, Campus Wellness, Business Summit, Annual Retreat and The Tech Paragon: JCTEF's pathways from potential to productivity.",
+  },
+  institute: {
+    title: "JCTEF Institute",
+    description:
+      "The JCTEF Institute for Human Capital Development and its nine-stage Human Capital Transformation Framework for building mindset, skills and productivity.",
+  },
+  getInvolved: {
+    title: "Get involved",
+    description:
+      "Volunteer your time and skills, partner with us or sponsor a programme, and help JCTEF guide young people in Nigeria from potential to productivity.",
+  },
+  blog: {
+    title: "Blog",
+    description:
+      "News and stories from JCTEF: updates from our Transformation Programme fellows, programmes, events and research on human capital development.",
+  },
+  contact: {
+    title: "Contact us",
+    description:
+      "Contact JCTEF in Lekki, Lagos: email info@jctef.org, call +234 815 171 4278 or chat with us on WhatsApp. Young people, partners and volunteers welcome.",
+  },
+} satisfies Record<string, { title: string; description: string }>;
+
 export const navigation = {
   main: [
     { label: "About", href: "/about" },

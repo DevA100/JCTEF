@@ -3,7 +3,8 @@ import { Baloo_2, Bricolage_Grotesque } from "next/font/google";
 import { BackToTop } from "@/components/layout/back-to-top";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { site } from "@/lib/content";
+import { seo, site } from "@/lib/content";
+import { openGraphDefaults, siteUrl, twitterDefaults } from "@/lib/metadata";
 import "./globals.css";
 
 // Cruise UI type: Baloo 2 for display, Bricolage Grotesque for body text.
@@ -21,21 +22,18 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  // Absolute URLs for every preview image and canonical link (previews break
+  // with relative URLs). Set NEXT_PUBLIC_SITE_URL=https://jctef.org in production.
+  metadataBase: siteUrl,
   title: {
-    default: `${site.shortName}: ${site.coreMessage.charAt(0).toUpperCase()}${site.coreMessage.slice(1)}`,
+    default: seo.home.title,
     template: `%s | ${site.shortName}`,
   },
-  description: site.description,
-  openGraph: {
-    type: "website",
-    locale: "en_NG",
-    siteName: site.name,
-    url: site.url,
-    description: site.description,
-  },
-  // The image itself is app/opengraph-image.tsx.
-  twitter: { card: "summary_large_image" },
+  description: seo.home.description,
+  // Defaults for pages without their own metadata. Pages use pageMetadata()
+  // (src/lib/metadata.ts), which repeats these, since openGraph isn't merged.
+  openGraph: { ...openGraphDefaults, url: "/", title: seo.home.title, description: seo.home.description },
+  twitter: { ...twitterDefaults, title: seo.home.title, description: seo.home.description },
 };
 
 /** Organization structured data for search engines. */

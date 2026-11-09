@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import { CruiseAccordion } from "@/components/cruise/accordion";
 import { ButtonLink } from "@/components/layout/button-link";
 import { TrustLine } from "@/components/layout/trust-line";
@@ -7,13 +8,9 @@ import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { Team } from "@/components/sections/team";
 import { VisionValues } from "@/components/sections/vision-values";
-import { about, audiences } from "@/lib/content";
+import { about, audiences, seo } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "About us",
-  description:
-    "Why JCTEF exists, who we serve, our vision, mission and values, and the story of our founder, Chidimma Jacob Angel.",
-};
+export const metadata: Metadata = pageMetadata({ ...seo.about, path: "/about", absoluteTitle: true });
 
 export default function AboutPage() {
   return (
