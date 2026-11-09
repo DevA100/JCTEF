@@ -1,17 +1,22 @@
 "use server";
 
+import "server-only";
+import { after } from "next/server";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { site } from "@/lib/content";
 import { renderEmailTemplate } from "@/lib/emails/render-template";
-import { type PartnerField, partnerErrors, partnerSchema, readPartnerForm } from "@/lib/partner-schema";
+import { PARTNER_FIELDS, type PartnerField, partnerErrors, partnerSchema, readPartnerForm } from "@/lib/partner-schema";
 import { partnershipEmail } from "@/lib/partnership";
-import { rateLimit } from "@/lib/rate-limit";
+import { guardMessage, guardSubmission } from "@/lib/form-guard";
+import { appendToSheet } from "@/lib/sheets";
 
 export type PartnerState = {
   status: "idle" | "success" | "invalid" | "error";
   /** Increments on every submit, so the form reacts to each result once. */
   id: number;
   firstName?: string;
+  /** Shown instead of the usual error text (e.g. rate limit, security check). */
+  message?: string;
   errors?: Partial<Record<PartnerField, string>>;
   /** What the person typed, so nothing is lost on an error. */
   values?: Record<string, unknown>;
@@ -40,16 +45,29 @@ export async function submitPartnerEnquiry(prev: PartnerState, formData: FormDat
     return { status: "success", id, firstName: firstOf(raw.fullName) };
   }
 
-  if (!(await rateLimit("partner", { limit: 3, windowMs: 15 * 60_000 }))) {
-    console.error("Partnership form: rate limit reached");
-    return { status: "error", id, values: raw };
-  }
+  const guard = await guardSubmission("Partnership", formData, PARTNER_FIELDS);
+  if (!guard.ok) return { status: "error", id, message: guardMessage(guard.reason, partnershipEmail()), values: raw };
 
   const parsed = partnerSchema.safeParse(raw);
   if (!parsed.success) {
     return { status: "invalid", id, errors: partnerErrors(parsed.error), values: raw };
   }
   const e = parsed.data;
+
+  // Copy to the Google Sheet once the response is sent. Never fails the form.
+  after(() =>
+    appendToSheet("partner", {
+      "Full name": e.fullName,
+      Organisation: e.organisation,
+      Role: e.role,
+      Email: e.email,
+      Phone: e.phone,
+      "Organisation type": e.orgType,
+      "Areas of interest": e.areas,
+      Website: e.website,
+      Message: e.message,
+    }),
+  );
 
   const missing = missingEnv("BREVO_API_KEY", "CONTACT_FROM_EMAIL");
   if (missing.length > 0) {

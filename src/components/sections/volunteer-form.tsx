@@ -14,6 +14,7 @@ import { frameworkStages, getInvolved, volunteerAvailability, volunteerRoles } f
 import { cx } from "@/lib/cruise-utils";
 import { readVolunteerForm, type VolunteerField, volunteerErrors, volunteerSchema } from "@/lib/volunteer-schema";
 import { Honeypot } from "./honeypot";
+import { Turnstile } from "./turnstile";
 
 const copy = getInvolved.volunteer.form;
 const initial: VolunteerState = { status: "idle", id: 0 };
@@ -45,7 +46,7 @@ function Form() {
     state.status === "success"
       ? `Application sent! ${copy.success(state.firstName ?? "", state.email ?? "")}`
       : state.status === "error"
-        ? copy.error
+        ? (state.message ?? copy.error)
         : "";
   const text = (name: string) => (typeof kept?.[name] === "string" ? (kept[name] as string) : undefined);
 
@@ -65,7 +66,7 @@ function Form() {
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       formRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
     } else if (state.status === "error") {
-      toast({ tone: "danger", title: "Not sent", description: copy.error, duration: 8000 });
+      toast({ tone: "danger", title: "Not sent", description: state.message ?? copy.error, duration: 8000 });
     } else if (state.status === "invalid") {
       focusFirstError();
     }
@@ -195,7 +196,7 @@ function Form() {
             <legend>{copy.areasLegend}</legend>
             <p id="vf-areas-hint" className="text-small text-ink-muted">
               {copy.areasHint}{" "}
-              <Link href={copy.areasLink.href} className="text-link" target="_blank">
+              <Link href={copy.areasLink.href} className="text-link" target="_blank" rel="noopener noreferrer">
                 {copy.areasLink.label}
                 <span className="visually-hidden"> (opens in a new tab)</span>
               </Link>
@@ -257,6 +258,7 @@ function Form() {
       </div>
 
       <Honeypot />
+      <Turnstile key={`turnstile-${state.id}`} action="volunteer" />
 
       <div>
         <CruiseButton type="submit" disabled={pending} aria-disabled={pending} className={cx(pending && "cursor-wait")}>

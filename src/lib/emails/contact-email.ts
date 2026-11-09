@@ -96,7 +96,7 @@ export function contactEmail({
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td align="center" bgcolor="#58A94F" style="background-color:#58A94F; border:2px solid #13225C; border-right-width:4px; border-bottom-width:4px;">
-                    <a href="${replyHref}" target="_blank"
+                    <a href="${replyHref}" target="_blank" rel="noopener noreferrer"
                        style="display:inline-block; padding:12px 22px; font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:#13225C; text-decoration:none;">
                       Reply to ${e(firstName)}
                     </a>

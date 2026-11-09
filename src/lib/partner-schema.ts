@@ -1,4 +1,7 @@
 import { z } from "zod";
+
+// No eval-based speed-ups: keeps the Content Security Policy free of 'unsafe-eval'.
+z.config({ jitless: true });
 import { allPartnerAreas, partnerOrgTypes } from "./content";
 
 /**
@@ -39,7 +42,12 @@ const website = z
     }
   }, "Please enter a website or LinkedIn address, e.g. jctef.org or linkedin.com/company/…");
 
-export const partnerSchema = z.object({
+/** Every field the form sends (anything else is rejected on the server). */
+export const PARTNER_FIELDS = [
+  "fullName", "organisation", "role", "email", "phone", "orgType", "areas", "orgWebsite", "message", "consent",
+] as const;
+
+export const partnerSchema = z.strictObject({
   fullName: clean(120).pipe(z.string().min(2, "Please enter your full name.")),
   organisation: clean(150).pipe(z.string().min(2, "Please enter your organisation's name.")),
   role: optional(100),

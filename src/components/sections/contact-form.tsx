@@ -9,6 +9,7 @@ import { CruisePhoneInput } from "@/components/cruise/phone-input";
 import { CruiseTextarea } from "@/components/cruise/textarea";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
 import { Honeypot } from "./honeypot";
+import { Turnstile } from "./turnstile";
 
 const initial: ContactState = { status: "idle", id: 0 };
 
@@ -69,6 +70,7 @@ function Form() {
         error={state.errors?.message}
       />
       <Honeypot />
+      <Turnstile key={`turnstile-${state.id}`} action="contact" />
       <div>
         <CruiseButton type="submit" disabled={pending} aria-disabled={pending}>
           {pending ? "Sending…" : "Send message"}

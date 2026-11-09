@@ -7,6 +7,7 @@ import { CruiseInput } from "@/components/cruise/input";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
 import { home } from "@/lib/content";
 import { Honeypot } from "./honeypot";
+import { Turnstile } from "./turnstile";
 
 const initial: NewsletterState = { status: "idle", id: 0 };
 
@@ -71,6 +72,7 @@ function Form() {
         )}
       </div>
       <Honeypot />
+      <Turnstile key={`turnstile-${state.id}`} action="newsletter" />
       <div>
         <CruiseButton type="submit" disabled={pending} aria-disabled={pending}>
           {pending ? "Subscribing…" : "Subscribe"}
