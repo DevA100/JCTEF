@@ -16,17 +16,29 @@ export function PostCover({
   variant,
   sizes,
   preload,
+  eager,
   className,
 }: {
   cover?: Cover;
   title: string;
   variant: "card" | "page";
   sizes: string;
+  /** Preload in <head>: for the one image that's always the LCP (a post's cover). */
   preload?: boolean;
+  /** Load straight away instead of lazily: for cards in the first row, any of
+   * which can be the LCP depending on screen width. "high" also raises the
+   * fetch priority (the very first card). */
+  eager?: boolean | "high";
   className?: string;
 }) {
   // Cards repeat the title in text right below, so their image is decorative.
   const alt = variant === "card" ? "" : (cover?.alt ?? "");
+  // next/image: preload can't be combined with loading or fetchPriority.
+  const loadingProps = preload
+    ? { preload: true }
+    : eager
+      ? { loading: "eager" as const, ...(eager === "high" && { fetchPriority: "high" as const }) }
+      : {};
 
   if (cover && variant === "page" && cover.width && cover.height) {
     return (
@@ -36,7 +48,7 @@ export function PostCover({
         width={cover.width}
         height={cover.height}
         sizes={sizes}
-        preload={preload}
+        {...loadingProps}
         className={cx("h-auto w-full", className)}
       />
     );
@@ -45,7 +57,7 @@ export function PostCover({
   return (
     <div className={cx("relative aspect-video w-full overflow-hidden", className)}>
       {cover ? (
-        <Image src={cover.src} alt={alt} fill sizes={sizes} preload={preload} className="object-cover" />
+        <Image src={cover.src} alt={alt} fill sizes={sizes} {...loadingProps} className="object-cover" />
       ) : (
         <Placeholder title={title} large={variant === "page"} />
       )}

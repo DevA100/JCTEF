@@ -116,7 +116,7 @@ export const seo = {
   home: {
     title: `${site.shortName}: ${site.coreMessage}`,
     description:
-      "JCTEF is a youth-focused nonprofit in Lekki, Lagos, focused on human capital development through structured programmes that guide young people through mindset transformation, personal development, capacity building, practical skills acquisition, mentorship, and access to funding and other opportunities, equipping them to build economic resilience and live purposeful, productive lives.",
+      "JCTEF is a Lagos-based youth nonprofit helping young people move from potential to productivity through mindset, skills, mentorship and funding.",
   },
   about: {
     title: "About JCTEF",
@@ -126,7 +126,7 @@ export const seo = {
   programmes: {
     title: "Our programmes",
     description:
-      "Transformation Programme, Young Minds, Campus Wellness, Business Summit, Annual Retreat and The Tech Paragon, Women in Tech Community: JCTEF's pathways from potential to productivity.",
+      "Transformation Programme, Young Minds, Campus Wellness, Business Summit, Annual Retreat and Women in Tech: The Tech Paragon. JCTEF pathways to productivity.",
   },
   institute: {
     title: "JCTEF Institute",
@@ -322,28 +322,107 @@ export const partnerTypes: TitledText[] = [
   },
 ];
 
-// TODO: confirm each fellow approved this wording for publication
-export const testimonials: Testimonial[] = [
+/* -------------------------------------------------------------------------- */
+/* Cohorts and fellows                                                        */
+/* -------------------------------------------------------------------------- */
+
+/** What a fellow said (`quote`) or what was written about them (`summary`). */
+export type FellowTestimonial = Pick<Testimonial, "kind" | "text" | "pronoun">;
+
+export type Fellow = {
+  name: string;
+  profession: string;
+  location: string;
+  /** Cloudinary URL (fccjt5sr). Empty until we have a photo: initials are shown. */
+  image: string;
+  /** Also shown on the homepage ("In their words"). */
+  testimonial?: FellowTestimonial;
+};
+
+export type Cohort = {
+  number: number;
+  title: string;
+  /** YYYY-MM-DD */
+  startDate: string;
+  endDate: string;
+  format: string;
+  summary: string;
+  fellows: Fellow[];
+};
+
+/**
+ * Transformation Programme cohorts, shown on /institute ("Meet Cohort 1").
+ * Add new cohorts anywhere: they're shown newest first, as tabs once there's
+ * more than one.
+ */
+// TODO: confirm each fellow agreed to their photo and details being published.
+export const cohorts: Cohort[] = [
   {
-    kind: "summary",
-    pronoun: "she",
-    name: "Ojo Boluwatife Moyosore",
-    role: "JCTEF Fellow, Cohort 1",
-    text: "Gained insight into capacity building, valuable skills, and how to sell her value and skills.",
-  },
-  {
-    kind: "quote",
-    name: "Jinadu Teslim O.",
-    role: "JCTEF Fellow, Cohort 1",
-    text: "I gained guidance on self-discovery and identifying my path, and insight into how to translate my value into earning. I'm grateful to JCTEF for helping me gain clarity.",
-  },
-  {
-    kind: "quote",
-    name: "Joshua Oluwadare Ajao",
-    role: "JCTEF Fellow, Cohort 1",
-    text: "JCTEF helped me with character development, especially emotional intelligence. People around me have been commenting on the positive change, and I'm grateful to JCTEF for the work they do.",
+    number: 1,
+    title: "Cohort 1",
+    startDate: "2026-08-15",
+    endDate: "2026-11-07",
+    format: "Online, with a Lagos chapter meetup",
+    summary:
+      "Our first cohort completed the three-month Transformation Programme, bringing together fellows from across Nigeria and finishing with an end-of-programme meetup in Ikeja on 7 November 2026.",
+    fellows: [
+      { name: "Blessing Ibanga Udofia", profession: "9-to-5 Professional and Freelancer", location: "Uyo, Akwa Ibom", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246311/Blessing_Ibanga_Udofia.jpg" },
+      { name: "Funmilayo Olowoyo", profession: "IT Audit and Compliance", location: "Lagos", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Funmilayo_Olowoyo.jpg" },
+      {
+        name: "Ojo Boluwatife Moyosore",
+        profession: "Data Analyst, Public Administrator, and CEO, Moshangloss",
+        location: "Gbagada, Lagos",
+        image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ojo_Boluwatife_Moyosore_1.jpg",
+        // TODO: confirm each fellow approved this wording for publication
+        testimonial: {
+          kind: "summary",
+          pronoun: "she",
+          text: "Gained insight into capacity building, valuable skills, and how to sell her value and skills.",
+        },
+      },
+      {
+        name: "Teslim Jinadu",
+        profession: "Electrical Engineer",
+        location: "Lagos",
+        image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Teslim_Jinadu.jpg",
+        testimonial: {
+          kind: "quote",
+          text: "I gained guidance on self-discovery and identifying my path, and insight into how to translate my value into earning. I'm grateful to JCTEF for helping me gain clarity.",
+        },
+      },
+      { name: "Ofonime Effiong", profession: "Data Analyst", location: "Akwa Ibom", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ofonime_Effiong.jpg" },
+      {
+        name: "Oluwadare Ajao",
+        // TODO: confirm "Scrapy Agent" spelling with the team
+        profession: "Scrapy Agent and Sales Marketing",
+        location: "Lagos",
+        image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Oluwadare_ajao_1.jpg",
+        testimonial: {
+          kind: "quote",
+          text: "JCTEF helped me with character development, especially emotional intelligence. People around me have been commenting on the positive change, and I'm grateful to JCTEF for the work they do.",
+        },
+      },
+      { name: "Rasheedah Ayoola", profession: "Educator", location: "Osogbo, Osun", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Rasheedah_Ayoola.jpg" },
+      // TODO: add Victor's photo when we have it
+      { name: "Victor Poweide", profession: "Entrepreneur and Business Owner", location: "Lagos", image: "" },
+    ],
   },
 ];
+
+/** Newest cohort first. */
+export const cohortsNewestFirst = [...cohorts].sort((a, b) => b.number - a.number);
+
+/**
+ * Homepage "In their words": every fellow with a testimonial, newest cohort
+ * first. Edit testimonials on the fellows above, not here.
+ */
+export const testimonials: Testimonial[] = cohortsNewestFirst.flatMap((cohort) =>
+  cohort.fellows.flatMap((fellow) =>
+    fellow.testimonial
+      ? [{ ...fellow.testimonial, name: fellow.name, role: `JCTEF Fellow, ${cohort.title}`, photo: fellow.image || undefined }]
+      : [],
+  ),
+);
 
 /* -------------------------------------------------------------------------- */
 /* Homepage                                                                   */

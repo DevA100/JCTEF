@@ -18,13 +18,15 @@ export default async function BlogPage() {
       <section aria-label="Posts" className="section">
         <div className="site-container">
           <Reveal as="ul" stagger className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <li key={post.slug} className="brutal relative grid content-start overflow-hidden">
                 <PostCover
                   cover={post.cover}
                   title={post.title}
                   variant="card"
                   sizes="(min-width: 1024px) 380px, (min-width: 768px) 50vw, 100vw"
+                  // The first row (1–3 cards, depending on width) is above the fold.
+                  eager={index === 0 ? "high" : index < 3}
                   className="border-b-(length:--border-w) border-ink"
                 />
                 <div className="grid content-start gap-3 p-6">

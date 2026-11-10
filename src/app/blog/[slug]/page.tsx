@@ -2,12 +2,13 @@ import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { PostCover } from "@/components/sections/post-cover";
 import { formatPostDate, getPost, getPostSlugs } from "@/lib/blog";
 import { cloudinaryTransform } from "@/lib/cloudinary";
 import { pageMetadata, SHARE_IMAGE_SIZE } from "@/lib/metadata";
 
-// Unknown slugs fall through to notFound() in the page below.
+// Unknown slugs fall through to notFound() in <Post> below.
 export function generateStaticParams() {
   return getPostSlugs().map((slug) => ({ slug }));
 }
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): P
   return {
     ...pageMetadata({
       title: post.title,
-      description: post.excerpt,
+      description: post.description,
       path: `/blog/${slug}`,
       images,
       openGraph: {
@@ -47,11 +48,15 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): P
   };
 }
 
-export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
-  const post = await getPost((await params).slug);
-  if (!post) notFound();
-  const { Content } = post;
-
+/**
+ * The "All posts" link is the route's shared App Shell, prefetched by every
+ * link to a post. The post itself depends on the URL, so it renders inside
+ * <Suspense> (Partial Prefetching: nothing URL-specific may sit in the shell).
+ * Every post is prerendered at build time, so a full page load still gets
+ * the complete HTML; the placeholder only shows during client navigation.
+ * An unknown slug shows the not-found page with a noindex tag.
+ */
+export default function PostPage({ params }: PageProps<"/blog/[slug]">) {
   return (
     <article className="section">
       <div className="site-container grid gap-8">
@@ -59,22 +64,50 @@ export default async function PostPage({ params }: PageProps<"/blog/[slug]">) {
           <ArrowLeft aria-hidden="true" className="size-5" />
           All posts
         </Link>
-
-        <header className="measure grid gap-4">
-          <h1 className="text-h1 text-balance">{post.title}</h1>
-          <p className="text-small text-ink-muted">
-            <time dateTime={post.date}>{formatPostDate(post.date)}</time> · {post.author}
-          </p>
-        </header>
-
-        <div className="brutal brutal-static max-w-3xl overflow-hidden">
-          <PostCover cover={post.cover} title={post.title} variant="page" sizes="(min-width: 800px) 768px, 100vw" preload />
-        </div>
-
-        <div className="prose-jctef measure">
-          <Content />
-        </div>
+        <Suspense fallback={<PostPlaceholder />}>
+          <Post params={params} />
+        </Suspense>
       </div>
     </article>
+  );
+}
+
+function PostPlaceholder() {
+  return (
+    <div aria-busy="true" className="grid gap-8">
+      <span className="visually-hidden" role="status">
+        Loading the post…
+      </span>
+      <div aria-hidden="true" className="measure grid gap-4">
+        <div className="h-10 w-4/5 animate-pulse bg-tint motion-reduce:animate-none" />
+        <div className="h-4 w-48 animate-pulse bg-tint motion-reduce:animate-none" />
+      </div>
+      <div aria-hidden="true" className="brutal brutal-static aspect-[16/9] max-w-3xl animate-pulse bg-tint motion-reduce:animate-none" />
+    </div>
+  );
+}
+
+async function Post({ params }: Pick<PageProps<"/blog/[slug]">, "params">) {
+  const post = await getPost((await params).slug);
+  if (!post) notFound();
+  const { Content } = post;
+
+  return (
+    <>
+      <header className="measure grid gap-4">
+        <h1 className="text-h1 text-balance">{post.title}</h1>
+        <p className="text-small text-ink-muted">
+          <time dateTime={post.date}>{formatPostDate(post.date)}</time> · {post.author}
+        </p>
+      </header>
+
+      <div className="brutal brutal-static max-w-3xl overflow-hidden">
+        <PostCover cover={post.cover} title={post.title} variant="page" sizes="(min-width: 800px) 768px, 100vw" preload />
+      </div>
+
+      <div className="prose-jctef measure">
+        <Content />
+      </div>
+    </>
   );
 }

@@ -15,7 +15,10 @@ export type PostCover = {
  *
  *   title: "…"
  *   date: "YYYY-MM-DD"
- *   excerpt: "…"            (used for the card, meta description and Open Graph)
+ *   excerpt: "…"            (used for the card, and for the meta description
+ *                            and Open Graph when there's no description)
+ *   description: "…"        (optional; 120-160 characters, for search results and
+ *                            link previews when the excerpt is longer)
  *   author: "JCTEF"
  *   cover:                  (optional; leave out or empty for a branded placeholder)
  *     src: "/images/blog/<slug>.png"   or a res.cloudinary.com URL
@@ -32,6 +35,7 @@ type RawFrontmatter = {
   title: string;
   date: string | Date;
   excerpt?: string;
+  description?: string;
   author?: string;
   cover?: string | Partial<PostCover> | null;
   coverAlt?: string;
@@ -45,6 +49,8 @@ export type PostFrontmatter = {
   /** YYYY-MM-DD */
   date: string;
   excerpt: string;
+  /** For search results and link previews: `description`, or the excerpt. */
+  description: string;
   author: string;
   cover?: PostCover;
   tags: string[];
@@ -96,6 +102,7 @@ function normalise(raw: RawFrontmatter, slug: string): PostFrontmatter {
     title: raw.title,
     date,
     excerpt: raw.excerpt?.trim() ?? "",
+    description: raw.description?.trim() || raw.excerpt?.trim() || "",
     author: raw.author?.trim() || "JCTEF",
     cover: normaliseCover(raw, slug),
     tags: tags.map((t) => String(t).trim()).filter(Boolean),
