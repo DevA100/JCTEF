@@ -2,6 +2,7 @@ import { z } from "zod";
 
 // No eval-based speed-ups: keeps the Content Security Policy free of 'unsafe-eval'.
 z.config({ jitless: true });
+import { optionalPhone } from "./phone";
 import { allPartnerAreas, partnerOrgTypes } from "./content";
 
 /**
@@ -52,13 +53,8 @@ export const partnerSchema = z.strictObject({
   organisation: clean(150).pipe(z.string().min(2, "Please enter your organisation's name.")),
   role: optional(100),
   email: z.string().trim().pipe(z.email("Please enter a valid email address, like name@example.com.").max(200)),
-  /** E.164 from CruisePhoneInput's hidden field, e.g. +2348031234567. */
-  phone: z
-    .string()
-    .trim()
-    .regex(/^(\+\d{8,15})?$/, "Please enter a valid phone number.")
-    .optional()
-    .transform((s) => s || undefined),
+  /** E.164 from PhoneField, e.g. +2348031234567; any country. */
+  phone: optionalPhone,
   orgType: z.enum(partnerOrgTypes, "Please choose your organisation type."),
   areas: z
     .array(z.enum(allPartnerAreas as [string, ...string[]]))

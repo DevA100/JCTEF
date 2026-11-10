@@ -1,7 +1,7 @@
 "use client";
 
 import { CircleAlert } from "lucide-react";
-import { createContext, useContext, useId, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { cx } from "@/lib/cruise-utils";
 
 export type CruiseFieldState = {
@@ -55,21 +55,51 @@ export function CruiseFormField({
 }) {
   const autoId = useId();
   const controlId = id ?? autoId;
+  // When the form is checked (a submit, or checkValidity() in a noValidate
+  // form) and the control fails its constraints (required, pattern, min…),
+  // the browser's message shows here as the error until it's edited (or
+  // the form is reset). Your
+  // own `error` always wins. Controls with their own message (Combobox) are
+  // left alone.
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [nativeError, setNativeError] = useState<string>();
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const onInvalid = (event: Event) => {
+      const target = event.target as HTMLInputElement;
+      if (target.closest(".combobox")) return;
+      setNativeError(target.validationMessage || undefined);
+    };
+    const onEdit = () => setNativeError(undefined);
+    box.addEventListener("invalid", onInvalid, true); // invalid doesn't bubble
+    box.addEventListener("input", onEdit);
+    box.addEventListener("change", onEdit);
+    const form = box.closest("form");
+    form?.addEventListener("reset", onEdit);
+    return () => {
+      form?.removeEventListener("reset", onEdit);
+      box.removeEventListener("invalid", onInvalid, true);
+      box.removeEventListener("input", onEdit);
+      box.removeEventListener("change", onEdit);
+    };
+  }, []);
+  const shownError = error || nativeError;
   const hintId = `${controlId}-hint`;
   const errorId = `${controlId}-error`;
-  const describedBy = [hint ? hintId : "", error ? errorId : ""].filter(Boolean).join(" ") || undefined;
+  const describedBy = [hint ? hintId : "", shownError ? errorId : ""].filter(Boolean).join(" ") || undefined;
   const state: CruiseFieldState = {
     id: controlId,
     labelId: `${controlId}-label`,
     labelText: typeof label === "string" ? label : undefined,
     describedBy,
-    invalid: Boolean(error),
+    invalid: Boolean(shownError),
     required,
   };
 
   return (
     <FieldContext.Provider value={state}>
-      <div className={cx("field", className)}>
+      <div ref={boxRef} className={cx("field", className)}>
         <label id={state.labelId} htmlFor={controlId} className="field-label">
           {label}
           {required && <span className="field-required">Required</span>}
@@ -80,10 +110,10 @@ export function CruiseFormField({
             {hint}
           </p>
         )}
-        {error && (
+        {shownError && (
           <p id={errorId} className="field-error">
             <CircleAlert aria-hidden="true" strokeWidth={2.5} />
-            <span>{error}</span>
+            <span>{shownError}</span>
           </p>
         )}
       </div>

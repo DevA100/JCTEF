@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState, type ComponentProps } from "react";
+import { lazy, Suspense, useId, useRef, useState, type ComponentProps } from "react";
 import { cx } from "@/lib/cruise-utils";
 import { CruiseFormField, cruiseFieldProps, cruiseOwnField, useCruiseField } from "./form-field";
 
@@ -12,6 +12,9 @@ export function cruiseNgNational(raw: string): string {
   if (digits.startsWith("0")) digits = digits.slice(1);
   return digits.slice(0, 10);
 }
+
+/** The message for a number that isn't a Nigerian mobile number. */
+export const CRUISE_NG_INVALID = "Enter a Nigerian mobile number, like 0801 234 5678.";
 
 /** A Nigerian mobile number: 10 digits starting 70, 71, 80, 81, 90 or 91. */
 export const cruiseIsNgMobile = (national: string) => /^[789][01]\d{8}$/.test(national);
@@ -44,32 +47,105 @@ export function CruiseNgFlag() {
   );
 }
 
-type PhoneProps = Omit<ComponentProps<"input">, "value" | "defaultValue" | "onChange" | "type"> & {
+export type CruisePhoneInputProps = Omit<ComponentProps<"input">, "value" | "defaultValue" | "onChange" | "type"> & {
   /** Visible label. Leave out inside a CruiseFormField (it brings the label). */
   label?: string;
   hint?: string;
   /** Your own error; "not a valid number" is added for you. */
   error?: string;
-  /** Any form ("0801…", "+234…"); shown as "0801 234 5678". */
+  /** Any form ("0801…", "+234…"); shown as "0801 234 5678". Uncontrolled. */
   defaultValue?: string;
+  /** Controlled: the number in any form (usually the E.164 from
+   * onValueChange). Pass "" to clear it, e.g. after a form reset. */
+  value?: string | null;
   /** The number in E.164 (+2348012345678), or null while it isn't valid. */
   onValueChange?: (e164: string | null) => void;
   /** Called with the validation message (or undefined) after the field is left. */
   onValidate?: (message: string | undefined) => void;
+  /** Show a country picker and accept numbers from other countries (or pass
+   * `countries`). Default false: Nigeria only, exactly as before. */
+  international?: boolean;
+  /** ISO 3166 code of the country picked at first. Default "NG". */
+  defaultCountry?: string;
+  /** Allow-list of ISO codes people can pick, e.g. ["NG", "GH", "KE", "GB",
+   * "US", "CA"]. Turns the country picker on. Omit for every country. */
+  countries?: string[];
+  /** Shown at the top of the picker. Default ["NG", "GH", "KE", "ZA", "GB", "US", "CA"]. */
+  preferredCountries?: string[];
+  /** Called with the ISO code when the country changes (picked, or found
+   * from a pasted +number). */
+  onCountryChange?: (country: string) => void;
 };
 
+// International mode is a separate file, loaded only when it's used, so
+// Nigeria-only inputs don't download libphonenumber-js.
+const CruisePhoneInternational = lazy(() => import("./phone-international"));
+
 /**
- * Phone input (Nigeria), spec A5: a +234 block with a flag, joined to the
- * input. Takes 0801…, 801…, +234801… with spaces or dashes, shows
- * "0801 234 5678", checks it's a Nigerian mobile number and gives back
- * E.164 (+2348012345678). inputMode="tel", autoComplete="tel".
+ * Phone input, spec A5. Nigeria (+234) by default: takes 0801…, 801…,
+ * +234801… with spaces or dashes, shows "0801 234 5678", checks it's a
+ * Nigerian mobile number and gives back E.164 (+2348012345678). With
+ * `international` (or `countries`), a country picker ("NG +234") sits in
+ * front of the number: search by name, ISO code or dial code; numbers are
+ * formatted and validated for the chosen country with libphonenumber-js
+ * (min metadata, which checks lengths and leading digits), a pasted
+ * +number picks its own country, and the value is still E.164. Nigeria
+ * keeps its own rules in both modes.
  */
 export function CruisePhoneInput({
+  international = false,
+  defaultCountry,
+  countries,
+  preferredCountries,
+  onCountryChange,
+  ...props
+}: CruisePhoneInputProps) {
+  if (!international && !countries) return <NigeriaPhoneInput {...props} />;
+  return (
+    <Suspense fallback={<PhoneFallback label={props.label} country={(defaultCountry ?? "NG").toUpperCase()} className={props.className} />}>
+      <CruisePhoneInternational
+        {...props}
+        defaultCountry={defaultCountry}
+        countries={countries}
+        preferredCountries={preferredCountries}
+        onCountryChange={onCountryChange}
+      />
+    </Suspense>
+  );
+}
+
+/** Shown for a moment while international mode loads (client-side only;
+ * the server renders the real field). */
+function PhoneFallback({ label, country, className }: { label?: string; country: string; className?: string }) {
+  const box = (
+    <div className="input-group" aria-hidden="true">
+      <span className="input-prefix">{country}</span>
+      <span className="input-bare" />
+    </div>
+  );
+  return label ? (
+    <div className={cx("field", className)}>
+      <span className="field-label">{label}</span>
+      {box}
+    </div>
+  ) : (
+    box
+  );
+}
+
+type PhoneProps = Omit<CruisePhoneInputProps, "international" | "defaultCountry" | "countries" | "preferredCountries" | "onCountryChange">;
+
+/**
+ * Nigeria-only mode (the default), unchanged: a +234 block with a flag,
+ * joined to the input. inputMode="tel", autoComplete="tel".
+ */
+function NigeriaPhoneInput({
   label,
   hint,
   error,
   required,
   defaultValue = "",
+  value,
   onValueChange,
   onValidate,
   name,
@@ -82,10 +158,20 @@ export function CruisePhoneInput({
   const outer = useCruiseField();
   const autoId = useId();
   const ref = useRef<HTMLInputElement>(null);
-  const [text, setText] = useState(() => cruiseFormatNgPhone(defaultValue));
+  const [text, setText] = useState(() => cruiseFormatNgPhone(value ?? defaultValue));
   const [touched, setTouched] = useState(false);
-  const e164 = cruiseToE164(text);
-  const invalidNumber = cruiseNgNational(text) !== "" && !e164 ? "Enter a Nigerian mobile number, like 0801 234 5678." : undefined;
+  // Controlled: remember the last value sent up; when the parent passes a
+  // different one (a reset, a loaded record), show that instead. "" always
+  // clears; null clears once a full number was entered (a half-typed number
+  // reports null too).
+  const [synced, setSynced] = useState(value);
+  if (value !== undefined && value !== synced) {
+    setSynced(value);
+    setText(cruiseFormatNgPhone(value ?? ""));
+  }
+  const shown = text;
+  const e164 = cruiseToE164(shown);
+  const invalidNumber = cruiseNgNational(shown) !== "" && !e164 ? CRUISE_NG_INVALID : undefined;
   const message = error ?? (touched ? invalidNumber : undefined);
   // With a label (and no FormField around it), it renders its own field, so
   // its min/max or "not valid" message can show there.
@@ -98,6 +184,7 @@ export function CruisePhoneInput({
     const before = raw.slice(0, caret).replace(/\D/g, "").length;
     const next = cruiseFormatNgPhone(raw);
     setText(next);
+    setSynced(cruiseToE164(next));
     onValueChange?.(cruiseToE164(next));
     requestAnimationFrame(() => {
       const el = ref.current;
@@ -129,7 +216,7 @@ export function CruisePhoneInput({
         inputMode="tel"
         autoComplete="tel"
         disabled={disabled}
-        value={text}
+        value={shown}
         placeholder={props.placeholder ?? "0801 234 5678"}
         onChange={(event) => update(event.target.value, event.target.selectionStart ?? event.target.value.length)}
         onBlur={(event) => {

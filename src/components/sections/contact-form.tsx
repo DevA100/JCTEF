@@ -5,12 +5,12 @@ import { type ContactState, sendContactMessage } from "@/app/actions/contact";
 import { CruiseAlert } from "@/components/cruise/alert";
 import { CruiseButton } from "@/components/cruise/button";
 import { CruiseInput } from "@/components/cruise/input";
-import { CruisePhoneInput } from "@/components/cruise/phone-input";
 import { CruiseTextarea } from "@/components/cruise/textarea";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
 import { site } from "@/lib/content";
 import { withFailSafe } from "@/lib/form-action";
 import { Honeypot } from "./honeypot";
+import { PhoneField } from "./phone-field";
 import { Turnstile } from "./turnstile";
 
 const initial: ContactState = { status: "idle", id: 0 };
@@ -73,13 +73,14 @@ function Form() {
         defaultValue={v?.email}
         error={state.errors?.email}
       />
-      <CruisePhoneInput
+      <PhoneField
         // Remount after each result: empty after success, kept after an error.
         key={`phone-${state.id}`}
         defaultValue={v?.phone}
         label="Phone number"
         name="phone"
-        hint="Optional. A Nigerian mobile number, e.g. 0803 123 4567."
+        hint="Optional. Choose your country first if it isn't Nigeria."
+        error={state.errors?.phone}
       />
       <CruiseTextarea
         // Remount after each result: resets the character count and height.

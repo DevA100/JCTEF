@@ -39,6 +39,8 @@
 
     --font-display: var(--font-baloo, 'Baloo 2'), 'Baloo 2', system-ui, sans-serif;
     --font-body: var(--font-bricolage, 'Bricolage Grotesque'), 'Bricolage Grotesque', system-ui, sans-serif;
+    /* Code: the system monospace stack (no web font; the two-font rule stays). */
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
     /* Type scale (A2) — mobile values first, desktop below */
     --text-hero: 2.75rem;    --text-hero--line-height: 0.95;
@@ -94,6 +96,12 @@
     }
   }
   :where(.cruise) :is(h1, h2, h3, .display) { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; }
+
+  /* Cursors (A4): Tailwind v4 no longer gives buttons a pointer. Base layer,
+     so a component's own cursor (text, grab) still wins. In the registry
+     theme this is scoped to .cruise, so the rest of the app is untouched. */
+  :where(.cruise) :is(button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [role="switch"], [role="tab"], [role="menuitem"], [role="option"], summary, label[for], select) { cursor: pointer; }
+  :where(.cruise) :is(:disabled, [aria-disabled="true"]) { cursor: not-allowed; }
 
   /* City themes (Part B). Palette roles first; then the light neutrals,
      only where dark mode isn't on (here or on an ancestor), so a themed
@@ -382,7 +390,9 @@
   /* Button group: one row of shared-border buttons, ONE shadow on the group.
      Selected = aria-pressed="true" + .on-primary. Up to 5 options; scrolls
      sideways on small screens instead of overflowing the page. */
-  .btn-group { display: inline-flex; max-width: 100%; border-radius: var(--radius); box-shadow: var(--shadow); }
+  /* Wraps onto more rows when it doesn't fit (borders stay joined both ways,
+     segments stretch to fill each row); data-responsive="scroll" scrolls instead. */
+  .btn-group { display: inline-flex; flex-wrap: wrap; max-width: 100%; padding: var(--border-w) 0 0 var(--border-w); border-radius: var(--radius); box-shadow: var(--shadow); }
   .btn-group > button {
     position: relative; flex-shrink: 0; min-height: 44px; padding: 10px 18px;
     background: var(--surface); color: var(--ink);
@@ -390,13 +400,15 @@
     font: 800 0.9375rem/1 var(--font-display); letter-spacing: 0.03em; text-transform: uppercase; white-space: nowrap;
     cursor: pointer;
   }
-  .btn-group > button + button { margin-left: calc(var(--border-w) * -1); }
+  .btn-group > button { flex: 1 0 auto; margin: calc(var(--border-w) * -1) 0 0 calc(var(--border-w) * -1); }
   .btn-group > button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
   .btn-group > button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
   .btn-group > button.on-primary { background: var(--primary); color: var(--on-primary); }
   .btn-group > button:focus-visible { z-index: 1; outline: 3px solid var(--ink); outline-offset: 2px; }
   .btn-group > button:disabled { background: var(--muted); color: var(--ink-muted); cursor: not-allowed; }
-  @media (max-width: 639px) { .btn-group { overflow-x: auto; } }
+  .btn-group[data-responsive="scroll"] { flex-wrap: nowrap; }
+  .btn-group[data-responsive="scroll"] > button { flex: 0 0 auto; }
+  @media (max-width: 639px) { .btn-group[data-responsive="scroll"] { overflow-x: auto; } }
 
   /* OTP input: 4 or 6 boxes. The focused box gets .on-primary (script). */
   .otp { display: flex; gap: 8px; }
@@ -1192,6 +1204,45 @@
     .scroll-top[data-visible] { transition-delay: 0s; }
   }
 
+  /* ---- Stat card, code block, resolved field (A5, v1.12) ---- */
+
+  /* Stat card: label, a big value that shrinks with its card and never breaks
+     mid-number (wraps at spaces only), an optional change badge, note, icon. */
+  .stat-card { container-type: inline-size; display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 20px; }
+  .stat-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .stat-label { margin: 0; color: var(--ink-muted); font: 700 0.8125rem/1.3 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+  .stat-icon { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border: 2px solid var(--ink); border-radius: var(--radius); background: var(--tint); color: var(--ink); }
+  .stat-icon svg { width: 20px; height: 20px; }
+  .stat-value { margin: 0; font: 800 clamp(1.25rem, 13cqi, 2.25rem)/1.1 var(--font-display); font-variant-numeric: tabular-nums; overflow-wrap: normal; word-break: keep-all; hyphens: none; }
+  .stat-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .stat-change { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 2px solid var(--ink); border-radius: min(var(--radius), 6px); color: var(--ink); font: 700 0.8125rem/1.3 var(--font-body); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .stat-change svg { width: 16px; height: 16px; }
+  .stat-change[data-direction="up"] { background: color-mix(in srgb, var(--success) 16%, var(--surface)); }
+  .stat-change[data-direction="up"] svg { color: var(--success); }
+  .stat-change[data-direction="down"] { background: color-mix(in srgb, var(--danger) 16%, var(--surface)); }
+  .stat-change[data-direction="down"] svg { color: var(--danger); }
+  .stat-change[data-direction="flat"] { background: var(--muted); }
+  .stat-note { margin: 0; color: var(--ink-muted); font: 400 0.875rem/1.4 var(--font-body); }
+
+  /* Code block: an ink-framed .on-deep panel; the code scrolls sideways inside. */
+  .code-block { min-width: 0; margin: 0; overflow: hidden; border: var(--border-w) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .code-block-inner { display: flex; flex-direction: column; min-width: 0; }
+  .code-block-head { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 4px 4px 4px 16px; border-bottom: 2px solid var(--ink); }
+  .code-block-title { flex: 1; min-width: 0; overflow: hidden; font: 700 0.875rem/1.3 var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
+  .code-block-lang { color: var(--ink-muted); font: 700 0.75rem/1 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; }
+  .code-block pre { margin: 0; padding: 16px; overflow-x: auto; font: 400 0.875rem/1.6 var(--font-mono); tab-size: 2; }
+  .code-block pre:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; }
+
+  /* Resolved field: a lookup's result under its input (e.g. an account name). */
+  .resolved { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; border: 2px dashed var(--ink); border-radius: var(--radius); color: var(--ink); font: 700 1rem/1.3 var(--font-body); }
+  .resolved svg { flex-shrink: 0; width: 20px; height: 20px; }
+  .resolved[data-state="idle"], .resolved[data-state="resolving"] { color: var(--ink-muted); }
+  .resolved[data-state="resolved"] { border-style: solid; background: color-mix(in srgb, var(--success) 12%, var(--surface)); }
+  .resolved[data-state="resolved"] svg { color: var(--success); }
+  .resolved[data-state="error"] { border-style: solid; border-color: var(--danger); }
+  .resolved[data-state="error"] svg { color: var(--danger); }
+  .resolved-retry { margin-left: auto; min-height: 44px; padding: 0 8px; border: 0; background: none; color: var(--ink); font: 700 0.875rem/1 var(--font-body); text-decoration: underline; cursor: pointer; }
+
   /* ---- Text-field focus (A4). Text fields always show focus (:focus, not
      only :focus-visible): typing goes there. Three styles, picked with
      data-focus on <html>, <body> or any wrapper:
@@ -1284,6 +1335,7 @@
 
   --font-display: var(--font-baloo, 'Baloo 2'), 'Baloo 2', system-ui, sans-serif;
   --font-body: var(--font-bricolage, 'Bricolage Grotesque'), 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
 
   --text-hero: var(--text-hero);
   --text-hero--line-height: var(--text-hero--line-height);

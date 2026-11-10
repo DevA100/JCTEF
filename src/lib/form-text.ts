@@ -25,11 +25,3 @@ export const optionalPlainText = (max: number) =>
   plainText(max)
     .optional()
     .transform((s) => s || undefined);
-
-/** E.164 from CruisePhoneInput's hidden field, e.g. +2348031234567. */
-export const optionalPhone = z
-  .string()
-  .trim()
-  .regex(/^(\+\d{8,15})?$/, "Please enter a valid phone number.")
-  .optional()
-  .transform((s) => s || undefined);

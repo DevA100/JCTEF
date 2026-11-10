@@ -1,6 +1,7 @@
 import "server-only";
 import { escapeHtml } from "@/lib/brevo";
 import { site } from "@/lib/content";
+import { formatPhone } from "@/lib/phone";
 
 /**
  * The email the team receives when someone uses the "Send us a message" form.
@@ -22,6 +23,7 @@ export function contactEmail({
 }: {
   name: string;
   email: string;
+  /** E.164; shown as "+44 7911 123456". */
   phone?: string;
   message: string;
   /** False when Turnstile couldn't verify the submission: the email says so. */
@@ -89,7 +91,7 @@ export function contactEmail({
                      style="font-family:Arial, Helvetica, sans-serif; font-size:14px; line-height:22px; color:#3B4466; border-collapse:collapse;">${row(
                        "Email",
                        `<a href="mailto:${e(email)}" style="color:#13225C;">${e(email)}</a>`,
-                     )}${row("Phone", phone ? `<a href="tel:${e(phone)}" style="color:#13225C;">${e(phone)}</a>` : "Not given")}${row(
+                     )}${row("Phone", phone ? `<a href="tel:${e(phone)}" style="color:#13225C;">${e(formatPhone(phone))}</a>` : "Not given")}${row(
                        "Sent",
                        e(when),
                        true,
@@ -131,7 +133,7 @@ export function contactEmail({
     ``,
     `From: ${name}`,
     `Email: ${email}`,
-    `Phone: ${phone || "Not given"}`,
+    `Phone: ${phone ? formatPhone(phone) : "Not given"}`,
     `Sent: ${when}`,
     ...(verified ? [] : [`Not verified by the security check. Please review before responding.`]),
     ``,
