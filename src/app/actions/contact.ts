@@ -8,7 +8,8 @@ import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
 import { contactEmail } from "@/lib/emails/contact-email";
 import { site } from "@/lib/content";
 import { guardMessage, guardSubmission } from "@/lib/form-guard";
-import { optionalPhone, plainText } from "@/lib/form-text";
+import { plainText } from "@/lib/form-text";
+import { optionalPhone } from "@/lib/phone";
 import { appendToSheet } from "@/lib/sheets";
 
 const FIELDS = ["name", "email", "phone", "message"] as const;
@@ -20,7 +21,7 @@ const schema = z.strictObject({
   message: plainText(2000).pipe(z.string().min(1, "Please write a message.")),
 });
 
-type Field = "name" | "email" | "message";
+type Field = "name" | "email" | "phone" | "message";
 export type ContactState = {
   status: "idle" | "success" | "error";
   /** Increments on every submit, so the form can reset fields per result. */
@@ -55,7 +56,7 @@ async function handle(prev: ContactState, formData: FormData): Promise<ContactSt
       status: "error",
       id,
       message: "Please check the highlighted fields.",
-      errors: { name: fields.name?.[0], email: fields.email?.[0], message: fields.message?.[0] },
+      errors: { name: fields.name?.[0], email: fields.email?.[0], phone: fields.phone?.[0], message: fields.message?.[0] },
       values,
     };
   }

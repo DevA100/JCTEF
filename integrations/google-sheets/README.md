@@ -20,6 +20,10 @@ couldn't load on their device, so the submission was still accepted, but it
 could also be a bot. Look it over before you reply. Tabs created before this
 column existed get it automatically, as a new column at the end.
 
+The **Phone** column holds numbers in international (E.164) format, with the
+plus sign and country code and no spaces, e.g. +2348031234567 or
++447911123456. People can give a number from any country.
+
 Setup takes about 10 minutes. Do it once.
 
 ---

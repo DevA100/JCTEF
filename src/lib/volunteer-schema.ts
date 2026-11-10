@@ -2,6 +2,7 @@ import { z } from "zod";
 
 // No eval-based speed-ups: keeps the Content Security Policy free of 'unsafe-eval'.
 z.config({ jitless: true });
+import { optionalPhone } from "./phone";
 import { frameworkStages, volunteerAvailability, volunteerRoles } from "./content";
 
 /**
@@ -38,13 +39,8 @@ export const volunteerSchema = z
     firstName: clean(60).pipe(z.string().min(1, "Please enter your first name.")),
     lastName: clean(60).pipe(z.string().min(1, "Please enter your last name.")),
     email: z.string().trim().pipe(z.email("Please enter a valid email address, like name@example.com.").max(200)),
-    /** E.164 from CruisePhoneInput's hidden field, e.g. +2348031234567. */
-    phone: z
-      .string()
-      .trim()
-      .regex(/^(\+\d{8,15})?$/, "Please enter a valid phone number.")
-      .optional()
-      .transform((s) => s || undefined),
+    /** E.164 from PhoneField, e.g. +2348031234567; any country. */
+    phone: optionalPhone,
     location: optional(100),
     role: z.enum(volunteerRoles, "Please choose how you'd like to volunteer."),
     areas: z.array(z.enum(stageTitles)).max(stageTitles.length).default([]),

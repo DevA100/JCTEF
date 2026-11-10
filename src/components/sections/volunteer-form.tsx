@@ -6,7 +6,6 @@ import { submitVolunteerApplication, type VolunteerState } from "@/app/actions/v
 import { CruiseButton } from "@/components/cruise/button";
 import { CruiseCheckbox } from "@/components/cruise/checkbox";
 import { CruiseInput } from "@/components/cruise/input";
-import { CruisePhoneInput } from "@/components/cruise/phone-input";
 import { CruiseSelect } from "@/components/cruise/select";
 import { CruiseTextarea } from "@/components/cruise/textarea";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
@@ -15,6 +14,7 @@ import { cx } from "@/lib/cruise-utils";
 import { withFailSafe } from "@/lib/form-action";
 import { readVolunteerForm, type VolunteerField, volunteerErrors, volunteerSchema } from "@/lib/volunteer-schema";
 import { Honeypot } from "./honeypot";
+import { PhoneField } from "./phone-field";
 import { Turnstile } from "./turnstile";
 
 const copy = getInvolved.volunteer.form;
@@ -137,13 +137,14 @@ function Form() {
           defaultValue={text("email")}
           error={errors.email}
         />
-        <CruisePhoneInput
+        <PhoneField
           // Remount after each result: empty after success, kept after an error.
           key={`phone-${state.id}`}
           label="Phone number"
           name="phone"
-          hint="Optional. A Nigerian mobile number."
+          hint="Optional. Choose your country first if it isn't Nigeria."
           defaultValue={text("phone")}
+          error={errors.phone}
         />
         <CruiseInput
           label="Location"

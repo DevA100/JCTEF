@@ -4,6 +4,7 @@ import "server-only";
 import { logActionFailure, unexpectedErrorMessage } from "@/lib/action-errors";
 import { after } from "next/server";
 import { BrevoError, brevo, missingEnv } from "@/lib/brevo";
+import { formatPhone } from "@/lib/phone";
 import { site } from "@/lib/content";
 import { renderEmailTemplate } from "@/lib/emails/render-template";
 import { guardMessage, guardSubmission } from "@/lib/form-guard";
@@ -86,7 +87,8 @@ async function handle(prev: VolunteerState, formData: FormData): Promise<Volunte
     FIRSTNAME: a.firstName,
     FULLNAME: fullName,
     EMAIL: a.email,
-    PHONE: a.phone ?? "",
+    // Readable in the team alert ("+44 7911 123456"); Brevo's SMS attribute and the sheet keep E.164.
+    PHONE: a.phone ? formatPhone(a.phone) : "",
     LOCATION: a.location ?? "",
     ROLE: a.role,
     AREAS: a.areas.join(", "),
@@ -114,7 +116,7 @@ async function handle(prev: VolunteerState, formData: FormData): Promise<Volunte
   const details = [
     `Name: ${fullName}`,
     `Email: ${a.email}`,
-    `Phone: ${a.phone ?? "Not given"}`,
+    `Phone: ${params.PHONE || "Not given"}`,
     `Location: ${a.location ?? "Not given"}`,
     `Role: ${a.role}`,
     ...(a.areas.length ? [`Areas: ${params.AREAS}`] : []),
