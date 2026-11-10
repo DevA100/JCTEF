@@ -12,11 +12,22 @@ function initials(name: string) {
 }
 
 /**
- * Square team photo. Cloudinary does the face-centred crop, so every photo
+ * Square photo of a person (team members, fellows). Cloudinary does the face-centred crop, so every photo
  * matches whatever its size or format. If the photo is missing or fails to
  * load, the person's initials are shown in the same square instead.
  */
-export function TeamPhoto({ src, name, alt }: { src?: string; name: string; alt: string }) {
+export function TeamPhoto({
+  src,
+  name,
+  alt,
+  sizes = "(min-width: 1024px) 380px, (min-width: 640px) 45vw, 50vw",
+}: {
+  src?: string;
+  name: string;
+  alt: string;
+  /** How wide the photo is shown, for next/image to pick a size. */
+  sizes?: string;
+}) {
   const [failed, setFailed] = useState(false);
 
   return (
@@ -27,7 +38,7 @@ export function TeamPhoto({ src, name, alt }: { src?: string; name: string; alt:
           alt={alt}
           fill
           loading="lazy"
-          sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, 50vw"
+          sizes={sizes}
           className="object-cover"
           onError={() => setFailed(true)}
         />
