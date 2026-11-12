@@ -342,7 +342,7 @@ export type Alumnus = {
   cohort: number;
   /** Cloudinary URL (fccjt5sr). Empty until we have a photo: initials are shown. */
   image: string;
-  /** Also shown on the homepage ("In their words"). */
+  /** Shown on the homepage ("In their words"). */
   testimonial?: AlumnusTestimonial;
 };
 
@@ -371,10 +371,10 @@ export const cohorts: Cohort[] = [
   },
 ];
 
-/** "Meet our alumni" on /institute. */
+/** "Meet some of our alumni" on /institute. */
 export const alumniSection = {
   eyebrow: "Our alumni",
-  title: "Meet our alumni",
+  title: "Meet some of our alumni",
   summary: "Graduates of the JCTEF Transformation Programme, bringing together alumni from across Nigeria.",
 };
 
