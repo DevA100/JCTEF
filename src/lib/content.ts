@@ -672,8 +672,9 @@ export const outreachPhotos: OutreachPhoto[] = [
   },
   {
     src: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794402915/tech-paragons.jpg",
-    alt: "Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten \"Tech Paragons\" sign",
-    caption: "The Tech Paragon's first meetup for women in tech, Lagos, April 2026",
+    alt: 'Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten "Tech Paragons" sign',
+    caption:
+      "The Tech Paragon's first meetup for women in tech, Lagos chapter, April 2026",
   },
 ];
 
@@ -1124,7 +1125,7 @@ export const programmes = {
       ],
       image: {
         src: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794402915/tech-paragons.jpg",
-        alt: "Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten \"Tech Paragons\" sign",
+        alt: 'Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten "Tech Paragons" sign',
         width: 1280,
         height: 960,
       },
@@ -1139,7 +1140,7 @@ export const programmes = {
           images: [
             {
               src: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794402915/tech-paragons.jpg",
-              alt: "Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten \"Tech Paragons\" sign",
+              alt: 'Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten "Tech Paragons" sign',
             },
             {
               src: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794402914/techpargons.jpg",
