@@ -10,7 +10,7 @@ import { navigation, site } from "@/lib/content";
  */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b-(length:--border-w) border-ink bg-paper">
+    <header data-analytics-location="header" className="sticky top-0 z-30 border-b-(length:--border-w) border-ink bg-paper">
       <div className="site-container flex items-center gap-3 py-3 lg:gap-8">
         <Link href="/" className="mr-auto flex min-h-11 shrink-0 items-center" aria-label={`${site.shortName} home`}>
           {/* The logo PNG has a white background; multiply drops it onto the cream paper. */}

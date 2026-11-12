@@ -10,6 +10,7 @@ import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { programmes, seo } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
+import { TrackProgrammeViews } from "@/components/analytics/trackers";
 
 export const metadata: Metadata = pageMetadata({ ...seo.programmes, path: "/programmes" });
 
@@ -48,6 +49,7 @@ export default function ProgrammesPage() {
       <section aria-labelledby="initiatives-title" className="section">
         <div className="site-container grid gap-10">
           <SectionHeading id="initiatives-title" eyebrow="Our initiatives" title="Programmes and initiatives" />
+          <TrackProgrammeViews programmes={programmes.initiatives.map(({ id, title }) => ({ id, title }))} />
           <Reveal stagger className="grid gap-8">
             {programmes.initiatives.map((item, i) => (
               <article

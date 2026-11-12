@@ -1,5 +1,6 @@
 import { CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
+import { TrackNewsletterConfirmed } from "@/components/analytics/trackers";
 import { ButtonLink } from "@/components/layout/button-link";
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 export default function NewsletterConfirmedPage() {
   return (
     <section className="section">
+      <TrackNewsletterConfirmed />
       <div className="site-container">
         <div className="brutal brutal-static mx-auto grid max-w-2xl justify-items-start gap-6 p-6 md:p-10">
           <span className="on-primary grid size-14 place-items-center rounded-brutal border-(length:--border-w) border-ink">

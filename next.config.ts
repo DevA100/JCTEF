@@ -2,6 +2,7 @@ import { readdirSync } from "node:fs";
 import path from "node:path";
 import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
+import { analyticsRewrites } from "./analytics-proxy.mjs";
 import { securityHeaders } from "./security-headers.mjs";
 
 // Blog posts migrated from WordPress lived at jctef.org/<slug>/.
@@ -51,6 +52,15 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+  // PostHog's API paths end in a slash (/e/, /flags/): without this, every
+  // analytics request would first get a 308 redirect. Pages keep a single
+  // URL through their canonical tags (src/lib/metadata.ts).
+  skipTrailingSlashRedirect: true,
+  // PostHog through our own domain (see analytics-proxy.mjs). On Netlify the
+  // same paths are proxied by netlify.toml before Next.js sees them.
+  async rewrites() {
+    return analyticsRewrites;
   },
   async headers() {
     return [{ source: "/:path*", headers: headersForAllRoutes }];

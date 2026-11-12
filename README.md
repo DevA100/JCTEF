@@ -100,3 +100,70 @@ Both forms have two kinds of spam protection:
 
 - a hidden "honeypot" field that bots fill in and people don't see
 - a limit of 5 submissions per visitor every 15 minutes
+
+## Analytics
+
+The site uses [PostHog](https://posthog.com) (EU Cloud, data stored in the EU) to count visits and see which pages and buttons are used. It's set up in `src/instrumentation-client.ts`; events are sent with `track()` from `src/lib/analytics.ts`, which does nothing if PostHog isn't loaded, so analytics can never break a form or a button.
+
+### Setup
+
+1. Create a PostHog account in the **EU** region and a project for jctef.org.
+2. In the project: **Settings → Project → Web analytics**, turn on **Enable cookieless tracking** and save. Without it, PostHog throws away the visits of everyone who hasn't accepted cookies, which is most visitors.
+3. Check **Settings → Project → General → IP data capture** is set to discard IPs (the default for EU organisations).
+4. On Netlify, add `NEXT_PUBLIC_POSTHOG_KEY` (the project token, starting `phc_`) for the **Production** context only, then redeploy. It's public by design. Deploy previews on `*.netlify.app` can't use the proxy (Netlify changes a header on that domain that PostHog can't read), so leave the variable unset there.
+
+Without `NEXT_PUBLIC_POSTHOG_KEY` (for example on your computer), nothing loads and no cookie banner appears.
+
+The browser never talks to posthog.com: requests go to `jctef.org/k7q2/…`, which Netlify forwards to PostHog (`netlify.toml`), or Next.js does locally (`next.config.ts`). The path comes from `analytics-proxy.mjs`, and the build fails if `netlify.toml` and that file disagree. Because of this, the Content Security Policy needs no PostHog entries.
+
+### Consent
+
+- **Before a visitor chooses, after Decline, and when the browser sends Do Not Track or Global Privacy Control:** cookieless mode. Nothing is stored on the device; PostHog counts visitors with an anonymous hash made on its servers, which can't follow a person from one day to the next.
+- **After Accept:** PostHog stores a cookie and some local storage, so returning visitors and whole visits can be recognised.
+- The banner at the bottom of the page asks once. The choice is kept in the browser (`jctef-analytics-consent` in localStorage). **Cookie settings** in the footer opens it again. The [privacy page](https://jctef.org/privacy) explains this to visitors; its copy is `privacy` in `src/lib/content.ts` and should be reviewed by the team.
+
+### What's tracked
+
+Page views (including moves between pages without a reload, counted once each), how long people stay, and clicks on links and buttons outside forms (PostHog autocapture), plus these events:
+
+| Event | When | Properties |
+| --- | --- | --- |
+| `donate_clicked` | Any link to the Flutterwave donate page | `location`: `header`, `menu` (mobile), `hero`, `footer`, or the page (`home`, `get_involved`, `programmes`, …) |
+| `volunteer_application_submitted` | The application was sent | `role`, `verified` |
+| `partner_enquiry_submitted` | The enquiry was sent | `org_type`, `verified` |
+| `contact_message_sent` | The message was sent | `verified` |
+| `newsletter_signup_started` | The confirmation email was sent | none |
+| `newsletter_confirmed` | Someone opened `/newsletter/confirmed` from that email | none |
+| `reset_register_clicked` | A link to the RESET registration page | `location` |
+| `whatsapp_clicked` | A WhatsApp link | `location` (`footer`, `contact`) |
+| `cohort_join_clicked` | "Join the next cohort" on `/institute` | none |
+| `programme_viewed` | A programme's section reaches the middle of the screen on `/programmes` (once per programme per visit) | `programme` (its name) |
+| `blog_post_read` | A reader scrolls past about 75% of a post | `slug` |
+
+`verified` says whether the Cloudflare security check confirmed a person (see the Verified column in the Google Sheet). Form events fire only after the server accepted the form, never for spam caught by the honeypot.
+
+### What isn't tracked
+
+- No names, email addresses, phone numbers or anything typed into a form, ever. Clicks inside forms aren't autocaptured at all.
+- No `identify()`: the site has no logins, so visitors stay anonymous.
+- Web addresses are cleaned before sending: query parameters that could hold personal data (`email`, `name`, `token`, anything containing `@`, …) are removed.
+- No session recordings. They're switched off in code; if they're ever turned on, form fields and all text inside forms are masked.
+
+### Checking that events arrive
+
+1. Open jctef.org in a normal browser window (not a headless or automated one: PostHog drops those as bots).
+2. Open the developer tools, **Network** tab, and filter for `k7q2`. You should see requests to `/k7q2/e/` (events) and `/k7q2/flags/` with status `200`.
+3. In PostHog, open **Activity** (or **Explore → Events**): your `$pageview` appears within a minute. Click Donate and look for `donate_clicked`.
+4. Before you choose in the banner, events show the person as `$posthog_cookieless`. Click **Accept** and the next events have a normal anonymous ID. **Decline** (via Cookie settings) switches back.
+5. Nothing showing? Check the variable is set for Production on Netlify and you redeployed, that cookieless tracking is on in the project, that the deploy log says "Processed … redirect rules", and that an ad blocker isn't blocking the page itself.
+
+### Suggested dashboards
+
+- **Weekly overview:** visitors and page views (Web analytics), top pages, top referrers and countries.
+- **Donations:** `donate_clicked` per week, broken down by `location`, to see which buttons work.
+- **Applications and enquiries:** `volunteer_application_submitted` by `role`, `partner_enquiry_submitted` by `org_type`, `contact_message_sent`, each per week, plus the share with `verified = false`.
+- **Newsletter funnel:** `newsletter_signup_started` → `newsletter_confirmed` (confirmation rate).
+- **Content:** `blog_post_read` by `slug` against blog page views, and `programme_viewed` by `programme`.
+- **Events and cohorts:** `reset_register_clicked`, `cohort_join_clicked` and `whatsapp_clicked` per week.
+
+Funnels that follow one person across days only work for visitors who accepted cookies; counts and trends include everyone.

@@ -17,6 +17,8 @@ export type VolunteerState = {
   id: number;
   firstName?: string;
   email?: string;
+  /** For the volunteer_application_submitted event; left out for the honeypot. No personal data. */
+  analytics?: { role: string; verified: boolean };
   /** Shown instead of the usual error text (e.g. rate limit, security check). */
   message?: string;
   errors?: Partial<Record<VolunteerField, string>>;
@@ -195,7 +197,7 @@ async function handle(prev: VolunteerState, formData: FormData): Promise<Volunte
   if (confirm.status === "rejected") console.error("Volunteer form: applicant confirmation failed:", describe(confirm.reason));
   if (contact.status === "rejected") console.error("Volunteer form: saving the contact failed:", describe(contact.reason));
 
-  return { status: "success", id, firstName: a.firstName, email: a.email };
+  return { status: "success", id, firstName: a.firstName, email: a.email, analytics: { role: a.role, verified: guard.verified } };
 }
 
 /** Never throws: any failure becomes an error result (and an error toast). */

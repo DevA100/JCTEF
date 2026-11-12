@@ -8,6 +8,7 @@ import { CruiseInput } from "@/components/cruise/input";
 import { CruiseTextarea } from "@/components/cruise/textarea";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
 import { site } from "@/lib/content";
+import { track } from "@/lib/analytics";
 import { withFailSafe } from "@/lib/form-action";
 import { Honeypot } from "./honeypot";
 import { PhoneField } from "./phone-field";
@@ -47,6 +48,7 @@ function Form() {
     announced.current = state.id;
     if (state.status === "success") {
       toast({ tone: "success", title: "Message sent", description: state.message, duration: 7000 });
+      if (state.analytics) track("contact_message_sent", { verified: state.analytics.verified });
     } else if (state.status === "error" && !fieldErrors) {
       toast({ tone: "danger", title: "Your message was not sent", description: state.message, duration: 9000 });
     }

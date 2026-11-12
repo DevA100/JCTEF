@@ -6,6 +6,7 @@ import { CruiseButton } from "@/components/cruise/button";
 import { CruiseInput } from "@/components/cruise/input";
 import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
 import { home, site } from "@/lib/content";
+import { track } from "@/lib/analytics";
 import { withFailSafe } from "@/lib/form-action";
 import { Honeypot } from "./honeypot";
 import { Turnstile } from "./turnstile";
@@ -34,6 +35,7 @@ function Form() {
     // effects re-run when you come back; this stops old toasts reappearing.
     if (state.id === announced.current) return;
     announced.current = state.id;
+    if (state.status === "confirm" && state.started) track("newsletter_signup_started");
     if (state.status === "idle" || !state.message) return;
     toast({
       tone: state.status === "error" ? "danger" : state.status === "already" ? "info" : "success",

@@ -28,6 +28,8 @@ export type ContactState = {
   id: number;
   message?: string;
   errors?: Partial<Record<Field, string>>;
+  /** For the contact_message_sent event; left out for the honeypot. */
+  analytics?: { verified: boolean };
   values?: { name: string; email: string; phone?: string; message: string };
 };
 
@@ -96,7 +98,12 @@ async function handle(prev: ContactState, formData: FormData): Promise<ContactSt
     };
   }
 
-  return { status: "success", id, message: "Thank you. Your message has been sent and we will reply by email." };
+  return {
+    status: "success",
+    id,
+    message: "Thank you. Your message has been sent and we will reply by email.",
+    analytics: { verified: guard.verified },
+  };
 }
 
 /** Never throws: any failure becomes an error result (and an error toast). */

@@ -12,6 +12,7 @@ import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
 import { frameworkStages, getInvolved, site, volunteerAvailability, volunteerRoles } from "@/lib/content";
 import { cx } from "@/lib/cruise-utils";
 import { withFailSafe } from "@/lib/form-action";
+import { track } from "@/lib/analytics";
 import { readVolunteerForm, type VolunteerField, volunteerErrors, volunteerSchema } from "@/lib/volunteer-schema";
 import { Honeypot } from "./honeypot";
 import { PhoneField } from "./phone-field";
@@ -70,6 +71,7 @@ function Form() {
     if (state.status === "success") {
       const message = copy.success(state.firstName ?? "", state.email ?? "");
       toast({ tone: "success", title: "Application sent!", description: message, duration: 8000 });
+      if (state.analytics) track("volunteer_application_submitted", state.analytics);
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       formRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
     } else if (state.status === "error") {

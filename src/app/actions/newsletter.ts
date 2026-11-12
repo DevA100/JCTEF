@@ -23,6 +23,8 @@ export type NewsletterState = {
   id: number;
   message?: string;
   errors?: { email?: string; consent?: string };
+  /** True when a confirmation email was really sent (newsletter_signup_started); not for the honeypot. */
+  started?: boolean;
 };
 
 async function handle(prev: NewsletterState, formData: FormData): Promise<NewsletterState> {
@@ -106,6 +108,7 @@ async function handle(prev: NewsletterState, formData: FormData): Promise<Newsle
       status: "confirm",
       id,
       message: "Almost there! Check your inbox and click the link to confirm your subscription.",
+      started: true,
     };
   } catch (error) {
     if (error instanceof BrevoError && (error.code === "duplicate_parameter" || error.code === "duplicate_request")) {

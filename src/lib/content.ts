@@ -83,7 +83,12 @@ export const site = {
     { label: "Youth applications", email: "program@jctef.org" },
     { label: "Training information", email: "training@jctef.org" },
     // Partnerships use the enquiry form, which sends to PARTNER_TO_EMAIL.
-    { label: "Partnerships", email: "partner@jctef.org", href: "/get-involved#partner-form", linkLabel: "Partnership enquiry form" },
+    {
+      label: "Partnerships",
+      email: "partner@jctef.org",
+      href: "/get-involved#partner-form",
+      linkLabel: "Partnership enquiry form",
+    },
     { label: "Donations and support", email: "donate@jctef.org" },
     { label: "Volunteering", email: "info@jctef.org" },
   ],
@@ -147,6 +152,11 @@ export const seo = {
     title: "Contact us",
     description:
       "Contact JCTEF in Lekki, Lagos: email info@jctef.org, call +234 815 171 4278 or chat with us on WhatsApp. Young people, partners and volunteers welcome.",
+  },
+  privacy: {
+    title: "Privacy",
+    description:
+      "How JCTEF handles your information: what our forms collect and why, the anonymous analytics we use, cookies and how to change your choice.",
   },
 } satisfies Record<string, { title: string; description: string }>;
 
@@ -366,13 +376,26 @@ export const cohorts: Cohort[] = [
     summary:
       "Our first cohort completed the three-month Transformation Programme, bringing together fellows from across Nigeria and finishing with an end-of-programme meetup in Ikeja on 7 November 2026.",
     fellows: [
-      { name: "Blessing Ibanga Udofia", profession: "9-to-5 Professional and Freelancer", location: "Uyo, Akwa Ibom", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246311/Blessing_Ibanga_Udofia.jpg" },
-      { name: "Funmilayo Olowoyo", profession: "IT Audit and Compliance", location: "Lagos", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Funmilayo_Olowoyo.jpg" },
+      {
+        name: "Blessing Ibanga Udofia",
+        profession: "9-to-5 Professional and Freelancer",
+        location: "Uyo, Akwa Ibom",
+        image:
+          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246311/Blessing_Ibanga_Udofia.jpg",
+      },
+      {
+        name: "Funmilayo Olowoyo",
+        profession: "IT Audit and Compliance",
+        location: "Lagos",
+        image:
+          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Funmilayo_Olowoyo.jpg",
+      },
       {
         name: "Ojo Boluwatife Moyosore",
         profession: "Data Analyst, Public Administrator, and CEO, Moshangloss",
         location: "Gbagada, Lagos",
-        image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ojo_Boluwatife_Moyosore_1.jpg",
+        image:
+          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ojo_Boluwatife_Moyosore_1.jpg",
         // TODO: confirm each fellow approved this wording for publication
         testimonial: {
           kind: "summary",
@@ -384,44 +407,73 @@ export const cohorts: Cohort[] = [
         name: "Teslim Jinadu",
         profession: "Electrical Engineer",
         location: "Lagos",
-        image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Teslim_Jinadu.jpg",
+        image:
+          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Teslim_Jinadu.jpg",
         testimonial: {
           kind: "quote",
           text: "I gained guidance on self-discovery and identifying my path, and insight into how to translate my value into earning. I'm grateful to JCTEF for helping me gain clarity.",
         },
       },
-      { name: "Ofonime Effiong", profession: "Data Analyst", location: "Akwa Ibom", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ofonime_Effiong.jpg" },
+      {
+        name: "Ofonime Effiong",
+        profession: "Data Analyst",
+        location: "Akwa Ibom",
+        image:
+          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ofonime_Effiong.jpg",
+      },
       {
         name: "Oluwadare Ajao",
         // TODO: confirm "Scrapy Agent" spelling with the team
         profession: "Scrapy Agent and Sales Marketing",
         location: "Lagos",
-        image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Oluwadare_ajao_1.jpg",
+        image:
+          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Oluwadare_ajao_1.jpg",
         testimonial: {
           kind: "quote",
           text: "JCTEF helped me with character development, especially emotional intelligence. People around me have been commenting on the positive change, and I'm grateful to JCTEF for the work they do.",
         },
       },
-      { name: "Rasheedah Ayoola", profession: "Educator", location: "Osogbo, Osun", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Rasheedah_Ayoola.jpg" },
+      {
+        name: "Rasheedah Ayoola",
+        profession: "Educator",
+        location: "Osogbo, Osun",
+        image:
+          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Rasheedah_Ayoola.jpg",
+      },
       // TODO: add Victor's photo when we have it
-      { name: "Victor Poweide", profession: "Entrepreneur and Business Owner", location: "Lagos", image: "" },
+      {
+        name: "Victor Poweide",
+        profession: "Entrepreneur and Business Owner",
+        location: "Lagos",
+        image: "",
+      },
     ],
   },
 ];
 
 /** Newest cohort first. */
-export const cohortsNewestFirst = [...cohorts].sort((a, b) => b.number - a.number);
+export const cohortsNewestFirst = [...cohorts].sort(
+  (a, b) => b.number - a.number,
+);
 
 /**
  * Homepage "In their words": every fellow with a testimonial, newest cohort
  * first. Edit testimonials on the fellows above, not here.
  */
-export const testimonials: Testimonial[] = cohortsNewestFirst.flatMap((cohort) =>
-  cohort.fellows.flatMap((fellow) =>
-    fellow.testimonial
-      ? [{ ...fellow.testimonial, name: fellow.name, role: `JCTEF Fellow, ${cohort.title}`, photo: fellow.image || undefined }]
-      : [],
-  ),
+export const testimonials: Testimonial[] = cohortsNewestFirst.flatMap(
+  (cohort) =>
+    cohort.fellows.flatMap((fellow) =>
+      fellow.testimonial
+        ? [
+            {
+              ...fellow.testimonial,
+              name: fellow.name,
+              role: `JCTEF Fellow, ${cohort.title}`,
+              photo: fellow.image || undefined,
+            },
+          ]
+        : [],
+    ),
 );
 
 /* -------------------------------------------------------------------------- */
@@ -606,12 +658,14 @@ export const outreachPhotos: OutreachPhoto[] = [
   {
     publicId: "IMG_7078_tocqtx",
     alt: "A group of JCTEF Cohort 1 fellows standing outdoors on a lawn, holding a banner for the JCTEF Transformation Programme end-of-programme meetup",
-    caption: "Cohort 1 end-of-programme meetup, Lagos chapter, Ikeja, November 2026", // TODO: confirm the date (from the event banner)
+    caption:
+      "Cohort 1 end-of-programme meetup, Lagos chapter, Ikeja, November 2026", // TODO: confirm the date (from the event banner)
   },
   {
     publicId: "IMG_0238_xsd9lt",
     alt: "Two JCTEF fellows standing outdoors, holding a banner for the Cohort 1 end-of-programme meetup",
-    caption: "Cohort 1 end-of-programme meetup, Lagos chapter, Ikeja, November 2026", // TODO: confirm the date (from the event banner)
+    caption:
+      "Cohort 1 end-of-programme meetup, Lagos chapter, Ikeja, November 2026", // TODO: confirm the date (from the event banner)
   },
 ];
 
@@ -876,12 +930,48 @@ export type TeamMember = {
 
 /** "Meet our team" on /about. The founder has her own section, so she is not listed here. */
 export const team: TeamMember[] = [
-  { name: "Tamunoemi Ibrahim", role: "Programme Director", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/Tamunoemi_Ibrahim.png" },
-  { name: "Franklin Oladipo", role: "Technical Director", location: "United Kingdom", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794170083/Franklin_Oladipo.jpg" },
-  { name: "Sandra Okoh", role: "Programme Coordinator", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169951/Sandra_Okoh_1.jpg" },
-  { name: "Idris Bankole", role: "Technical Programme Coordinator", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/idris_bankole.jpg" },
-  { name: "Faleto Adeoye", role: "Workforce Coordinator", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169951/Faleto_Adeoye_1.jpg" },
-  { name: "Chioma Favour Ojo", role: "Manager, The Tech Paragon", location: "Lagos, Nigeria", image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/Chioma_Favour_Ojo.jpg" },
+  {
+    name: "Tamunoemi Ibrahim",
+    role: "Programme Director",
+    location: "Lagos, Nigeria",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/Tamunoemi_Ibrahim.png",
+  },
+  {
+    name: "Franklin Oladipo",
+    role: "Technical Director",
+    location: "United Kingdom",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794170083/Franklin_Oladipo.jpg",
+  },
+  {
+    name: "Sandra Okoh",
+    role: "Programme Coordinator",
+    location: "Lagos, Nigeria",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169951/Sandra_Okoh_1.jpg",
+  },
+  {
+    name: "Idris Bankole",
+    role: "Technical Programme Coordinator",
+    location: "Lagos, Nigeria",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/idris_bankole.jpg",
+  },
+  {
+    name: "Faleto Adeoye",
+    role: "Workforce Coordinator",
+    location: "Lagos, Nigeria",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169951/Faleto_Adeoye_1.jpg",
+  },
+  {
+    name: "Chioma Favour Ojo",
+    role: "Manager, The Tech Paragon (Women in Tech initiative)",
+    location: "Lagos, Nigeria",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794169950/Chioma_Favour_Ojo.jpg",
+  },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -1289,8 +1379,18 @@ const volunteerForm = "#volunteer-form";
 
 /** Options for the volunteer form. The values are what the team sees in the
  * emails and in Brevo, so keep them readable. */
-export const volunteerRoles = ["Programme facilitator", "Mentor", "Events and outreach", "General volunteer"] as const;
-export const volunteerAvailability = ["Weekdays", "Weekends", "Evenings", "Flexible"] as const;
+export const volunteerRoles = [
+  "Programme facilitator",
+  "Mentor",
+  "Events and outreach",
+  "General volunteer",
+] as const;
+export const volunteerAvailability = [
+  "Weekdays",
+  "Weekends",
+  "Evenings",
+  "Flexible",
+] as const;
 
 /** Organisation types for the partnership enquiry form. */
 export const partnerOrgTypes = [
@@ -1323,7 +1423,10 @@ export const getInvolved = {
       roleLegend: "I'd like to volunteer as",
       areasLegend: "Which areas could you facilitate?",
       areasHint: "Choose any that fit. These are the stages of our framework.",
-      areasLink: { label: "What each stage covers", href: "/institute#framework" },
+      areasLink: {
+        label: "What each stage covers",
+        href: "/institute#framework",
+      },
       consentContact: "I agree to JCTEF contacting me about my application.",
       // TODO: JCTEF to confirm minimum volunteer age and safeguarding checks
       consentAge: "I am 18 or older.",
@@ -1475,12 +1578,15 @@ export const getInvolved = {
       orgTypeLabel: "Organisation type",
       areasLegend: "Areas of interest",
       areasHint: "Choose any that fit.",
-      areasHintNoType: "Choose an organisation type above to see options for it.",
+      areasHintNoType:
+        "Choose an organisation type above to see options for it.",
       consent: "I agree to JCTEF contacting me about this enquiry.",
       submit: "Send enquiry",
       sending: "Sending…",
-      success: (firstName: string) => `Thank you, ${firstName}. Our partnerships team will be in touch.`,
-      error: (email: string) => `Something went wrong. Please try again, or email ${email}.`,
+      success: (firstName: string) =>
+        `Thank you, ${firstName}. Our partnerships team will be in touch.`,
+      error: (email: string) =>
+        `Something went wrong. Please try again, or email ${email}.`,
       fallback: "Prefer email? Write to",
     },
     cta: {
@@ -1516,7 +1622,8 @@ export const getInvolved = {
 const partnerTypeToGroup: Partial<Record<PartnerOrgType, string>> = {
   "Educational institution": "Educational institutions",
   "Corporate or industry partner": "Corporate and industry partners",
-  "Development or nonprofit organisation": "Development and nonprofit organisations",
+  "Development or nonprofit organisation":
+    "Development and nonprofit organisations",
   "Trainer, mentor or expert": "Trainers, mentors and experts",
   "Philanthropist or individual": "Development and nonprofit organisations",
 };
@@ -1529,11 +1636,15 @@ const commonPartnerAreas = [
   "Scholarships and education support",
 ];
 export function partnerAreasFor(type?: string): string[] {
-  const group = getInvolved.partner.groups.find((g) => g.title === partnerTypeToGroup[type as PartnerOrgType]);
+  const group = getInvolved.partner.groups.find(
+    (g) => g.title === partnerTypeToGroup[type as PartnerOrgType],
+  );
   return group ? group.items : commonPartnerAreas;
 }
 /** Every option the form can show (for server-side validation). */
-export const allPartnerAreas = [...new Set(getInvolved.partner.groups.flatMap((g) => g.items))];
+export const allPartnerAreas = [
+  ...new Set(getInvolved.partner.groups.flatMap((g) => g.items)),
+];
 
 export const contact = {
   eyebrow: "Contact us",
@@ -1546,4 +1657,48 @@ export const blog = {
   title: "News and stories",
   text: "Updates from our fellows, programmes, events and research.",
   // Posts live in content/blog/<slug>.mdx (migrated from the old WordPress site).
+};
+
+/* -------------------------------------------------------------------------- */
+/* Privacy                                                                    */
+/* -------------------------------------------------------------------------- */
+
+// TODO(JCTEF team): review this page (ideally with whoever handles data
+// protection for JCTEF) before relying on it. It only describes what the
+// website does today; add retention periods and your NDPA contact details.
+export const privacy = {
+  eyebrow: "Privacy",
+  title: "How we handle your information",
+  text: "This page explains what the JCTEF website collects, why, and the choices you have.",
+  sections: [
+    {
+      heading: "Forms",
+      paragraphs: [
+        "When you contact us, apply to volunteer, enquire about a partnership or join our newsletter, we receive what you type into the form, such as your name, email address and, if you give it, your phone number.",
+        "We use it only to reply to you and to follow up on your request. It is sent to our team by email through Brevo, our email provider, and may be kept in Brevo's contact lists and in a private spreadsheet used by our team. We never sell it.",
+        "To keep out spam, forms use Cloudflare Turnstile, a security check that confirms a person, not a bot, is sending the form.",
+      ],
+    },
+    {
+      heading: "Analytics",
+      paragraphs: [
+        "We use PostHog, hosted in the European Union, to count visits and see which pages and buttons are used, so we can improve the site.",
+        "We never send your name, email address, phone number or anything you type into a form to PostHog.",
+        "Until you choose, and if you decline, analytics run without cookies: we only see anonymous counts and nothing is stored on your device. If you accept, PostHog stores a cookie so we can tell when someone comes back.",
+        "If your browser sends a Do Not Track or Global Privacy Control signal, we treat it as declining.",
+      ],
+    },
+    {
+      heading: "Changing your choice",
+      paragraphs: [
+        'You can accept or decline analytics cookies at any time with the "Cookie settings" link at the bottom of every page.',
+      ],
+    },
+    {
+      heading: "Your rights and questions",
+      paragraphs: [
+        `You can ask us what information we hold about you, ask us to correct it or delete it, or ask us to stop contacting you. Email ${site.email}.`,
+      ],
+    },
+  ],
 };

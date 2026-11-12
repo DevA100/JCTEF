@@ -1,5 +1,6 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
+import { CookieSettingsButton } from "@/components/analytics/cookie-settings-button";
 import { CruiseWhatsAppButton } from "@/components/cruise/whatsapp-button";
 import { navigation, registration, site } from "@/lib/content";
 
@@ -12,7 +13,7 @@ async function CopyrightYear() {
 
 export function SiteFooter() {
   return (
-    <footer className="on-deep">
+    <footer data-analytics-location="footer" className="on-deep">
       <div className="danfo-stripe on-primary" aria-hidden="true" />
       <div className="site-container grid gap-12 py-14 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
         <div className="grid content-start gap-5">
@@ -78,9 +79,17 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t-(length:--border-w) border-ink/20">
-        <p className="site-container py-5 pr-20 text-small text-ink-muted">
-          © <CopyrightYear /> {site.name}. All rights reserved. · {registration.short}
-        </p>
+        <div className="site-container flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-3 pr-20 text-small text-ink-muted">
+          <p className="py-2">
+            © <CopyrightYear /> {site.name}. All rights reserved. · {registration.short}
+          </p>
+          <div className="flex flex-wrap gap-x-5">
+            <Link href="/privacy" className="inline-flex min-h-11 items-center hover:underline">
+              Privacy
+            </Link>
+            <CookieSettingsButton className="inline-flex min-h-11 cursor-pointer items-center hover:underline" />
+          </div>
+        </div>
       </div>
     </footer>
   );
