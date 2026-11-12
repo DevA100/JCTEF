@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Baloo_2, Bricolage_Grotesque } from "next/font/google";
+import { AnalyticsClicks } from "@/components/analytics/analytics-clicks";
+import { ConsentBanner } from "@/components/analytics/consent-banner";
 import { BackToTop } from "@/components/layout/back-to-top";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { seo, site } from "@/lib/content";
+import { events, seo, site } from "@/lib/content";
 import { openGraphDefaults, siteUrl, twitterDefaults } from "@/lib/metadata";
 import "./globals.css";
 
@@ -74,12 +76,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="skip-link brutal on-primary px-4 py-3 font-bold">
           Skip to main content
         </a>
+        {/* Early in the page so keyboard and screen reader users meet it first. */}
+        <ConsentBanner />
         <SiteHeader />
         <main id="main" className="flex-1">
           {children}
         </main>
         <SiteFooter />
         <BackToTop />
+        <AnalyticsClicks
+          donateUrl={site.donateUrl}
+          resetUrls={events.flatMap((event) => (event.slug.startsWith("reset") && event.cta ? [event.cta.href] : []))}
+        />
         <script
           type="application/ld+json"
           // Escape "<" so the JSON can never close the script tag (Next.js JSON-LD guide).

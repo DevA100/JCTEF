@@ -17,6 +17,8 @@ export type PartnerState = {
   /** Increments on every submit, so the form reacts to each result once. */
   id: number;
   firstName?: string;
+  /** For the partner_enquiry_submitted event; left out for the honeypot. No personal data. */
+  analytics?: { orgType: string; verified: boolean };
   /** Shown instead of the usual error text (e.g. rate limit, security check). */
   message?: string;
   errors?: Partial<Record<PartnerField, string>>;
@@ -194,7 +196,7 @@ async function handle(prev: PartnerState, formData: FormData): Promise<PartnerSt
   if (confirm.status === "rejected") console.error("Partnership form: enquirer confirmation failed:", describe(confirm.reason));
   if (contact.status === "rejected") console.error("Partnership form: saving the contact failed:", describe(contact.reason));
 
-  return { status: "success", id, firstName };
+  return { status: "success", id, firstName, analytics: { orgType: e.orgType, verified: guard.verified } };
 }
 
 /** Never throws: any failure becomes an error result (and an error toast). */

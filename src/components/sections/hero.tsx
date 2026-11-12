@@ -11,7 +11,7 @@ function HeroText({ onPhoto }: { onPhoto: boolean }) {
   const [lead, last] = splitLastWord(hero.title);
 
   return (
-    <div className="grid gap-6">
+    <div data-analytics-location="hero" className="grid gap-6">
       <p className="eyebrow hero-in">{hero.eyebrow}</p>
       <h1 id="hero-title" className="hero-in text-hero text-balance" style={{ "--hero-step": 1 } as React.CSSProperties}>
         {lead}{" "}

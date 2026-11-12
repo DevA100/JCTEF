@@ -1,9 +1,11 @@
 /**
- * Fails if netlify.toml's headers for "/*" differ from security-headers.mjs
- * (the source of truth). Runs before every build (npm "prebuild").
- * To regenerate the netlify.toml block, run: node scripts/check-security-headers.mjs --print
+ * Fails if netlify.toml's headers for "/*" differ from security-headers.mjs,
+ * or its analytics proxy redirects differ from analytics-proxy.mjs (the
+ * sources of truth). Runs before every build (npm "prebuild").
+ * To regenerate both netlify.toml blocks, run: node scripts/check-security-headers.mjs --print
  */
 import { readFileSync } from "node:fs";
+import { netlifyRedirectsBlock } from "../analytics-proxy.mjs";
 import { securityHeaders } from "../security-headers.mjs";
 
 const block = () =>
@@ -11,6 +13,8 @@ const block = () =>
 
 if (process.argv.includes("--print")) {
   console.log(block());
+  console.log("");
+  console.log(netlifyRedirectsBlock());
   process.exit(0);
 }
 
@@ -45,3 +49,12 @@ if (problems.length) {
   process.exit(1);
 }
 console.log(`Security headers: netlify.toml matches security-headers.mjs (${expected.size} headers).`);
+
+// The analytics proxy: the exact block, so a changed path or host can't go unnoticed.
+const normalise = (text) => text.replace(/\r\n/g, "\n").replace(/[ \t]+$/gm, "");
+if (!normalise(toml).includes(normalise(netlifyRedirectsBlock()))) {
+  console.error("netlify.toml analytics proxy redirects are out of sync with analytics-proxy.mjs.");
+  console.error("Fix: node scripts/check-security-headers.mjs --print, and paste the [[redirects]] blocks into netlify.toml.");
+  process.exit(1);
+}
+console.log("Analytics proxy: netlify.toml matches analytics-proxy.mjs.");

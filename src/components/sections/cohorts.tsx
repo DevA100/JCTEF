@@ -108,7 +108,9 @@ export function Cohorts({ joinHref }: { joinHref: string }) {
         )}
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <ButtonLink href={joinHref}>Join the next cohort</ButtonLink>
+          <ButtonLink href={joinHref} track="cohort_join_clicked">
+            Join the next cohort
+          </ButtonLink>
           <Link href={CLOSING_MEETUP_POST} className="text-link inline-flex min-h-11 items-center">
             Read about the Cohort 1 closing meetup
           </Link>

@@ -54,6 +54,7 @@ export function MobileNav({ links }: { links: NavLink[] }) {
           target="_blank"
           rel="noopener noreferrer"
           className={cruiseButtonClasses()}
+          data-analytics-location="menu"
         >
           Donate to JCTEF
           <span className="visually-hidden"> (opens Flutterwave in a new tab)</span>

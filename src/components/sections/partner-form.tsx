@@ -11,6 +11,7 @@ import { CruiseToaster, useCruiseToast } from "@/components/cruise/toaster";
 import { getInvolved, partnerAreasFor, partnerOrgTypes } from "@/lib/content";
 import { cx } from "@/lib/cruise-utils";
 import { withFailSafe } from "@/lib/form-action";
+import { track } from "@/lib/analytics";
 import { type PartnerField, partnerErrors, partnerSchema, readPartnerForm } from "@/lib/partner-schema";
 import { Honeypot } from "./honeypot";
 import { PhoneField } from "./phone-field";
@@ -61,6 +62,9 @@ function Form({ teamEmail }: { teamEmail: string }) {
     announced.current = state.id;
     if (state.status === "success") {
       toast({ tone: "success", title: "Enquiry sent!", description: copy.success(state.firstName ?? ""), duration: 8000 });
+      if (state.analytics) {
+        track("partner_enquiry_submitted", { org_type: state.analytics.orgType, verified: state.analytics.verified });
+      }
     } else if (state.status === "error") {
       toast({ tone: "danger", title: "Not sent", description: state.message ?? copy.error(teamEmail), duration: 8000 });
     } else if (state.status === "invalid") {

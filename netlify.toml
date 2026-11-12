@@ -16,3 +16,30 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
     Cross-Origin-Opener-Policy = "same-origin"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://res.cloudinary.com; font-src 'self'; connect-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com https://www.youtube-nocookie.com https://www.youtube.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'"
+
+# PostHog analytics (EU), proxied through jctef.org so the browser never
+# talks to posthog.com and the CSP needs nothing new. Status 200 makes these
+# proxies, not redirects; force applies them before Next.js. Netlify
+# (unlike next.config.ts rewrites) is what PostHog recommends on Netlify.
+# Generated from analytics-proxy.mjs; the build fails if they differ:
+# node scripts/check-security-headers.mjs --print
+[[redirects]]
+  from = "/k7q2/static/*"
+  to = "https://eu-assets.i.posthog.com/static/:splat"
+  host = "eu-assets.i.posthog.com"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/k7q2/array/*"
+  to = "https://eu-assets.i.posthog.com/array/:splat"
+  host = "eu-assets.i.posthog.com"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/k7q2/*"
+  to = "https://eu.i.posthog.com/:splat"
+  host = "eu.i.posthog.com"
+  status = 200
+  force = true

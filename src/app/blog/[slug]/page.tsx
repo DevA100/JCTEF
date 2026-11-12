@@ -1,3 +1,4 @@
+import { TrackPostRead } from "@/components/analytics/trackers";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -105,9 +106,9 @@ async function Post({ params }: Pick<PageProps<"/blog/[slug]">, "params">) {
         <PostCover cover={post.cover} title={post.title} variant="page" sizes="(min-width: 800px) 768px, 100vw" preload />
       </div>
 
-      <div className="prose-jctef measure">
+      <TrackPostRead slug={post.slug} className="prose-jctef measure">
         <Content />
-      </div>
+      </TrackPostRead>
     </>
   );
 }
