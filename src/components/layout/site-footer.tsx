@@ -1,7 +1,6 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { CookieSettingsButton } from "@/components/analytics/cookie-settings-button";
-import { CruiseWhatsAppButton } from "@/components/cruise/whatsapp-button";
 import { navigation, registration, site } from "@/lib/content";
 
 /** Cached for a day, so the year rolls over without a request-time render. */
@@ -26,13 +25,7 @@ export function SiteFooter() {
             <a href={`mailto:${site.email}`} className="text-link inline-flex min-h-11 items-center">
               {site.email}
             </a>
-            <a href={site.phoneHref} className="text-link inline-flex min-h-11 items-center">
-              {site.phone}
-            </a>
           </address>
-          <div>
-            <CruiseWhatsAppButton phone={site.whatsapp} message={site.whatsappMessage} />
-          </div>
         </div>
 
         <nav aria-labelledby="footer-links">

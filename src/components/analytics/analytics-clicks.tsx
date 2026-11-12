@@ -5,10 +5,9 @@ import { track } from "@/lib/analytics";
 
 /**
  * One listener for the link events, so server components need no client
- * code and every new Donate or WhatsApp link is counted automatically:
+ * code and every new Donate link is counted automatically:
  *
  *   donate_clicked          any link to the Flutterwave donate page
- *   whatsapp_clicked        any wa.me / WhatsApp link
  *   reset_register_clicked  any link to the RESET registration page
  *   cohort_join_clicked     an element with data-track="cohort_join_clicked"
  *
@@ -42,7 +41,6 @@ export function AnalyticsClicks({ donateUrl, resetUrls }: { donateUrl: string; r
       if (!link) return;
       const href = link.href;
       if (href.startsWith(donateUrl)) track("donate_clicked", { location: locationOf(link) });
-      else if (/^https:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href)) track("whatsapp_clicked", { location: locationOf(link) });
       else if (resetUrls.includes(href)) track("reset_register_clicked", { location: locationOf(link) });
     };
     document.addEventListener("click", onClick, { capture: true });
