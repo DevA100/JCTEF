@@ -348,7 +348,6 @@ export type Alumnus = {
 
 export type Cohort = {
   number: number;
-  /** YYYY-MM-DD. The end date's year is the class year ("Class of 2026"). */
   startDate: string;
   endDate: string;
   format: string;
@@ -375,7 +374,8 @@ export const cohorts: Cohort[] = [
 export const alumniSection = {
   eyebrow: "Our alumni",
   title: "Meet some of our alumni",
-  summary: "Graduates of the JCTEF Transformation Programme, bringing together alumni from across Nigeria.",
+  summary:
+    "Graduates of the JCTEF Transformation Programme, bringing together alumni from across Nigeria.",
 };
 
 /** Graduates of the Transformation Programme, shown in this order on /institute. */
@@ -386,21 +386,24 @@ export const alumni: Alumnus[] = [
     profession: "9-to-5 Professional and Freelancer",
     location: "Uyo, Akwa Ibom",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246311/Blessing_Ibanga_Udofia.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246311/Blessing_Ibanga_Udofia.jpg",
   },
   {
     name: "Funmilayo Olowoyo",
     profession: "IT Audit and Compliance",
     location: "Lagos",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Funmilayo_Olowoyo.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Funmilayo_Olowoyo.jpg",
   },
   {
     name: "Ojo Boluwatife Moyosore",
     profession: "Data Analyst, Public Administrator, and CEO, Moshangloss",
     location: "Gbagada, Lagos",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ojo_Boluwatife_Moyosore_1.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ojo_Boluwatife_Moyosore_1.jpg",
     // TODO: confirm each person approved this wording for publication
     testimonial: {
       kind: "summary",
@@ -413,7 +416,8 @@ export const alumni: Alumnus[] = [
     profession: "Electrical Engineer",
     location: "Lagos",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Teslim_Jinadu.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Teslim_Jinadu.jpg",
     testimonial: {
       kind: "quote",
       text: "I gained guidance on self-discovery and identifying my path, and insight into how to translate my value into earning. I'm grateful to JCTEF for helping me gain clarity.",
@@ -424,7 +428,8 @@ export const alumni: Alumnus[] = [
     profession: "Data Analyst",
     location: "Akwa Ibom",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ofonime_Effiong.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ofonime_Effiong.jpg",
   },
   {
     name: "Oluwadare Ajao",
@@ -432,7 +437,8 @@ export const alumni: Alumnus[] = [
     profession: "Scrapy Agent and Sales Marketing",
     location: "Lagos",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Oluwadare_ajao_1.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Oluwadare_ajao_1.jpg",
     testimonial: {
       kind: "quote",
       text: "JCTEF helped me with character development, especially emotional intelligence. People around me have been commenting on the positive change, and I'm grateful to JCTEF for the work they do.",
@@ -443,28 +449,32 @@ export const alumni: Alumnus[] = [
     profession: "Educator",
     location: "Osogbo, Osun",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Rasheedah_Ayoola.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Rasheedah_Ayoola.jpg",
   },
   {
     name: "Victor Poweide",
     profession: "Entrepreneur and Business Owner",
     location: "Lagos",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794245822/Victor_Poweide_1.png",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794245822/Victor_Poweide_1.png",
   },
   {
     name: "Kazeem Afeez Olalekan",
     profession: "Fashion Designer",
     location: "Ibadan, Oyo",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794333812/KAZEEM_AFEEZ_OLALEKAN.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794333812/KAZEEM_AFEEZ_OLALEKAN.jpg",
   },
   {
     name: "Aladese Oluwaseyifunmi Adetoun",
     profession: "Student",
     location: "Ogun",
     cohort: 1,
-    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794333812/Aladese_Oluwaseyifunmi_Adetoun.jpg",
+    image:
+      "https://res.cloudinary.com/fccjt5sr/image/upload/v1794333812/Aladese_Oluwaseyifunmi_Adetoun.jpg",
   },
 ];
 
@@ -489,19 +499,20 @@ export const alumniByClass: { label: string; alumni: Alumnus[] }[] = (() => {
  * Homepage "In their words": every alumnus with a testimonial, newest class
  * first. Edit testimonials on the alumni above, not here.
  */
-export const testimonials: Testimonial[] = alumniByClass.flatMap(({ alumni: people }) =>
-  people.flatMap((person) =>
-    person.testimonial
-      ? [
-          {
-            ...person.testimonial,
-            name: person.name,
-            role: "JCTEF Alumni",
-            photo: person.image || undefined,
-          },
-        ]
-      : [],
-  ),
+export const testimonials: Testimonial[] = alumniByClass.flatMap(
+  ({ alumni: people }) =>
+    people.flatMap((person) =>
+      person.testimonial
+        ? [
+            {
+              ...person.testimonial,
+              name: person.name,
+              role: "JCTEF Alumni",
+              photo: person.image || undefined,
+            },
+          ]
+        : [],
+    ),
 );
 
 /* -------------------------------------------------------------------------- */
