@@ -1,5 +1,5 @@
 import { outreach, outreachPhotos } from "@/lib/content";
-import { OutreachGallery } from "./outreach-gallery";
+import { PhotoGallery } from "./photo-gallery";
 import { SectionHeading } from "./section-heading";
 
 /** "Outreach in action" photo gallery. Hidden until photos are added. */
@@ -11,7 +11,7 @@ export function Outreach() {
         <SectionHeading id="outreach-title" eyebrow={outreach.eyebrow} title={outreach.title}>
           <p>{outreach.text}</p>
         </SectionHeading>
-        <OutreachGallery photos={outreachPhotos} />
+        <PhotoGallery photos={outreachPhotos} />
       </div>
     </section>
   );
