@@ -1,7 +1,7 @@
-import "server-only";
 import { escapeHtml } from "@/lib/brevo";
 import { site } from "@/lib/content";
 import { formatPhone } from "@/lib/phone";
+import "server-only";
 
 /**
  * The email the team receives when someone uses the "Send us a message" form.
@@ -135,7 +135,11 @@ export function contactEmail({
     `Email: ${email}`,
     `Phone: ${phone ? formatPhone(phone) : "Not given"}`,
     `Sent: ${when}`,
-    ...(verified ? [] : [`Not verified by the security check. Please review before responding.`]),
+    ...(verified
+      ? []
+      : [
+          `Not verified by the security check. Please review before responding.`,
+        ]),
     ``,
     message,
     ``,
