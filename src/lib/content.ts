@@ -333,147 +333,180 @@ export const partnerTypes: TitledText[] = [
 ];
 
 /* -------------------------------------------------------------------------- */
-/* Cohorts and fellows                                                        */
+/* Cohorts and alumni                                                         */
 /* -------------------------------------------------------------------------- */
 
-/** What a fellow said (`quote`) or what was written about them (`summary`). */
-export type FellowTestimonial = Pick<Testimonial, "kind" | "text" | "pronoun">;
+/** What an alumnus said (`quote`) or what was written about them (`summary`). */
+export type AlumnusTestimonial = Pick<Testimonial, "kind" | "text" | "pronoun">;
 
-export type Fellow = {
+export type Alumnus = {
   name: string;
   profession: string;
   location: string;
+  /** The cohort they graduated from (`number` in `cohorts`), for grouping by class. */
+  cohort: number;
   /** Cloudinary URL (fccjt5sr). Empty until we have a photo: initials are shown. */
   image: string;
   /** Also shown on the homepage ("In their words"). */
-  testimonial?: FellowTestimonial;
+  testimonial?: AlumnusTestimonial;
 };
 
 export type Cohort = {
   number: number;
-  title: string;
-  /** YYYY-MM-DD */
+  /** YYYY-MM-DD. The end date's year is the class year ("Class of 2026"). */
   startDate: string;
   endDate: string;
   format: string;
   summary: string;
-  fellows: Fellow[];
 };
 
 /**
- * Transformation Programme cohorts, shown on /institute ("Meet Cohort 1").
- * Add new cohorts anywhere: they're shown newest first, as tabs once there's
- * more than one.
+ * Transformation Programme cohorts. Add each new cohort here and its
+ * graduates to `alumni` below; /institute groups alumni by class year
+ * (tabs, newest first, once there's more than one year).
  */
-// TODO: confirm each fellow agreed to their photo and details being published.
 export const cohorts: Cohort[] = [
   {
     number: 1,
-    title: "Cohort 1",
     startDate: "2026-08-15",
     endDate: "2026-11-07",
     format: "Online, with a Lagos chapter meetup",
     summary:
       "Our first cohort completed the three-month Transformation Programme, bringing together fellows from across Nigeria and finishing with an end-of-programme meetup in Ikeja on 7 November 2026.",
-    fellows: [
-      {
-        name: "Blessing Ibanga Udofia",
-        profession: "9-to-5 Professional and Freelancer",
-        location: "Uyo, Akwa Ibom",
-        image:
-          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246311/Blessing_Ibanga_Udofia.jpg",
-      },
-      {
-        name: "Funmilayo Olowoyo",
-        profession: "IT Audit and Compliance",
-        location: "Lagos",
-        image:
-          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Funmilayo_Olowoyo.jpg",
-      },
-      {
-        name: "Ojo Boluwatife Moyosore",
-        profession: "Data Analyst, Public Administrator, and CEO, Moshangloss",
-        location: "Gbagada, Lagos",
-        image:
-          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ojo_Boluwatife_Moyosore_1.jpg",
-        // TODO: confirm each fellow approved this wording for publication
-        testimonial: {
-          kind: "summary",
-          pronoun: "she",
-          text: "Gained insight into capacity building, valuable skills, and how to sell her value and skills.",
-        },
-      },
-      {
-        name: "Teslim Jinadu",
-        profession: "Electrical Engineer",
-        location: "Lagos",
-        image:
-          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Teslim_Jinadu.jpg",
-        testimonial: {
-          kind: "quote",
-          text: "I gained guidance on self-discovery and identifying my path, and insight into how to translate my value into earning. I'm grateful to JCTEF for helping me gain clarity.",
-        },
-      },
-      {
-        name: "Ofonime Effiong",
-        profession: "Data Analyst",
-        location: "Akwa Ibom",
-        image:
-          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ofonime_Effiong.jpg",
-      },
-      {
-        name: "Oluwadare Ajao",
-        // TODO: confirm "Scrapy Agent" spelling with the team
-        profession: "Scrapy Agent and Sales Marketing",
-        location: "Lagos",
-        image:
-          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Oluwadare_ajao_1.jpg",
-        testimonial: {
-          kind: "quote",
-          text: "JCTEF helped me with character development, especially emotional intelligence. People around me have been commenting on the positive change, and I'm grateful to JCTEF for the work they do.",
-        },
-      },
-      {
-        name: "Rasheedah Ayoola",
-        profession: "Educator",
-        location: "Osogbo, Osun",
-        image:
-          "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Rasheedah_Ayoola.jpg",
-      },
-      // TODO: add Victor's photo when we have it
-      {
-        name: "Victor Poweide",
-        profession: "Entrepreneur and Business Owner",
-        location: "Lagos",
-        image: "",
-      },
-    ],
   },
 ];
 
-/** Newest cohort first. */
-export const cohortsNewestFirst = [...cohorts].sort(
-  (a, b) => b.number - a.number,
-);
+/** "Meet our alumni" on /institute. */
+export const alumniSection = {
+  eyebrow: "Our alumni",
+  title: "Meet our alumni",
+  summary: "Graduates of the JCTEF Transformation Programme, bringing together alumni from across Nigeria.",
+};
+
+/** Graduates of the Transformation Programme, shown in this order on /institute. */
+// TODO: confirm each person agreed to their photo and details being published.
+export const alumni: Alumnus[] = [
+  {
+    name: "Blessing Ibanga Udofia",
+    profession: "9-to-5 Professional and Freelancer",
+    location: "Uyo, Akwa Ibom",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246311/Blessing_Ibanga_Udofia.jpg",
+  },
+  {
+    name: "Funmilayo Olowoyo",
+    profession: "IT Audit and Compliance",
+    location: "Lagos",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Funmilayo_Olowoyo.jpg",
+  },
+  {
+    name: "Ojo Boluwatife Moyosore",
+    profession: "Data Analyst, Public Administrator, and CEO, Moshangloss",
+    location: "Gbagada, Lagos",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ojo_Boluwatife_Moyosore_1.jpg",
+    // TODO: confirm each person approved this wording for publication
+    testimonial: {
+      kind: "summary",
+      pronoun: "she",
+      text: "Gained insight into capacity building, valuable skills, and how to sell her value and skills.",
+    },
+  },
+  {
+    name: "Teslim Jinadu",
+    profession: "Electrical Engineer",
+    location: "Lagos",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Teslim_Jinadu.jpg",
+    testimonial: {
+      kind: "quote",
+      text: "I gained guidance on self-discovery and identifying my path, and insight into how to translate my value into earning. I'm grateful to JCTEF for helping me gain clarity.",
+    },
+  },
+  {
+    name: "Ofonime Effiong",
+    profession: "Data Analyst",
+    location: "Akwa Ibom",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Ofonime_Effiong.jpg",
+  },
+  {
+    name: "Oluwadare Ajao",
+    // TODO: confirm "Scrapy Agent" spelling
+    profession: "Scrapy Agent and Sales Marketing",
+    location: "Lagos",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Oluwadare_ajao_1.jpg",
+    testimonial: {
+      kind: "quote",
+      text: "JCTEF helped me with character development, especially emotional intelligence. People around me have been commenting on the positive change, and I'm grateful to JCTEF for the work they do.",
+    },
+  },
+  {
+    name: "Rasheedah Ayoola",
+    profession: "Educator",
+    location: "Osogbo, Osun",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794246183/Rasheedah_Ayoola.jpg",
+  },
+  {
+    name: "Victor Poweide",
+    profession: "Entrepreneur and Business Owner",
+    location: "Lagos",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794245822/Victor_Poweide_1.png",
+  },
+  {
+    name: "Kazeem Afeez Olalekan",
+    profession: "Fashion Designer",
+    location: "Ibadan, Oyo",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794333812/KAZEEM_AFEEZ_OLALEKAN.jpg",
+  },
+  {
+    name: "Aladese Oluwaseyifunmi Adetoun",
+    profession: "Student",
+    location: "Ogun",
+    cohort: 1,
+    image: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794333812/Aladese_Oluwaseyifunmi_Adetoun.jpg",
+  },
+];
 
 /**
- * Homepage "In their words": every fellow with a testimonial, newest cohort
- * first. Edit testimonials on the fellows above, not here.
+ * Alumni grouped by class year, newest first: [{ label: "Class of 2026",
+ * alumni: [...] }]. Alumni keep their order from `alumni` within a class.
  */
-export const testimonials: Testimonial[] = cohortsNewestFirst.flatMap(
-  (cohort) =>
-    cohort.fellows.flatMap((fellow) =>
-      fellow.testimonial
-        ? [
-            {
-              ...fellow.testimonial,
-              name: fellow.name,
-              role: `JCTEF Fellow, ${cohort.title}`,
-              photo: fellow.image || undefined,
-            },
-          ]
-        : [],
-    ),
+export const alumniByClass: { label: string; alumni: Alumnus[] }[] = (() => {
+  const yearOf = new Map(cohorts.map((c) => [c.number, c.endDate.slice(0, 4)]));
+  const classes = new Map<string, Alumnus[]>();
+  for (const person of alumni) {
+    const year = yearOf.get(person.cohort);
+    if (!year) continue; // Cohort not in `cohorts` yet.
+    classes.set(year, [...(classes.get(year) ?? []), person]);
+  }
+  return [...classes.entries()]
+    .sort(([a], [b]) => b.localeCompare(a))
+    .map(([year, people]) => ({ label: `Class of ${year}`, alumni: people }));
+})();
+
+/**
+ * Homepage "In their words": every alumnus with a testimonial, newest class
+ * first. Edit testimonials on the alumni above, not here.
+ */
+export const testimonials: Testimonial[] = alumniByClass.flatMap(({ alumni: people }) =>
+  people.flatMap((person) =>
+    person.testimonial
+      ? [
+          {
+            ...person.testimonial,
+            name: person.name,
+            role: "JCTEF Alumni",
+            photo: person.image || undefined,
+          },
+        ]
+      : [],
+  ),
 );
 
 /* -------------------------------------------------------------------------- */

@@ -3,57 +3,43 @@ import Link from "next/link";
 import { CruiseTabs } from "@/components/cruise/tabs";
 import { ButtonLink } from "@/components/layout/button-link";
 import { Reveal } from "@/components/motion/reveal";
-import { type Cohort, cohortsNewestFirst } from "@/lib/content";
+import { type Alumnus, alumniByClass, alumniSection } from "@/lib/content";
 import { FellowStory } from "./fellow-story";
 import { SectionHeading } from "./section-heading";
 import { TeamPhoto } from "./team-photo";
 
 const CLOSING_MEETUP_POST = "/blog/transformation-programme-cohort-1-closing-meetup";
 
-/** "15 August – 7 November 2026", or with both years when they differ. */
-function dateRange(start: string, end: string): string {
-  const day = (iso: string, withYear: boolean) =>
-    new Intl.DateTimeFormat("en-GB", {
-      day: "numeric",
-      month: "long",
-      ...(withYear && { year: "numeric" }),
-      timeZone: "UTC",
-    }).format(new Date(`${iso}T00:00:00Z`));
-  const sameYear = start.slice(0, 4) === end.slice(0, 4);
-  return `${day(start, !sameYear)} – ${day(end, true)}`;
-}
-
-function Details({ cohort }: { cohort: Cohort }) {
+/**
+ * 4 columns on desktop, 2 below. A flex row rather than a grid, so an
+ * incomplete last row (e.g. 2 of 4) sits in the centre.
+ */
+function AlumniCards({ alumni }: { alumni: Alumnus[] }) {
   return (
-    <p className="text-small font-bold text-ink-muted">
-      {dateRange(cohort.startDate, cohort.endDate)} · {cohort.format}
-    </p>
-  );
-}
-
-function Fellows({ cohort }: { cohort: Cohort }) {
-  return (
-    <Reveal as="ul" stagger className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-      {cohort.fellows.map((fellow) => (
-        <li key={fellow.name} className="brutal brutal-static flex flex-col overflow-hidden bg-surface">
+    <Reveal as="ul" stagger className="flex flex-wrap justify-center gap-4 sm:gap-6">
+      {alumni.map((person) => (
+        <li
+          key={person.name}
+          className="brutal brutal-static flex w-[calc((100%-1rem)/2)] flex-col overflow-hidden bg-surface sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-4.5rem)/4)]"
+        >
           <TeamPhoto
-            src={fellow.image || undefined}
-            name={fellow.name}
-            alt={`${fellow.name}, JCTEF ${cohort.title} fellow`}
+            src={person.image || undefined}
+            name={person.name}
+            alt={`${person.name}, JCTEF alumni`}
             sizes="(min-width: 1024px) 290px, 50vw"
           />
           <div className="flex flex-1 flex-col gap-4 border-t-2 border-ink p-4 md:p-5">
             <div className="grid min-w-0 gap-1">
-              <h3 className="font-display text-[1.0625rem] leading-tight font-extrabold md:text-[1.1875rem]">{fellow.name}</h3>
-              <p className="text-small font-bold text-success">{fellow.profession}</p>
+              <h3 className="font-display text-[1.0625rem] leading-tight font-extrabold md:text-[1.1875rem]">{person.name}</h3>
+              <p className="text-small font-bold text-success">{person.profession}</p>
               <p className="mt-1 flex items-center gap-1.5 text-small text-ink-muted">
                 <MapPin aria-hidden="true" className="size-4 shrink-0" />
-                {fellow.location}
+                {person.location}
               </p>
             </div>
-            {fellow.testimonial && (
+            {person.testimonial && (
               <div className="mt-auto">
-                <FellowStory name={fellow.name} testimonial={fellow.testimonial} />
+                <FellowStory name={person.name} testimonial={person.testimonial} />
               </div>
             )}
           </div>
@@ -64,43 +50,35 @@ function Fellows({ cohort }: { cohort: Cohort }) {
 }
 
 /**
- * "Meet Cohort 1" on /institute. With one cohort it's a single section;
- * once a second cohort is added to `cohorts` in content.ts, each gets a tab
- * (newest first).
+ * "Meet our alumni" on /institute. With one class year it's a single list
+ * under "Class of 2026"; once alumni from another year are added (`cohorts`
+ * and `alumni` in content.ts), each year gets a tab, newest first.
  */
-export function Cohorts({ joinHref }: { joinHref: string }) {
-  if (cohortsNewestFirst.length === 0) return null;
-  const [only] = cohortsNewestFirst;
-  const single = cohortsNewestFirst.length === 1;
+export function Alumni({ joinHref }: { joinHref: string }) {
+  if (alumniByClass.length === 0) return null;
+  const [only] = alumniByClass;
+  const single = alumniByClass.length === 1;
 
   return (
-    <section id="cohorts" aria-labelledby="cohorts-title" className="section bg-tint scroll-mt-20">
+    <section id="alumni" aria-labelledby="alumni-title" className="section bg-tint scroll-mt-20">
       <div className="site-container grid gap-10">
-        {single ? (
-          <SectionHeading id="cohorts-title" eyebrow="Our fellows" title={`Meet ${only.title}`}>
-            <p>{only.summary}</p>
-            <Details cohort={only} />
-          </SectionHeading>
-        ) : (
-          <SectionHeading id="cohorts-title" eyebrow="Our fellows" title="Meet our fellows" />
-        )}
+        <SectionHeading id="alumni-title" eyebrow={alumniSection.eyebrow} title={alumniSection.title}>
+          <p>{alumniSection.summary}</p>
+          {single && <p className="text-small font-bold text-ink-muted">{only.label}</p>}
+        </SectionHeading>
 
         {single ? (
-          <Fellows cohort={only} />
+          <AlumniCards alumni={only.alumni} />
         ) : (
           <CruiseTabs
-            label="Cohorts"
+            label="Alumni by class"
             keepMounted
-            items={cohortsNewestFirst.map((cohort) => ({
-              value: String(cohort.number),
-              label: cohort.title,
+            items={alumniByClass.map((group) => ({
+              value: group.label,
+              label: group.label,
               content: (
-                <div className="grid gap-6 pt-6">
-                  <div className="grid max-w-[65ch] gap-2">
-                    <p>{cohort.summary}</p>
-                    <Details cohort={cohort} />
-                  </div>
-                  <Fellows cohort={cohort} />
+                <div className="pt-6">
+                  <AlumniCards alumni={group.alumni} />
                 </div>
               ),
             }))}
