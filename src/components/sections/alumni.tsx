@@ -4,7 +4,6 @@ import { CruiseTabs } from "@/components/cruise/tabs";
 import { ButtonLink } from "@/components/layout/button-link";
 import { Reveal } from "@/components/motion/reveal";
 import { type Alumnus, alumniByClass, alumniSection } from "@/lib/content";
-import { FellowStory } from "./fellow-story";
 import { SectionHeading } from "./section-heading";
 import { TeamPhoto } from "./team-photo";
 
@@ -37,11 +36,6 @@ function AlumniCards({ alumni }: { alumni: Alumnus[] }) {
                 {person.location}
               </p>
             </div>
-            {person.testimonial && (
-              <div className="mt-auto">
-                <FellowStory name={person.name} testimonial={person.testimonial} />
-              </div>
-            )}
           </div>
         </li>
       ))}
@@ -50,8 +44,8 @@ function AlumniCards({ alumni }: { alumni: Alumnus[] }) {
 }
 
 /**
- * "Meet our alumni" on /institute. With one class year it's a single list
- * under "Class of 2026"; once alumni from another year are added (`cohorts`
+ * "Meet some of our alumni" on /institute. With one class year it's a single list;
+ * once alumni from another year are added (`cohorts`
  * and `alumni` in content.ts), each year gets a tab, newest first.
  */
 export function Alumni({ joinHref }: { joinHref: string }) {
@@ -64,7 +58,6 @@ export function Alumni({ joinHref }: { joinHref: string }) {
       <div className="site-container grid gap-10">
         <SectionHeading id="alumni-title" eyebrow={alumniSection.eyebrow} title={alumniSection.title}>
           <p>{alumniSection.summary}</p>
-          {single && <p className="text-small font-bold text-ink-muted">{only.label}</p>}
         </SectionHeading>
 
         {single ? (
