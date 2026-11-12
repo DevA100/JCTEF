@@ -3,11 +3,23 @@
 import { Dialog } from "@base-ui/react/dialog";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { Reveal } from "@/components/motion/reveal";
+import { cloudinaryTransform, fullTransform, tileTransform } from "@/lib/cloudinary";
+import { cx } from "@/lib/cruise-utils";
 import type { OutreachPhoto } from "@/lib/content";
 
 const CLD = { format: "auto", quality: "auto" } as const;
+
+/**
+ * A photo is either a public ID on the dreezy cloud (CldImage) or a full
+ * Cloudinary URL on any cloud, e.g. fccjt5sr. For URLs, Cloudinary itself
+ * resizes and crops through `cloudinaryTransform`, like CldImage does.
+ */
+export type GalleryPhoto = OutreachPhoto;
+
+const photoKey = (photo: GalleryPhoto) => photo.src ?? photo.publicId;
 
 /**
  * The photo grid and its lightbox. Tiles are 4:3 face-aware crops, lazy
@@ -16,7 +28,20 @@ const CLD = { format: "auto", quality: "auto" } as const;
  * like CruiseModal (focus trap, Esc, focus back to the tile), wider so the
  * photo has room, with previous/next buttons, arrow keys and swipe.
  */
-export function OutreachGallery({ photos }: { photos: OutreachPhoto[] }) {
+export function PhotoGallery({
+  photos,
+  className = "grid-cols-1 min-[360px]:grid-cols-2 lg:grid-cols-3",
+  sizes = "(min-width: 1024px) 380px, (min-width: 360px) 50vw, 100vw",
+  tileCaptions = true,
+}: {
+  photos: GalleryPhoto[];
+  /** Grid columns. */
+  className?: string;
+  /** How wide a tile is shown, for picking the image size. */
+  sizes?: string;
+  /** Show captions under the tiles too, not only in the lightbox. */
+  tileCaptions?: boolean;
+}) {
   const [open, setOpen] = useState<number | null>(null);
   const tiles = useRef<(HTMLButtonElement | null)[]>([]);
   const swipeStart = useRef<number | null>(null);
@@ -35,9 +60,9 @@ export function OutreachGallery({ photos }: { photos: OutreachPhoto[] }) {
 
   return (
     <>
-      <Reveal as="ul" stagger className="grid grid-cols-1 gap-5 min-[360px]:grid-cols-2 lg:grid-cols-3">
+      <Reveal as="ul" stagger className={cx("grid gap-5", className)}>
         {photos.map((photo, i) => (
-          <li key={photo.publicId}>
+          <li key={photoKey(photo)}>
             <figure className="brutal flex h-full flex-col overflow-hidden">
               <button
                 type="button"
@@ -47,21 +72,33 @@ export function OutreachGallery({ photos }: { photos: OutreachPhoto[] }) {
                 onClick={() => show(i)}
                 className="relative block aspect-4/3 w-full cursor-zoom-in overflow-hidden bg-muted focus-visible:outline-offset-[-3px]"
               >
-                <CldImage
-                  src={photo.publicId}
-                  alt={photo.alt}
-                  fill
-                  sizes="(min-width: 1024px) 380px, (min-width: 360px) 50vw, 100vw"
-                  crop="fill"
-                  gravity="faces"
-                  aspectRatio="4:3"
-                  loading="lazy"
-                  {...CLD}
-                  className="object-cover"
-                />
+                {photo.src === undefined ? (
+                  <CldImage
+                    src={photo.publicId}
+                    alt={photo.alt}
+                    fill
+                    sizes={sizes}
+                    crop="fill"
+                    gravity="faces"
+                    aspectRatio="4:3"
+                    loading="lazy"
+                    {...CLD}
+                    className="object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={photo.src}
+                    loader={({ src, width }) => cloudinaryTransform(src, tileTransform(width))}
+                    alt={photo.alt}
+                    fill
+                    sizes={sizes}
+                    loading="lazy"
+                    className="object-cover"
+                  />
+                )}
                 <span className="visually-hidden"> (open larger view)</span>
               </button>
-              {photo.caption && (
+              {tileCaptions && photo.caption && (
                 <figcaption className="flex-1 border-t-(length:--border-w) border-ink px-3 py-2.5 text-small">
                   {photo.caption}
                 </figcaption>
@@ -125,19 +162,34 @@ export function OutreachGallery({ photos }: { photos: OutreachPhoto[] }) {
                 }}
               >
                 {/* Full size, uncropped: only requested now the lightbox is open. */}
-                <CldImage
-                  key={current.publicId}
-                  src={current.publicId}
-                  alt={current.alt}
-                  width={1600}
-                  height={1200}
-                  crop="limit"
-                  sizes="(min-width: 960px) 896px, 100vw"
-                  {...CLD}
-                  draggable={false}
-                  style={{ objectPosition: current.focus }}
-                  className="mx-auto max-h-[calc(100dvh-12rem)] w-auto object-contain"
-                />
+                {current.src === undefined ? (
+                  <CldImage
+                    key={current.publicId}
+                    src={current.publicId}
+                    alt={current.alt}
+                    width={1600}
+                    height={1200}
+                    crop="limit"
+                    sizes="(min-width: 960px) 896px, 100vw"
+                    {...CLD}
+                    draggable={false}
+                    style={{ objectPosition: current.focus }}
+                    className="mx-auto max-h-[calc(100dvh-12rem)] w-auto object-contain"
+                  />
+                ) : (
+                  <Image
+                    key={current.src}
+                    src={current.src}
+                    loader={({ src, width }) => cloudinaryTransform(src, fullTransform(width))}
+                    alt={current.alt}
+                    width={1600}
+                    height={1200}
+                    sizes="(min-width: 960px) 896px, 100vw"
+                    draggable={false}
+                    style={{ objectPosition: current.focus }}
+                    className="mx-auto max-h-[calc(100dvh-12rem)] w-auto object-contain"
+                  />
+                )}
               </div>
             )}
 

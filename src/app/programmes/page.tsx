@@ -11,6 +11,8 @@ import { SectionHeading } from "@/components/sections/section-heading";
 import { programmes, seo } from "@/lib/content";
 import { Reveal } from "@/components/motion/reveal";
 import { TrackProgrammeViews } from "@/components/analytics/trackers";
+import { InitiativeHighlights } from "@/components/sections/initiative-highlights";
+import { cloudinaryTransform, fullTransform } from "@/lib/cloudinary";
 
 export const metadata: Metadata = pageMetadata({ ...seo.programmes, path: "/programmes" });
 
@@ -70,6 +72,9 @@ export default function ProgrammesPage() {
                       {p}
                     </p>
                   ))}
+                  {item.highlights && item.highlights.length > 0 && (
+                    <InitiativeHighlights id={item.id} highlights={item.highlights} />
+                  )}
                   {item.cta && (
                     <div className="pt-2">
                       <ButtonLink href={item.cta.href}>{item.cta.label}</ButtonLink>
@@ -79,7 +84,7 @@ export default function ProgrammesPage() {
                 <div className="grid content-start gap-6">
                   {item.image && (
                     <Image
-                      src={item.image.src}
+                      src={cloudinaryTransform(item.image.src, fullTransform(1280))}
                       alt={item.image.alt}
                       width={item.image.width}
                       height={item.image.height}

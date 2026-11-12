@@ -17,3 +17,9 @@ export function cloudinaryTransform(url: string, transform: string = TEAM_PHOTO_
   const end = at + marker.length;
   return `${url.slice(0, end)}${transform}/${url.slice(end)}`;
 }
+
+/** 4:3 crop kept around faces, `width` pixels wide (gallery tiles). */
+export const tileTransform = (width: number) => `c_fill,g_faces,ar_4:3,w_${width},f_auto,q_auto`;
+
+/** The whole photo, scaled down to at most `width` pixels wide (lightbox, large images). */
+export const fullTransform = (width: number) => `c_limit,w_${width},f_auto,q_auto`;

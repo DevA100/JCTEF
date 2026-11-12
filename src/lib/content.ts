@@ -608,9 +608,18 @@ export const heroSlides: HeroSlide[] = [
 /* Homepage: Outreach in action gallery                                       */
 /* -------------------------------------------------------------------------- */
 
-export type OutreachPhoto = {
-  /** Cloudinary public ID (cloud: dreezy), never a raw file URL. */
-  publicId: string;
+export type OutreachPhoto = (
+  | {
+      /** Cloudinary public ID (cloud: dreezy), never a raw file URL. */
+      publicId: string;
+      src?: never;
+    }
+  | {
+      /** Or a full Cloudinary URL from another cloud (e.g. fccjt5sr). */
+      src: string;
+      publicId?: never;
+    }
+) & {
   /** What is happening in the photo, factually. */
   alt: string;
   /** What, where and when, e.g. "Mindset session, Ikeja, September 2026".
@@ -654,7 +663,7 @@ export const outreachPhotos: OutreachPhoto[] = [
     caption:
       "AI and tech careers session for SS3 students at St Davids College, Osun State, November 2025", // TODO: confirm the date
   },
-  // These two are also in the hero slideshow (kept here at the team's request).
+  // Also in the hero slideshow (kept here at the team's request).
   {
     publicId: "IMG_7078_tocqtx",
     alt: "A group of JCTEF Cohort 1 fellows standing outdoors on a lawn, holding a banner for the JCTEF Transformation Programme end-of-programme meetup",
@@ -662,10 +671,9 @@ export const outreachPhotos: OutreachPhoto[] = [
       "Cohort 1 end-of-programme meetup, Lagos chapter, Ikeja, November 2026", // TODO: confirm the date (from the event banner)
   },
   {
-    publicId: "IMG_0238_xsd9lt",
-    alt: "Two JCTEF fellows standing outdoors, holding a banner for the Cohort 1 end-of-programme meetup",
-    caption:
-      "Cohort 1 end-of-programme meetup, Lagos chapter, Ikeja, November 2026", // TODO: confirm the date (from the event banner)
+    src: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794402915/tech-paragons.jpg",
+    alt: "Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten \"Tech Paragons\" sign",
+    caption: "The Tech Paragon's first meetup for women in tech, Lagos, April 2026",
   },
 ];
 
@@ -988,6 +996,20 @@ export type Initiative = {
   points: string[];
   image?: { src: string; alt: string; width: number; height: number };
   cta?: Link;
+  /** Past moments (meetups and so on), shown under the description, newest
+   * first. Kept here rather than in `events`, which hides past dates. */
+  highlights?: InitiativeHighlight[];
+};
+
+export type InitiativeHighlight = {
+  title: string;
+  /** Year and month, "YYYY-MM"; shown as "April 2026". */
+  date: string;
+  /** "City, Country"; only the city is shown. */
+  location: string;
+  description: string;
+  /** Full Cloudinary URLs (fccjt5sr). Shown as 4:3 tiles that open in the lightbox. */
+  images: { src: string; alt: string }[];
 };
 
 export const programmes = {
@@ -1100,13 +1122,32 @@ export const programmes = {
         "Opportunities that help women in tech scale",
         "Tackling inequality and bias in the tech sector",
       ],
-      // TODO: Tech Paragon photo
       image: {
-        src: "/images/tech-paragon-placeholder.svg",
-        alt: "Placeholder illustration of a crown above a laptop, standing in for a photo of The Tech Paragon community",
-        width: 1200,
-        height: 800,
+        src: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794402915/tech-paragons.jpg",
+        alt: "Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten \"Tech Paragons\" sign",
+        width: 1280,
+        height: 960,
       },
+      // Add each new meetup here; the newest is shown first.
+      highlights: [
+        {
+          title: "Our first meetup: The Tech Paragon Lagos Chapter",
+          date: "2026-04",
+          location: "Lagos, Nigeria",
+          description:
+            "The inaugural meetup of The Tech Paragon, JCTEF's community for women in tech, which supports and guides women to become builders and leaders of technology innovations and solutions.",
+          images: [
+            {
+              src: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794402915/tech-paragons.jpg",
+              alt: "Five members of The Tech Paragon at their first meetup in Lagos, standing in front of a dark tiled wall and holding up a handwritten \"Tech Paragons\" sign",
+            },
+            {
+              src: "https://res.cloudinary.com/fccjt5sr/image/upload/v1794402914/techpargons.jpg",
+              alt: "Five members of The Tech Paragon sitting together on a mat on the grass in a park at their first meetup in Lagos, smiling and making peace signs",
+            },
+          ],
+        },
+      ],
       // TODO: confirm how women join (link, form or email)
       cta: { label: "Ask about joining", href: "/contact" },
     },
