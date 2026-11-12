@@ -1,8 +1,7 @@
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Mail, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
-import { CruiseWhatsAppButton } from "@/components/cruise/whatsapp-button";
 import { ContactForm } from "@/components/sections/contact-form";
 import { PageHero } from "@/components/sections/page-hero";
 import { contact, site, seo } from "@/lib/content";
@@ -35,15 +34,6 @@ export default function ContactPage() {
                 </div>
               </li>
               <li className="flex gap-4">
-                <Phone aria-hidden="true" className="mt-1 size-6 shrink-0" />
-                <div>
-                  <h2 className="text-label uppercase text-ink-muted">Call</h2>
-                  <a href={site.phoneHref} className="text-link inline-flex min-h-11 items-center">
-                    {site.phone}
-                  </a>
-                </div>
-              </li>
-              <li className="flex gap-4">
                 <Clock aria-hidden="true" className="mt-1 size-6 shrink-0" />
                 <div>
                   <h2 className="text-label uppercase text-ink-muted">Office hours</h2>
@@ -51,10 +41,6 @@ export default function ContactPage() {
                 </div>
               </li>
             </ul>
-
-            <div>
-              <CruiseWhatsAppButton phone={site.whatsapp} message={site.whatsappMessage} tone="success" />
-            </div>
 
             <div className="brutal brutal-static p-6">
               <h2 className="mb-4 text-h3">Write to the right team</h2>

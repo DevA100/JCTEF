@@ -72,11 +72,6 @@ export const site = {
   // Area only, by decision of the JCTEF team: never publish a street address.
   address: "Lekki, Lagos, Nigeria",
   email: "info@jctef.org",
-  phone: "+234 815 171 4278",
-  phoneHref: "tel:+2348151714278",
-  whatsapp: "+234 815 171 4278",
-  whatsappMessage:
-    "Hello JCTEF, I'd like to find out more about your programmes.",
   hours: "Monday to Friday, 9:00am to 5:00pm WAT",
   enquiries: [
     { label: "General enquiries", email: "info@jctef.org" },
@@ -151,7 +146,7 @@ export const seo = {
   contact: {
     title: "Contact us",
     description:
-      "Contact JCTEF in Lekki, Lagos: email info@jctef.org, call +234 815 171 4278 or chat with us on WhatsApp. Young people, partners and volunteers welcome.",
+      "Contact JCTEF in Lekki, Lagos: email info@jctef.org or send us a message through our contact form. Young people, partners and volunteers welcome.",
   },
   privacy: {
     title: "Privacy",
@@ -743,7 +738,7 @@ export const faqs: Faq[] = [
   {
     question: "How do I apply for the next cohort?",
     answer:
-      "Email program@jctef.org or call us to apply. Every applicant goes through screening, including background checks and an interview, before joining a cohort.",
+      "Email program@jctef.org to apply. Every applicant goes through screening, including background checks and an interview, before joining a cohort.",
     link: { label: "How to become a fellow", href: "/institute#fellow" },
   },
   {
@@ -1431,7 +1426,7 @@ export const institute = {
     title: "Ready to transform your life?",
     text: "If you are seeking transformation, new skills or empowerment support, take the first step towards becoming a mentally strong, skilled and self-reliant nation-builder. Join the next available cohort.",
     steps: [
-      { label: "Apply", hint: "Email or call us" },
+      { label: "Apply", hint: "Email us" },
       { label: "Screening", hint: "Interview and checks" },
       { label: "Baseline JHCI", hint: "Where you start" },
       { label: "Cohort", hint: "Three months" },

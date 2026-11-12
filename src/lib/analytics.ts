@@ -24,7 +24,6 @@ type EventProperties = {
   /** The person clicked the link in the confirmation email. */
   newsletter_confirmed: undefined;
   reset_register_clicked: { location: string };
-  whatsapp_clicked: { location: string };
   cohort_join_clicked: undefined;
   programme_viewed: { programme: string };
   blog_post_read: { slug: string };

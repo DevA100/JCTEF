@@ -48,7 +48,6 @@ const organizationJsonLd = {
   url: site.url,
   logo: `${site.url}/images/jctef-logo.png`,
   email: site.email,
-  telephone: site.phoneHref.replace("tel:", ""),
   address: {
     "@type": "PostalAddress",
     addressLocality: "Lekki",

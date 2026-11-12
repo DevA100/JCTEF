@@ -135,7 +135,6 @@ Page views (including moves between pages without a reload, counted once each), 
 | `newsletter_signup_started` | The confirmation email was sent | none |
 | `newsletter_confirmed` | Someone opened `/newsletter/confirmed` from that email | none |
 | `reset_register_clicked` | A link to the RESET registration page | `location` |
-| `whatsapp_clicked` | A WhatsApp link | `location` (`footer`, `contact`) |
 | `cohort_join_clicked` | "Join the next cohort" on `/institute` | none |
 | `programme_viewed` | A programme's section reaches the middle of the screen on `/programmes` (once per programme per visit) | `programme` (its name) |
 | `blog_post_read` | A reader scrolls past about 75% of a post | `slug` |
@@ -164,6 +163,6 @@ Page views (including moves between pages without a reload, counted once each), 
 - **Applications and enquiries:** `volunteer_application_submitted` by `role`, `partner_enquiry_submitted` by `org_type`, `contact_message_sent`, each per week, plus the share with `verified = false`.
 - **Newsletter funnel:** `newsletter_signup_started` → `newsletter_confirmed` (confirmation rate).
 - **Content:** `blog_post_read` by `slug` against blog page views, and `programme_viewed` by `programme`.
-- **Events and cohorts:** `reset_register_clicked`, `cohort_join_clicked` and `whatsapp_clicked` per week.
+- **Events and cohorts:** `reset_register_clicked` and `cohort_join_clicked` per week.
 
 Funnels that follow one person across days only work for visitors who accepted cookies; counts and trends include everyone.
