@@ -3,7 +3,7 @@ import { pageMetadata } from "@/lib/metadata";
 import Link from "next/link";
 import { CruiseBadge } from "@/components/cruise/badge";
 import { CruiseSteps } from "@/components/cruise/steps";
-import { Cohorts } from "@/components/sections/cohorts";
+import { Alumni } from "@/components/sections/alumni";
 import { ButtonLink } from "@/components/layout/button-link";
 import { FeatureGrid } from "@/components/sections/feature-grid";
 import { PageHero } from "@/components/sections/page-hero";
@@ -84,7 +84,7 @@ export default function InstitutePage() {
         </div>
       </section>
 
-      <Cohorts joinHref="#fellow" />
+      <Alumni joinHref="#fellow" />
 
       <section id="jhci" aria-labelledby="jhci-title" className="section scroll-mt-20">
         <div className="site-container grid gap-10">

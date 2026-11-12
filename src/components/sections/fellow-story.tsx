@@ -2,14 +2,14 @@
 
 import { CruiseButton } from "@/components/cruise/button";
 import { CruiseModal } from "@/components/cruise/modal";
-import type { FellowTestimonial } from "@/lib/content";
+import type { AlumnusTestimonial } from "@/lib/content";
 
 /**
- * "Read their story": opens a fellow's testimonial in a Cruise modal.
+ * "Read their story": opens an alumnus's testimonial in a Cruise modal.
  * A quote is shown in quotation marks; a summary (written about them) as
  * "What she/he/they gained", never as a quote.
  */
-export function FellowStory({ name, testimonial }: { name: string; testimonial: FellowTestimonial }) {
+export function FellowStory({ name, testimonial }: { name: string; testimonial: AlumnusTestimonial }) {
   return (
     <CruiseModal
       title={name}
@@ -25,7 +25,7 @@ export function FellowStory({ name, testimonial }: { name: string; testimonial: 
           <blockquote>
             <p>“{testimonial.text}”</p>
           </blockquote>
-          <figcaption className="text-small text-ink-muted">{name}, JCTEF fellow</figcaption>
+          <figcaption className="text-small text-ink-muted">{name}, JCTEF Alumni</figcaption>
         </figure>
       ) : (
         <div className="grid gap-2">

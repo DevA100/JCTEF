@@ -29,7 +29,8 @@ function HeroPhoto({
   ).join(", ");
 
   return (
-    <picture>
+    // Positioned: next/image's `fill` needs its direct parent to be.
+    <picture className="absolute inset-0">
       <source media="(min-width: 768px)" srcSet={desktopSrcSet} sizes="100vw" />
       <CldImage
         src={slide.publicId}
